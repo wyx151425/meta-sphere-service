@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.model.vo.resp;
 
 import lombok.Data;
+import org.metasphere.adminservice.constant.MsStatusCode;
 
 /**
  * @Author: WangZhenqi
@@ -9,36 +10,36 @@ import lombok.Data;
  * @Modified By:
  */
 @Data
-public class MsResponse<T> {
+public class MsResponse {
     private int statusCode;
     private String message;
-    private T data;
+    private Object data;
 
     public  static MsResponse success() {
         MsResponse msResponse = new MsResponse();
-        msResponse.setStatusCode(10000);
+        msResponse.setStatusCode(MsStatusCode.SUCCESS);
         return msResponse;
     }
 
     public static MsResponse error() {
         MsResponse msResponse = new MsResponse();
-        msResponse.setStatusCode(10000);
+        msResponse.setStatusCode(MsStatusCode.SYSTEM_ERROR);
         return msResponse;
     }
 
     public static MsResponse systemError() {
         MsResponse msResponse = new MsResponse();
-        msResponse.setStatusCode(10000);
+        msResponse.setStatusCode(MsStatusCode.SYSTEM_ERROR);
         return msResponse;
     }
 
     public static MsResponse accessDenied() {
         MsResponse msResponse = new MsResponse();
-        msResponse.setStatusCode(10000);
+        msResponse.setStatusCode(MsStatusCode.ACCOUNT_AUTHENTICATION_FAILED);
         return msResponse;
     }
 
-    public MsResponse data(T data) {
+    public MsResponse data(Object data) {
         this.data = data;
         return this;
     }

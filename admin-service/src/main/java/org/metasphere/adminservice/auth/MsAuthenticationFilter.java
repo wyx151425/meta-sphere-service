@@ -41,7 +41,7 @@ public class MsAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         } else {
-            ResponseUtils.out(response, MsResponse.success());
+            ResponseUtils.out(response, MsResponse.accessDenied());
         }
     }
 

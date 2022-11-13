@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "ms_user")
 public class MsUser extends MsEntity {
     /**
      * 邮箱

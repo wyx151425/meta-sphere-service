@@ -28,6 +28,18 @@ public class MsExceptionHandler {
         return MsResponse.accessDenied();
     }
 
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public MsResponse handleUserNotFoundException(UserNotFoundException e) {
+        log.error("UserNotFoundException", e);
+        return MsResponse.accessDenied();
+    }
+
+    @ExceptionHandler(value = AccountDisabledException.class)
+    public MsResponse handleAccountDisabledException(AccountDisabledException e) {
+        log.error("AccountDisabledException", e);
+        return MsResponse.accessDenied();
+    }
+
     @ExceptionHandler(value = Exception.class)
     public MsResponse handleException(Exception e) {
         log.error(e.getMessage(), e);

@@ -59,9 +59,9 @@ public class MsLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         if (failed.getCause() instanceof RuntimeException) {
-            ResponseUtils.out(response, MsResponse.success());
+            ResponseUtils.out(response, MsResponse.accessDenied());
         } else {
-            ResponseUtils.out(response, MsResponse.success());
+            ResponseUtils.out(response, MsResponse.accessDenied());
         }
     }
 }
