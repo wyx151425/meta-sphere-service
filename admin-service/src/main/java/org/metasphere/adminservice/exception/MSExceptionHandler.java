@@ -15,10 +15,10 @@ import java.nio.file.AccessDeniedException;
  */
 @Slf4j
 @RestControllerAdvice
-public class MsExceptionHandler {
+public class MSExceptionHandler {
 
-    @ExceptionHandler(value = MsException.class)
-    public MSResponse handleMsException(MsException e) {
+    @ExceptionHandler(value = MSException.class)
+    public MSResponse handleMsException(MSException e) {
         return MSResponse.error();
     }
 

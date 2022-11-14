@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service;
 
 import org.junit.jupiter.api.Test;
-import org.metasphere.adminservice.model.pojo.MSUser;
+import org.metasphere.adminservice.model.pojo.User;
 import org.metasphere.adminservice.repository.UserRepository;
 import org.metasphere.adminservice.util.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class UserServiceTests {
     @Test
     void testSaveMsUser() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
-        MSUser user = new MSUser();
+        User user = new User();
         user.setStatus(1);
         user.setObjectId(UUID.randomUUID().toString().replace("-", "").toUpperCase());
         user.setCreateAt(dateTime);

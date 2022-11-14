@@ -1,8 +1,6 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.constant.MSStatusCode;
-import org.metasphere.adminservice.exception.MsException;
-import org.metasphere.adminservice.model.pojo.MSUser;
+import org.metasphere.adminservice.model.pojo.User;
 import org.metasphere.adminservice.repository.UserRepository;
 import org.metasphere.adminservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public MSUser findMsUserByEmail(String email) {
+    public User findMsUserByEmail(String email) {
         return userRepository.findMsUserByEmail(email);
     }
 }

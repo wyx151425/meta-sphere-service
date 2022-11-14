@@ -3,7 +3,7 @@ package org.metasphere.adminservice.service.impl;
 import org.metasphere.adminservice.auth.MSAuthUser;
 import org.metasphere.adminservice.exception.AccountDisabledException;
 import org.metasphere.adminservice.exception.UserNotFoundException;
-import org.metasphere.adminservice.model.pojo.MSUser;
+import org.metasphere.adminservice.model.pojo.User;
 import org.metasphere.adminservice.model.pojo.Permission;
 import org.metasphere.adminservice.service.PermissionService;
 import org.metasphere.adminservice.service.UserService;
@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,21 +35,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        MSUser msUser = userService.findMsUserByEmail(email);
-        if (null == msUser) {
+        User user = userService.findMsUserByEmail(email);
+        if (null == user) {
             throw new UserNotFoundException();
         }
 
-        if (ConstUtils.MsEntity.Status.DISABLE == msUser.getStatus()) {
+        if (ConstUtils.MsEntity.Status.DISABLE == user.getStatus()) {
             throw new AccountDisabledException();
         }
 
-        List<Permission> userPermissions = permissionService.findPermissionsByUser(msUser.getId());
+        List<Permission> userPermissions = permissionService.findPermissionsByUser(user.getId());
         List<SimpleGrantedAuthority> authorities = userPermissions
                 .stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getCode()))
                 .collect(Collectors.toList());
         authorities.add(new SimpleGrantedAuthority("ACTION:QUERY"));
-        return new MSAuthUser(msUser, authorities);
+        return new MSAuthUser(user, authorities);
     }
 }

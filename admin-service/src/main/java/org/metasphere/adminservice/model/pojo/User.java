@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_user")
 @Data
-public class MSUser extends MSEntity {
+public class User extends MSEntity {
     /**
      * 邮箱
      */

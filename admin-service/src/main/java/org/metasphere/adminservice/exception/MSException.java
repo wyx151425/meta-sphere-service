@@ -1,6 +1,5 @@
 package org.metasphere.adminservice.exception;
 
-import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -10,15 +9,15 @@ import lombok.Getter;
  * @Modified By:
  */
 @Getter
-public class MsException extends RuntimeException {
+public class MSException extends RuntimeException {
 
     private final Integer statusCode;
 
-    public MsException(Integer statusCode) {
+    public MSException(Integer statusCode) {
         this.statusCode = statusCode;
     }
 
-    public MsException(Integer statusCode, Throwable cause) {
+    public MSException(Integer statusCode, Throwable cause) {
         super(cause);
         this.statusCode = statusCode;
     }

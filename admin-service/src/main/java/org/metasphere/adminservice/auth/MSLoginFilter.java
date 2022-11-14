@@ -56,7 +56,7 @@ public class MSLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         MSAuthUser msAuthUser = (MSAuthUser) authResult.getPrincipal();
-        String token = JWTUtils.generateToken(msAuthUser.getMsUser().getId(), msAuthUser.getMsUser().getEmail());
+        String token = JWTUtils.generateToken(msAuthUser.getUser().getId(), msAuthUser.getUser().getEmail());
 
         redisTemplate.opsForValue().set(msAuthUser.getUsername(), JSON.toJSONString(msAuthUser.getAuthorities()));
 

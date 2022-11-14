@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.repository;
 
-import org.metasphere.adminservice.model.pojo.MSUser;
+import org.metasphere.adminservice.model.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @Modified By:
  */
 @Repository
-public interface UserRepository extends JpaRepository<MSUser, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * 根据Email查询用户信息
@@ -19,5 +19,5 @@ public interface UserRepository extends JpaRepository<MSUser, Long> {
      * @param email 用户Email
      * @return 查询到的用户信息
      */
-    MSUser findMsUserByEmail(String email);
+    User findMsUserByEmail(String email);
 }

@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.pojo.MSUser;
+import org.metasphere.adminservice.model.pojo.User;
 
 /**
  * @Author: WangZhenqi
@@ -15,5 +15,5 @@ public interface UserService {
      * @param email 用户的邮箱地址
      * @return 查询到的用户
      */
-    MSUser findMsUserByEmail(String email);
+    User findMsUserByEmail(String email);
 }
