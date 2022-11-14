@@ -48,4 +48,12 @@ public interface PermissionService {
      * @return 包含分页信息的权限数据
      */
     MSPage<Permission> findPermissionsByPagination(Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据用户ID获取权限
+     *
+     * @param userId 用户ID
+     * @return 属于该用户的权限
+     */
+    List<Permission> findPermissionsByUser(Long userId);
 }

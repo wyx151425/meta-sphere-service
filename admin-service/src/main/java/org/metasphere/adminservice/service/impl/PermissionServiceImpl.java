@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,5 +60,11 @@ public class PermissionServiceImpl implements PermissionService {
     public MSPage<Permission> findPermissionsByPagination(Integer pageNum, Integer pageSize) {
         Page<Permission> pageContext =  permissionRepository.findAll(PageRequest.of(pageNum, pageSize));
         return new MSPage<>(pageContext);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public List<Permission> findPermissionsByUser(Long userId) {
+        return new ArrayList<>();
     }
 }

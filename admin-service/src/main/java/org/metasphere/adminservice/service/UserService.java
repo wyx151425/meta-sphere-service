@@ -9,15 +9,6 @@ import org.metasphere.adminservice.model.pojo.MSUser;
  * @Modified By:
  */
 public interface UserService {
-
-    /**
-     * 通过Email登录
-     *
-     * @param email    邮箱
-     * @param password 密码
-     */
-    void loginByEmail(String email, String password);
-
     /**
      * 根据邮箱地址获取用户
      *

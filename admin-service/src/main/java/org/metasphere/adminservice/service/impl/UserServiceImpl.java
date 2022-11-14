@@ -21,15 +21,6 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public void loginByEmail(String email, String password) {
-        MSUser user = userRepository.findMsUserByEmail(email);
-
-        if (null == user) {
-            throw new MsException(MSStatusCode.SYSTEM_ERROR);
-        }
-    }
-
-    @Override
     public MSUser findMsUserByEmail(String email) {
         return userRepository.findMsUserByEmail(email);
     }

@@ -1,5 +1,7 @@
 package org.metasphere.adminservice.exception;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 /**
  * @Author: WangZhenqi
  * @Description:

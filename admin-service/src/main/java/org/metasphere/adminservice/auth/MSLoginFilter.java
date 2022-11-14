@@ -1,11 +1,13 @@
 package org.metasphere.adminservice.auth;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.model.vo.req.UserLoginVO;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
 import org.metasphere.adminservice.util.JWTUtils;
 import org.metasphere.adminservice.util.ResponseUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,10 +32,13 @@ import java.util.Map;
 @Slf4j
 public class MSLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public MSLoginFilter(AuthenticationManager authenticationManager) {
+    private RedisTemplate redisTemplate;
+
+    public MSLoginFilter(AuthenticationManager authenticationManager, RedisTemplate redisTemplate) {
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/admin/user/login", "POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/users/login", "POST"));
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -52,6 +57,8 @@ public class MSLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         MSAuthUser msAuthUser = (MSAuthUser) authResult.getPrincipal();
         String token = JWTUtils.generateToken(msAuthUser.getMsUser().getId(), msAuthUser.getMsUser().getEmail());
+
+        redisTemplate.opsForValue().set(msAuthUser.getUsername(), JSON.toJSONString(msAuthUser.getAuthorities()));
 
         Map<String, String> map = new HashMap<>();
         map.put("token", token);
