@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.auth;
 
-import org.metasphere.adminservice.util.Md5Utils;
+import org.metasphere.adminservice.util.MD5Utils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
  * @Modified By:
  */
 @Component
-public class MsPasswordEncoder implements PasswordEncoder {
+public class MSPasswordEncoder implements PasswordEncoder {
 
     @Override
     public String encode(CharSequence rawPassword) {
-        return Md5Utils.encrypt(rawPassword.toString());
+        return MD5Utils.encrypt(rawPassword.toString());
     }
 
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        return encodedPassword.equals(Md5Utils.encrypt(rawPassword.toString()));
+        return encodedPassword.equals(MD5Utils.encrypt(rawPassword.toString()));
     }
 }

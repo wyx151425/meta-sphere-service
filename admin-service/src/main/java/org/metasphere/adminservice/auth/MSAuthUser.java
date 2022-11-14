@@ -2,7 +2,7 @@ package org.metasphere.adminservice.auth;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.metasphere.adminservice.model.pojo.MsUser;
+import org.metasphere.adminservice.model.pojo.MSUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -16,11 +16,11 @@ import java.util.Collection;
  */
 @Getter
 @Setter
-public class MsAuthUser extends User {
+public class MSAuthUser extends User {
 
-    private MsUser msUser;
+    private MSUser msUser;
 
-    public MsAuthUser(MsUser msUser, Collection<? extends GrantedAuthority> authorities) {
+    public MSAuthUser(MSUser msUser, Collection<? extends GrantedAuthority> authorities) {
         super(msUser.getEmail(), msUser.getPassword(), authorities);
         this.msUser = msUser;
     }

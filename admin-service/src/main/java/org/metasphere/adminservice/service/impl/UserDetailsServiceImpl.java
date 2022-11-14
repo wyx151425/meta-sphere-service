@@ -1,10 +1,10 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.auth.MsAuthUser;
+import org.metasphere.adminservice.auth.MSAuthUser;
 import org.metasphere.adminservice.exception.AccountDisabledException;
 import org.metasphere.adminservice.exception.UserNotFoundException;
-import org.metasphere.adminservice.model.pojo.MsUser;
-import org.metasphere.adminservice.service.MsUserService;
+import org.metasphere.adminservice.model.pojo.MSUser;
+import org.metasphere.adminservice.service.UserService;
 import org.metasphere.adminservice.util.ConstUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,11 +24,11 @@ import java.util.Collections;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private MsUserService msUserService;
+    private UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        MsUser msUser = msUserService.findMsUserByEmail(email);
+        MSUser msUser = userService.findMsUserByEmail(email);
         if (null == msUser) {
             throw new UserNotFoundException();
         }
@@ -37,6 +37,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new AccountDisabledException();
         }
 
-        return new MsAuthUser(msUser, Collections.emptyList());
+        return new MSAuthUser(msUser, Collections.emptyList());
     }
 }

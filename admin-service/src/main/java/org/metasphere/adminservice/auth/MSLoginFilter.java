@@ -1,9 +1,10 @@
 package org.metasphere.adminservice.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.model.vo.req.UserLoginVO;
-import org.metasphere.adminservice.model.vo.resp.MsResponse;
-import org.metasphere.adminservice.util.JwtUtils;
+import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.util.JWTUtils;
 import org.metasphere.adminservice.util.ResponseUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,9 +27,10 @@ import java.util.Map;
  * @Date: Created in 2022-11-13 18:50
  * @Modified By:
  */
-public class MsLoginFilter extends UsernamePasswordAuthenticationFilter {
+@Slf4j
+public class MSLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public MsLoginFilter(AuthenticationManager authenticationManager) {
+    public MSLoginFilter(AuthenticationManager authenticationManager) {
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/admin/user/login", "POST"));
@@ -48,20 +50,21 @@ public class MsLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        MsAuthUser msAuthUser = (MsAuthUser) authResult.getPrincipal();
-        String token = JwtUtils.generateToken(msAuthUser.getMsUser().getId(), msAuthUser.getMsUser().getEmail());
+        MSAuthUser msAuthUser = (MSAuthUser) authResult.getPrincipal();
+        String token = JWTUtils.generateToken(msAuthUser.getMsUser().getId(), msAuthUser.getMsUser().getEmail());
 
         Map<String, String> map = new HashMap<>();
         map.put("token", token);
-        ResponseUtils.out(response, MsResponse.success().data(map));
+        ResponseUtils.out(response, MSResponse.success(map));
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        log.error("MsLoginFilter", failed);
         if (failed.getCause() instanceof RuntimeException) {
-            ResponseUtils.out(response, MsResponse.accessDenied());
+            ResponseUtils.out(response, MSResponse.accessDenied());
         } else {
-            ResponseUtils.out(response, MsResponse.accessDenied());
+            ResponseUtils.out(response, MSResponse.usernameOrPasswordError());
         }
     }
 }

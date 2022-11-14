@@ -11,10 +11,10 @@ import javax.persistence.Table;
  * @Date: Created in 2022-11-10 20:08
  * @Modified By:
  */
-@Data
 @Entity
 @Table(name = "ms_user")
-public class MsUser extends MsEntity {
+@Data
+public class MSUser extends MSEntity {
     /**
      * 邮箱
      */

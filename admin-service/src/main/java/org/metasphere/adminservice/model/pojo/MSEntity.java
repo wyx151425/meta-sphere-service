@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.model.pojo;
 
 import lombok.Data;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @MappedSuperclass
-public class MsEntity implements Serializable {
+@Where(clause = "status = 1")
+public class MSEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

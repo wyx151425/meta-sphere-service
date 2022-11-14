@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.auth;
 
 import lombok.extern.slf4j.Slf4j;
-import org.metasphere.adminservice.model.vo.resp.MsResponse;
-import org.metasphere.adminservice.util.JwtUtils;
+import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.util.JWTUtils;
 import org.metasphere.adminservice.util.ResponseUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +23,9 @@ import java.util.Collections;
  * @Modified By:
  */
 @Slf4j
-public class MsAuthenticationFilter extends OncePerRequestFilter {
+public class MSAuthenticationFilter extends OncePerRequestFilter {
 
-    public MsAuthenticationFilter() {
+    public MSAuthenticationFilter() {
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MsAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         } else {
-            ResponseUtils.out(response, MsResponse.accessDenied());
+            ResponseUtils.out(response, MSResponse.accessDenied());
         }
     }
 
@@ -49,7 +49,7 @@ public class MsAuthenticationFilter extends OncePerRequestFilter {
         String token = request.getHeader("token");
         log.info("token: " + token);
         if (StringUtils.hasLength(token)) {
-            String email = JwtUtils.getUserEmailByToken(token);
+            String email = JWTUtils.getUserEmailByToken(token);
             if (StringUtils.hasLength(email)) {
                 return new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
             }

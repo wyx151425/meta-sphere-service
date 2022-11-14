@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.config;
 
-import org.metasphere.adminservice.auth.MsPasswordEncoder;
-import org.metasphere.adminservice.auth.MsAuthenticationFilter;
-import org.metasphere.adminservice.auth.MsLoginFilter;
+import org.metasphere.adminservice.auth.MSPasswordEncoder;
+import org.metasphere.adminservice.auth.MSAuthenticationFilter;
+import org.metasphere.adminservice.auth.MSLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private MsPasswordEncoder msPasswordEncoder;
+    private MSPasswordEncoder msPasswordEncoder;
 
     @Bean
     @Override
@@ -48,8 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/user/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new MsAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilter(new MsLoginFilter(authenticationManager()));
+                .addFilterBefore(new MSAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new MSLoginFilter(authenticationManager()));
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

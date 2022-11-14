@@ -1,14 +1,14 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.pojo.MsUser;
+import org.metasphere.adminservice.model.pojo.MSUser;
 
 /**
  * @Author: WangZhenqi
- * @Description:
+ * @Description: 系统用户业务逻辑规范
  * @Date: Created in 2022-11-10 20:13
  * @Modified By:
  */
-public interface MsUserService {
+public interface UserService {
 
     /**
      * 通过Email登录
@@ -24,5 +24,5 @@ public interface MsUserService {
      * @param email 用户的邮箱地址
      * @return 查询到的用户
      */
-    MsUser findMsUserByEmail(String email);
+    MSUser findMsUserByEmail(String email);
 }
