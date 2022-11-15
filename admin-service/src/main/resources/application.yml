@@ -17,7 +17,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
   redis:
-    host: 192.168.2.202
+    host: 192.168.2.203
     port: 6379
     password:
     jedis:

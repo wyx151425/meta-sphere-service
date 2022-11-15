@@ -57,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class, readOnly = true)
     public MSPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize) {
-        Page<Role> pageContext = roleRepository.findAll(PageRequest.of(pageNum, pageSize));
+        Page<Role> pageContext = roleRepository.findAll(PageRequest.of(pageNum - 1, pageSize));
         return new MSPage<>(pageContext);
     }
 }
