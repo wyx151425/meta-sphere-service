@@ -65,7 +65,7 @@ public class MSAuthenticationFilter extends OncePerRequestFilter {
                 List<Map> mapList = JSON.parseArray(authoritiesStr, Map.class);
                 List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                 for (Map map : mapList) {
-                    authorities.add(new SimpleGrantedAuthority((String)map.get("authority")));
+                    authorities.add(new SimpleGrantedAuthority((String) map.get("authority")));
                 }
                 return new UsernamePasswordAuthenticationToken(email, null, authorities);
             }
