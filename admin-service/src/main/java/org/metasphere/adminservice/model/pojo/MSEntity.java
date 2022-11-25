@@ -2,6 +2,7 @@ package org.metasphere.adminservice.model.pojo;
 
 import lombok.Data;
 import org.hibernate.annotations.Where;
+import org.metasphere.adminservice.util.ConstUtils;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @Author: WangZhenqi
@@ -30,4 +32,12 @@ public class MSEntity implements Serializable {
     private Integer status;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+
+    public MSEntity() {
+        LocalDateTime dateTime = LocalDateTime.now().withNano(0);
+        this.objectId = UUID.randomUUID().toString().replace("-", "").toUpperCase();
+        this.status = ConstUtils.MsEntity.Status.ENABLE;
+        this.createAt = dateTime;
+        this.updateAt = dateTime;
+    }
 }
