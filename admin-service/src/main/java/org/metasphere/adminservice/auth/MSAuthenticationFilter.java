@@ -55,7 +55,7 @@ public class MSAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader("token");
+        String token = request.getHeader("AUTH_TOKEN");
         log.info("token: " + token);
         if (StringUtils.hasLength(token)) {
             String email = JWTUtils.getUserEmailByToken(token);

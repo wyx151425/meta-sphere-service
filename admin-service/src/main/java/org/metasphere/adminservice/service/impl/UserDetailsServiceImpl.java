@@ -35,12 +35,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.findMsUserByEmail(email);
+        User user = userService.findUserByEmail(email);
         if (null == user) {
             throw new UserNotFoundException();
         }
 
-        if (ConstUtils.MsEntity.Status.DISABLE == user.getStatus()) {
+        if (ConstUtils.MSEntity.Status.DISABLE == user.getStatus()) {
             throw new AccountDisabledException();
         }
 

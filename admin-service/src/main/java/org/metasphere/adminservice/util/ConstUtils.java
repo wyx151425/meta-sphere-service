@@ -8,7 +8,7 @@ package org.metasphere.adminservice.util;
  */
 public class ConstUtils {
 
-    public static class MsEntity {
+    public static class MSEntity {
 
         public static class Status {
             public static final int ENABLE = 1;

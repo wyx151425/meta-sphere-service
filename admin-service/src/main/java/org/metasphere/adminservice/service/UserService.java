@@ -15,5 +15,5 @@ public interface UserService {
      * @param email 用户的邮箱地址
      * @return 查询到的用户
      */
-    User findMsUserByEmail(String email);
+    User findUserByEmail(String email);
 }

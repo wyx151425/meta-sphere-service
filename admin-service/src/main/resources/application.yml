@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/meta_sphere_dev?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://180.201.163.246:43306/ms_admin_dev?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 151425
   jpa:
@@ -17,8 +17,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
   redis:
-    host: 192.168.2.203
-    port: 6379
+    host: 180.201.163.246
+    port: 46379
     password:
     jedis:
       pool:

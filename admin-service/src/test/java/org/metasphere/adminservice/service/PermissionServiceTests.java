@@ -26,7 +26,7 @@ public class PermissionServiceTests {
     void testSavePermission() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
         Permission permission = new Permission();
-        permission.setStatus(ConstUtils.MsEntity.Status.ENABLE);
+        permission.setStatus(ConstUtils.MSEntity.Status.ENABLE);
         permission.setObjectId(UUID.randomUUID().toString().replace("-", "").toUpperCase());
         permission.setCreateAt(dateTime);
         permission.setUpdateAt(dateTime);
