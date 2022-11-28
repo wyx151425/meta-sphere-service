@@ -10,43 +10,43 @@ import org.metasphere.adminservice.constant.MSStatusCode;
  * @Modified By:
  */
 @Data
-public class MSResponse {
+public class MSResponse<T> {
     private int statusCode;
-    private Object data;
+    private T data;
 
-    public  static MSResponse success() {
-        MSResponse msResponse = new MSResponse();
+    public  static <T> MSResponse<T> success() {
+        MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SUCCESS);
         return msResponse;
     }
 
-    public  static MSResponse success(Object data) {
-        MSResponse msResponse = new MSResponse();
+    public  static <T> MSResponse<T> success(T data) {
+        MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SUCCESS);
         msResponse.setData(data);
         return msResponse;
     }
 
-    public static MSResponse error() {
-        MSResponse msResponse = new MSResponse();
+    public static <T> MSResponse<T> error() {
+        MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SYSTEM_ERROR);
         return msResponse;
     }
 
-    public static MSResponse systemError() {
-        MSResponse msResponse = new MSResponse();
+    public static <T> MSResponse<T> systemError() {
+        MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SYSTEM_ERROR);
         return msResponse;
     }
 
-    public static MSResponse accessDenied() {
-        MSResponse msResponse = new MSResponse();
+    public static <T> MSResponse<T> accessDenied() {
+        MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.ACCOUNT_AUTHENTICATION_FAILED);
         return msResponse;
     }
 
-    public static MSResponse usernameOrPasswordError() {
-        MSResponse msResponse = new MSResponse();
+    public static <T> MSResponse<T> usernameOrPasswordError() {
+        MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.USERNAME_OR_PASSWORD_ERROR);
         return msResponse;
     }
