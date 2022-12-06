@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.model.vo.req.UserLoginVO;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.util.ConstUtils;
 import org.metasphere.adminservice.util.JWTUtils;
 import org.metasphere.adminservice.util.ResponseUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -61,7 +62,7 @@ public class MSLoginFilter extends UsernamePasswordAuthenticationFilter {
         redisTemplate.opsForValue().set(msAuthUser.getUsername(), JSON.toJSONString(msAuthUser.getAuthorities()));
 
         Map<String, String> map = new HashMap<>();
-        map.put("token", token);
+        map.put(ConstUtils.User.AUTH_TOKEN, token);
         ResponseUtils.out(response, MSResponse.success(map));
     }
 

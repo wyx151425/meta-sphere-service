@@ -3,6 +3,7 @@ package org.metasphere.adminservice.auth;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.util.ConstUtils;
 import org.metasphere.adminservice.util.JWTUtils;
 import org.metasphere.adminservice.util.ResponseUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -55,7 +56,7 @@ public class MSAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader("AUTH_TOKEN");
+        String token = request.getHeader(ConstUtils.User.AUTH_TOKEN);
         log.info("token: " + token);
         if (StringUtils.hasLength(token)) {
             String email = JWTUtils.getUserEmailByToken(token);

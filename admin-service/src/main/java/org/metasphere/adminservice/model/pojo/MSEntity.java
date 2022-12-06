@@ -36,7 +36,7 @@ public class MSEntity implements Serializable {
     public MSEntity() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
         this.objectId = UUID.randomUUID().toString().replace("-", "").toUpperCase();
-        this.status = ConstUtils.MsEntity.Status.ENABLE;
+        this.status = ConstUtils.MSEntity.Status.ENABLE;
         this.createAt = dateTime;
         this.updateAt = dateTime;
     }

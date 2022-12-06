@@ -15,4 +15,8 @@ public class ConstUtils {
             public static final int DISABLE = 0;
         }
     }
+
+    public static class User {
+        public static final String AUTH_TOKEN = "Auth-Token";
+    }
 }
