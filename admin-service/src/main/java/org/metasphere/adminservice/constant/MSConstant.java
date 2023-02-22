@@ -15,4 +15,43 @@ public class MSConstant {
             private static final int DISABLE = 0;
         }
     }
+
+    public static class Scrapyd {
+        public static class RespStatus {
+            public static final String OK = "ok";
+            public static final String ERROR = "Error";
+        }
+
+        public static class ReqParam {
+            public static final String PROJECT = "project";
+            public static final String VERSION = "version";
+            public static final String SPIDER = "spider";
+            public static final String EGG = "egg";
+            public static final String JOB = "job";
+        }
+
+        public static class RespParam {
+            public static final String STATUS = "status";
+            public static final String NODE_NAME = "node_name";
+            public static final String PENDING = "pending";
+            public static final String RUNNING = "running";
+            public static final String FINISHED = "finished";
+            public static final String JOB_ID = "jobid";
+            public static final String MESSAGE = "message";
+
+        }
+
+        public static class URLTemplate {
+            public static final String QUERY_SCRAPYD_STATUS = "http://%s:%s/daemonstatus.json";
+            public static final String ADD_DAQ_PROJECT = "http://%s:%s/addversion.json";
+            public static final String SCHEDULE_DAQ_SPIDER = "http://%s:%s/schedule.json";
+            public static final String CANCEL_DAQ_SPIDER = "http://%s:%s/cancel.json";
+            public static final String QUERY_DAQ_PROJECTS = "http://%s:%s/listprojects.json";
+            public static final String QUERY_DAQ_PROJECT_VERSIONS = "http://%s:%s/listversions.json?project=%s";
+            public static final String QUERY_DAQ_PROJECT_SPIDERS = "http://%s:%s/listspiders.json?project=%s";
+            public static final String QUERY_DAQ_PROJECT_JOBS = "http://%s:%s/listjobs.json?project=%s";
+            public static final String DELETE_DAQ_PROJECT_VERSION = "http://%s:%s/delversion.json";
+            public static final String DELETE_DAQ_PROJECT = "http://%s:%s/delproject.json";
+        }
+    }
 }
