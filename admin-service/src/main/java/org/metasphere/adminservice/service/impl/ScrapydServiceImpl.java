@@ -5,7 +5,7 @@ import org.metasphere.adminservice.exception.ScrapydReqException;
 import org.metasphere.adminservice.model.dto.scrapyd.*;
 import org.metasphere.adminservice.model.pojo.DAQJob;
 import org.metasphere.adminservice.model.pojo.DAQJobs;
-import org.metasphere.adminservice.model.pojo.MSServer;
+import org.metasphere.adminservice.model.pojo.Server;
 import org.metasphere.adminservice.service.ScrapydService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -56,9 +56,9 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public List<ScrapydStatus> findAllScrapydStatuses(List<MSServer> servers) {
+    public List<ScrapydStatus> findAllScrapydStatuses(List<Server> servers) {
         List<ScrapydStatus> scrapydStatuses = new ArrayList<>();
-        for (MSServer server : servers) {
+        for (Server server : servers) {
             ScrapydStatus status = findScrapydStatus(server.getHost(), server.getPort());
             scrapydStatuses.add(status);
         }

@@ -10,8 +10,8 @@ import javax.persistence.Table;
  * @Modified By:
  */
 @Entity
-@Table(name = "daq_project_keyword")
-public class DAQProjectKeyword extends MSEntity {
+@Table(name = "daq_keyword")
+public class DAQKeyword extends MSEntity {
     /**
      * 数据采集项目的ID
      */
@@ -25,7 +25,7 @@ public class DAQProjectKeyword extends MSEntity {
      */
     private String keyword;
 
-    public DAQProjectKeyword() {
+    public DAQKeyword() {
     }
 
     public Long getProjectId() {

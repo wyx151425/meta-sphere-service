@@ -1,18 +1,23 @@
 package org.metasphere.adminservice.model.pojo;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * @Author: WangZhenqi
  * @Description:
  * @Date: Created in 2023-02-21 17:22
  * @Modified By:
  */
-public class MSServer extends MSEntity {
+@Entity
+@Table(name = "ms_server")
+public class Server extends MSEntity {
     private String host;
     private Integer port;
     private String name;
     private String type;
 
-    public MSServer() {
+    public Server() {
     }
 
     public String getHost() {

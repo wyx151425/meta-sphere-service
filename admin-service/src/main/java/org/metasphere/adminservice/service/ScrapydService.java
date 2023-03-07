@@ -2,7 +2,7 @@ package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydStatus;
 import org.metasphere.adminservice.model.pojo.DAQJobs;
-import org.metasphere.adminservice.model.pojo.MSServer;
+import org.metasphere.adminservice.model.pojo.Server;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public interface ScrapydService {
      * @param servers 所有数据采集服务器的信息
      * @return 所有Scrapyd服务的状态
      */
-    List<ScrapydStatus> findAllScrapydStatuses(List<MSServer> servers);
+    List<ScrapydStatus> findAllScrapydStatuses(List<Server> servers);
 
     /**
      * 添加数据采集项目

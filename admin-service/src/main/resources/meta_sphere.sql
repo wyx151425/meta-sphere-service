@@ -54,3 +54,29 @@ CREATE TABLE IF NOT EXISTS ms_role_permission
     `role_id`       BIGINT,
     `permission_id` BIGINT
 );
+
+CREATE TABLE IF NOT EXISTS ms_server
+(
+    `id`        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id` CHAR(32),
+    `status`    TINYINT,
+    `create_at` DATETIME,
+    `update_at` DATETIME,
+    `host`      VARCHAR(15),
+    `port`      INT,
+    `name`      VARCHAR(32),
+    `type`      INT
+);
+
+CREATE TABLE IF NOT EXISTS ms_server
+(
+    `id`        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id` CHAR(32),
+    `status`    TINYINT,
+    `create_at` DATETIME,
+    `update_at` DATETIME,
+    `host`      VARCHAR(15),
+    `port`      INT,
+    `name`      VARCHAR(32),
+    `type`      INT
+);
