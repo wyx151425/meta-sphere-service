@@ -13,15 +13,25 @@ public interface ServerService {
 
     /**
      * 保存服务器信息
+     *
      * @param server 服务器数据对象
      */
     void saveServer(Server server);
 
     /**
      * 分页查询服务器信息
-     * @param pageNum 分页页码
+     *
+     * @param pageNum  分页页码
      * @param pageSize 单页数据量
      * @return 查询到的服务器信息
      */
     MSPage<Server> findServersByPagination(Integer pageNum, Integer pageSize);
+
+    /**
+     * 检查服务器的状态（能否PING通）
+     *
+     * @param host 主机号
+     * @return 状态代码
+     */
+    Integer checkServerStatus(String host);
 }
