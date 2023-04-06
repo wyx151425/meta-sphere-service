@@ -34,4 +34,13 @@ public interface ServerService {
      * @return 状态代码
      */
     Integer checkServerStatus(String host);
+
+    /**
+     * 检查服务器状态（检查IP和端口能否连通）
+     *
+     * @param host 主机号
+     * @param port 端口号
+     * @return 状态代码
+     */
+    Integer checkServerStatus(String host, Integer port);
 }

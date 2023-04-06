@@ -9,6 +9,7 @@ package org.metasphere.adminservice.constant;
 public class MSStatusCode {
 
     public static final int SUCCESS = 10000;
+    public static final int SERVER_UNREACHABLE = 11000;
     public static final int SYSTEM_ERROR = 19999;
 
     public static final int USER_NOT_FOUND = 20001;

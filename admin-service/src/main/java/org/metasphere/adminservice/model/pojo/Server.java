@@ -15,7 +15,7 @@ public class Server extends MSEntity {
     private String host;
     private Integer port;
     private String name;
-    private String type;
+    private Integer type;
 
     public Server() {
     }
@@ -44,11 +44,11 @@ public class Server extends MSEntity {
         this.name = name;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 }

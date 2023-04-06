@@ -18,6 +18,14 @@ public class DAQProject extends MSEntity {
      */
     private String name;
     /**
+     * 唯一识别码
+     */
+    private String code;
+    /**
+     * 项目执行阶段（11-新建/21-数据采集阶段/22-数据待入库阶段/31-数据分析阶段/32-数据统计阶段/41-执行完毕）
+     */
+    private Integer stage;
+    /**
      * 创建时间
      */
     private LocalDateTime createdTime;
@@ -35,6 +43,22 @@ public class DAQProject extends MSEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Integer getStage() {
+        return stage;
+    }
+
+    public void setStage(Integer stage) {
+        this.stage = stage;
     }
 
     public LocalDateTime getCreatedTime() {

@@ -10,6 +10,15 @@ import org.metasphere.adminservice.model.pojo.User;
  */
 public interface UserService {
     /**
+     * 使用邮箱和密码登录系统
+     *
+     * @param email    邮箱
+     * @param password 密码
+     * @return 登录成功后的用户对象
+     */
+    User login(String email, String password);
+
+    /**
      * 根据邮箱地址获取用户
      *
      * @param email 用户的邮箱地址

@@ -1,5 +1,7 @@
 package org.metasphere.adminservice.service.impl;
 
+import org.metasphere.adminservice.constant.MSConstant;
+import org.metasphere.adminservice.constant.MSStatusCode;
 import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.Server;
@@ -20,9 +22,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 
 /**
  * @Author: WangZhenqi
@@ -42,7 +42,12 @@ public class ServerServiceImpl implements ServerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveServer(Server server) {
-        serverRepository.save(server);
+        Integer status = checkServerStatus(server.getHost());
+        if (1 == status) {
+            serverRepository.save(server);
+        } else {
+            throw new MSException(MSStatusCode.SERVER_UNREACHABLE);
+        }
     }
 
     @Override
@@ -58,6 +63,17 @@ public class ServerServiceImpl implements ServerService {
             InetAddress host = InetAddress.getByName(hostName);
             boolean isReachable = host.isReachable(3000);
             return isReachable ? 1 : 0;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Integer checkServerStatus(String host, Integer port) {
+        try (Socket socket = new Socket()) {
+            InetSocketAddress address = new InetSocketAddress(host, port);
+            socket.connect(address, 3000);
+            return 1;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

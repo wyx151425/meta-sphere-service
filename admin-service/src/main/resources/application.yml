@@ -24,3 +24,11 @@ spring:
       pool:
         max-active: 20
         max-idle: 5
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: ms-daq-engine
+      username: wyx151425
+      password: '151425'
+      authentication-database: ms-daq-engine
