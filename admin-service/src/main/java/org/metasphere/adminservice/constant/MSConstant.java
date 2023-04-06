@@ -54,4 +54,19 @@ public class MSConstant {
             public static final String DELETE_DAQ_PROJECT = "http://%s:%s/delproject.json";
         }
     }
+
+    public static class DAQProject {
+        public static class Stage {
+            public static final int CREATED = 11;
+            public static final int DATA_TO_ACQUIRE = 21;
+            public static final int DATA_ACQUIRING = 22;
+            public static final int DATA_TO_ENTER = 31;
+            public static final int DATA_ENTERING = 32;
+            public static final int DATA_TO_ANALYZE = 41;
+            public static final int DATA_ANALYZING = 42;
+            public static final int DATA_TO_COUNT = 51;
+            public static final int DATA_COUNTING = 52;
+            public static final int FINISHED = 61;
+        }
+    }
 }

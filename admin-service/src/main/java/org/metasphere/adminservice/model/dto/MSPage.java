@@ -46,4 +46,8 @@ public class MSPage<T> {
         this.totalPages = page.getTotalPages();
         this.totalData = page.getTotalElements();
     }
+
+    public static <T> MSPage<T> newInstance(Page<T> page) {
+        return new MSPage<>(page);
+    }
 }

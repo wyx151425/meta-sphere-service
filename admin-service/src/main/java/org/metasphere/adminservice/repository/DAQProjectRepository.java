@@ -2,6 +2,7 @@ package org.metasphere.adminservice.repository;
 
 import org.metasphere.adminservice.model.pojo.DAQProject;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Repository;
  * @Modified By:
  */
 @Repository(value = "daqProjectRepository")
-public interface DAQProjectRepository extends JpaRepository<DAQProject, Long> {
+public interface DAQProjectRepository extends JpaRepository<DAQProject, Long>, JpaSpecificationExecutor<DAQProject> {
 
 }

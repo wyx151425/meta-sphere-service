@@ -68,15 +68,16 @@ CREATE TABLE IF NOT EXISTS ms_server
     `type`      INT
 );
 
-CREATE TABLE IF NOT EXISTS ms_server
+CREATE TABLE IF NOT EXISTS ms_daq_project
 (
-    `id`        BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `object_id` CHAR(32),
-    `status`    TINYINT,
-    `create_at` DATETIME,
-    `update_at` DATETIME,
-    `host`      VARCHAR(15),
-    `port`      INT,
-    `name`      VARCHAR(32),
-    `type`      INT
+    `id`            BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`     CHAR(32),
+    `status`        TINYINT,
+    `create_at`     DATETIME,
+    `update_at`     DATETIME,
+    `name`          VARCHAR(64),
+    `code`          CHAR(36),
+    `stage`         INT,
+    `created_time`  DATETIME,
+    `finished_time` DATETIME
 );

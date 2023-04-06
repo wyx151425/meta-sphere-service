@@ -35,4 +35,9 @@ public class UserServiceTests {
         user.setPassword(MD5Utils.encrypt("151425"));
         userRepository.save(user);
     }
+
+    @Test
+    void testUUID() {
+        System.out.println(UUID.randomUUID().toString().length());
+    }
 }

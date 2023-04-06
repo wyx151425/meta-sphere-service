@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @Modified By:
  */
 @Entity
-@Table(name = "daq_project")
+@Table(name = "ms_daq_project")
 public class DAQProject extends MSEntity {
     /**
      * 项目名称

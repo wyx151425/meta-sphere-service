@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.model.vo.resp;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.constant.MSStatusCode;
 
 /**
@@ -9,18 +10,19 @@ import org.metasphere.adminservice.constant.MSStatusCode;
  * @Date: Created in 2022-11-10 20:38
  * @Modified By:
  */
+@Slf4j
 @Data
 public class MSResponse<T> {
     private int statusCode;
     private T data;
 
-    public  static <T> MSResponse<T> success() {
+    public static <T> MSResponse<T> success() {
         MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SUCCESS);
         return msResponse;
     }
 
-    public  static <T> MSResponse<T> success(T data) {
+    public static <T> MSResponse<T> success(T data) {
         MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SUCCESS);
         msResponse.setData(data);
