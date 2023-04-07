@@ -20,7 +20,7 @@ import java.util.List;
  * @Date: Created in 2022-11-14 15:05
  * @Modified By:
  */
-@Service
+@Service(value = "permissionService")
 public class PermissionServiceImpl implements PermissionService {
 
     @Autowired

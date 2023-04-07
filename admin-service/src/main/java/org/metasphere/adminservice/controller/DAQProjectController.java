@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.controller;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQProject;
+import org.metasphere.adminservice.model.pojo.DAQTask;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
-import org.metasphere.adminservice.service.DAQProjectService;
+import org.metasphere.adminservice.service.DAQTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,21 +18,23 @@ import org.springframework.web.bind.annotation.*;
 public class DAQProjectController {
 
     @Autowired
-    private DAQProjectService daqProjectService;
+    private DAQTaskService daqTaskService;
 
     @PostMapping(value = "")
-    MSResponse<DAQProject> actionCreateDAQProject(@RequestBody DAQProject daqProject) {
-        daqProjectService.createDAQProject(daqProject);
+    MSResponse<DAQTask> actionCreateDAQProject(@RequestBody DAQTask daqTask) {
+        daqTaskService.createDAQTask(daqTask);
         return MSResponse.success();
     }
 
     @GetMapping(value = "queryByParams")
-    MSResponse<MSPage<DAQProject>> actionQueryDAQProjectsByParams(
+    MSResponse<MSPage<DAQTask>> actionQueryDAQProjectsByParams(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "stage", required = false) Integer stage
     ) {
-        MSPage<DAQProject> page = daqProjectService.findDAQProjectByParams(pageNum, pageSize, stage);
+        MSPage<DAQTask> page = daqTaskService.findDAQTasksByParams(pageNum, pageSize, stage);
         return MSResponse.success(page);
     }
+
+
 }

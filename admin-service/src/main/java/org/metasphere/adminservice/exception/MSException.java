@@ -1,6 +1,8 @@
 package org.metasphere.adminservice.exception;
 
 import lombok.Getter;
+import org.metasphere.adminservice.constant.MSConstant;
+import org.metasphere.adminservice.constant.MSStatusCode;
 
 /**
  * @Author: WangZhenqi
@@ -20,5 +22,9 @@ public class MSException extends RuntimeException {
     public MSException(Integer statusCode, Throwable cause) {
         super(cause);
         this.statusCode = statusCode;
+    }
+
+    public static MSException getDataNotFoundException() {
+        return new MSException(MSStatusCode.DATA_NOT_FOUND);
     }
 }

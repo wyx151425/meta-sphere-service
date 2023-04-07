@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @Date: Created in 2022-11-10 20:28
  * @Modified By:
  */
-@Repository
+@Repository(value = "userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**

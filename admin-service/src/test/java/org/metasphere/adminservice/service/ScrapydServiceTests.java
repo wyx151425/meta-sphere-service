@@ -40,7 +40,7 @@ public class ScrapydServiceTests {
 
     @Test
     void testCancelDAQSpider() {
-        String prevState = scrapydService.cancelDAQSpider("127.0.0.1", 6800, "ms-daq-engine", "c17ff607b35411edaacf6002921dd8c2");
+        String prevState = scrapydService.cancelDAQSpider("127.0.0.1", 6800, "ms-daq-engine", "f07f0558d51c11ed8af4005056c00008");
         System.out.println(prevState);
     }
 

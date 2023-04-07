@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @Date: Created in 2022-11-10 20:13
  * @Modified By:
  */
-@Service
+@Service(value = "userService")
 public class UserServiceImpl implements UserService {
 
     @Autowired

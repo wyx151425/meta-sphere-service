@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
  * @Modified By:
  */
 @Entity
-@Table(name = "ms_daq_project")
-public class DAQProject extends MSEntity {
+@Table(name = "ms_daq_task")
+public class DAQTask extends MSEntity {
     /**
      * 项目名称
      */
@@ -28,13 +28,13 @@ public class DAQProject extends MSEntity {
     /**
      * 创建时间
      */
-    private LocalDateTime createdTime;
+    private LocalDateTime createdAt;
     /**
      * 终止时间
      */
-    private LocalDateTime finishedTime;
+    private LocalDateTime finishedAt;
 
-    public DAQProject() {
+    public DAQTask() {
     }
 
     public String getName() {
@@ -61,19 +61,19 @@ public class DAQProject extends MSEntity {
         this.stage = stage;
     }
 
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
+    public void setCreatedAt(LocalDateTime createdTime) {
+        this.createdAt = createdTime;
     }
 
-    public LocalDateTime getFinishedTime() {
-        return finishedTime;
+    public LocalDateTime getFinishedAt() {
+        return finishedAt;
     }
 
-    public void setFinishedTime(LocalDateTime finishedTime) {
-        this.finishedTime = finishedTime;
+    public void setFinishedAt(LocalDateTime finishedTime) {
+        this.finishedAt = finishedTime;
     }
 }

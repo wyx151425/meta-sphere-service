@@ -16,4 +16,6 @@ public class MSStatusCode {
     public static final int ACCOUNT_DISABLED = 20002;
     public static final int ACCOUNT_AUTHENTICATION_FAILED = 20003;
     public static final int USERNAME_OR_PASSWORD_ERROR = 20004;
+
+    public static final int DATA_NOT_FOUND = 30001;
 }

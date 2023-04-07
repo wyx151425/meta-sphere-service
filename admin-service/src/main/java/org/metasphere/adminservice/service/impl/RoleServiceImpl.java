@@ -19,7 +19,7 @@ import java.util.List;
  * @Date: Created in 2022-11-14 16:19
  * @Modified By:
  */
-@Service
+@Service(value = "roleService")
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
