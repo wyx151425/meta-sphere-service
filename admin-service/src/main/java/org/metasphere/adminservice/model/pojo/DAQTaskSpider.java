@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ms_daq_task_spider")
-public class DAQTaskSpider {
+public class DAQTaskSpider extends MSEntity {
     /**
      * 项目的ID
      */

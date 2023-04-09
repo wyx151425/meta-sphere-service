@@ -34,13 +34,13 @@ public class ScrapydServiceTests {
 
     @Test
     void testScheduleDAQSpider() {
-        String jobId = scrapydService.scheduleDAQSpider("127.0.0.1", 6800, "ms-daq-engine", "weibo");
+        String jobId = scrapydService.scheduleDAQSpider("127.0.0.1", 6800, "ms-daq-engine", "weibo", "test_task_code");
         System.out.println(jobId);
     }
 
     @Test
     void testCancelDAQSpider() {
-        String prevState = scrapydService.cancelDAQSpider("127.0.0.1", 6800, "ms-daq-engine", "f07f0558d51c11ed8af4005056c00008");
+        String prevState = scrapydService.cancelDAQSpider("127.0.0.1", 6800, "ms-daq-engine", "8d0f19b5d5e911ed9929005056c00008");
         System.out.println(prevState);
     }
 

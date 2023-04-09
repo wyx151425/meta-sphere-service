@@ -1,15 +1,19 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.exception.MSException;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.DAQTask;
 import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
 import org.metasphere.adminservice.repository.DAQTaskKeywordRepository;
 import org.metasphere.adminservice.service.DAQTaskKeywordService;
-import org.metasphere.adminservice.service.DAQTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,14 +31,9 @@ public class DAQTaskKeywordServiceImpl implements DAQTaskKeywordService {
     @Autowired
     private DAQTaskKeywordRepository daqTaskKeywordRepository;
 
-    @Autowired
-    private DAQTaskService daqTaskService;
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDAQTaskKeywords(Long daqTaskId, List<String> keywords) {
-        DAQTask daqTask = daqTaskService.findDAQTaskById(daqTaskId);
-
+    public void addDAQTaskKeywords(DAQTask daqTask, List<String> keywords) {
         Set<String> keywordSet = new HashSet<>(keywords);
         List<DAQTaskKeyword> daqTaskKeywords = new ArrayList<>(keywordSet.size());
         for (String keyword : keywordSet) {
@@ -50,7 +49,29 @@ public class DAQTaskKeywordServiceImpl implements DAQTaskKeywordService {
     }
 
     @Override
-    public List<DAQTaskKeyword> findDAQKeywordsByDAQProject(Long daqProjectId) {
-        return daqTaskKeywordRepository.findAllByProjectId(daqProjectId);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteDAQTaskKeyword(Long id) {
+        daqTaskKeywordRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchDeleteDAQTaskKeywords(List<Long> ids) {
+        daqTaskKeywordRepository.deleteAllById(ids);
+    }
+
+    @Override
+    public List<DAQTaskKeyword> findDAQTaskKeywordsByDAQTask(Long daqTaskId) {
+        return daqTaskKeywordRepository.findAllByTaskId(daqTaskId);
+    }
+
+    @Override
+    public MSPage<DAQTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        Page<DAQTaskKeyword> page = daqTaskKeywordRepository.findAll((Specification<DAQTaskKeyword>) (root, query, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);
+            return query.where(new Predicate[]{predicate}).getRestriction();
+        }, pageable);
+        return MSPage.newInstance(page);
     }
 }

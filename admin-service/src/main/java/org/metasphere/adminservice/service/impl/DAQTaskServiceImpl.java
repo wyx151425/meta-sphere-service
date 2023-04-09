@@ -3,11 +3,12 @@ package org.metasphere.adminservice.service.impl;
 import org.metasphere.adminservice.constant.MSConstant;
 import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
 import org.metasphere.adminservice.model.pojo.DAQTask;
+import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
 import org.metasphere.adminservice.repository.DAQTaskRepository;
 import org.metasphere.adminservice.service.DAQTaskKeywordService;
 import org.metasphere.adminservice.service.DAQTaskService;
+import org.metasphere.adminservice.service.DAQTaskSpiderService;
 import org.metasphere.adminservice.service.ScrapydService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,9 @@ public class DAQTaskServiceImpl implements DAQTaskService {
     private DAQTaskKeywordService daqTaskKeywordService;
 
     @Autowired
+    private DAQTaskSpiderService daqTaskSpiderService;
+
+    @Autowired
     private ScrapydService scrapydService;
 
     @Autowired
@@ -49,7 +53,7 @@ public class DAQTaskServiceImpl implements DAQTaskService {
     public void createDAQTask(DAQTask daqTask) {
         String uuid = UUID.randomUUID().toString();
         daqTask.setCode(uuid);
-        daqTask.setStage(MSConstant.DAQProject.Stage.CREATED);
+        daqTask.setStage(MSConstant.DAQTask.Stage.CREATED);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -59,7 +63,7 @@ public class DAQTaskServiceImpl implements DAQTaskService {
     public void startDataAcquiring(Long daqProjectId) {
         DAQTask daqTask = daqTaskRepository.findById(daqProjectId).orElseThrow(MSException::getDataNotFoundException);
 
-        List<DAQTaskKeyword> daqTaskKeywords = daqTaskKeywordService.findDAQKeywordsByDAQProject(daqProjectId);
+        List<DAQTaskKeyword> daqTaskKeywords = daqTaskKeywordService.findDAQTaskKeywordsByDAQTask(daqProjectId);
 
 
         String daqUrls = daqTask.getName() + ":" + daqTask.getCode() + ":daqUrls";
@@ -69,13 +73,8 @@ public class DAQTaskServiceImpl implements DAQTaskService {
     }
 
     @Override
-    public DAQTask findDAQTaskById(Long id) {
-        return daqTaskRepository.findById(id).orElseThrow(MSException::getDataNotFoundException);
-    }
-
-    @Override
     public MSPage<DAQTask> findDAQTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdTime");
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         Page<DAQTask> page;
         if (null != stage) {
@@ -88,5 +87,18 @@ public class DAQTaskServiceImpl implements DAQTaskService {
             page = daqTaskRepository.findAll(pageable);
         }
         return MSPage.newInstance(page);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addDAQTaskKeywords(Long daqTaskId, List<String> keywords) {
+        DAQTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
+        daqTaskKeywordService.addDAQTaskKeywords(daqTask, keywords);
+    }
+
+    @Override
+    public void addDAQTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
+        DAQTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
+        daqTaskSpiderService.addDAQTaskSpiders(daqTask, daqSpiderIds);
     }
 }

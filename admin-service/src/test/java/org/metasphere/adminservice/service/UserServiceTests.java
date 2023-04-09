@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @Author: WangZhenqi
@@ -39,5 +42,19 @@ public class UserServiceTests {
     @Test
     void testUUID() {
         System.out.println(UUID.randomUUID().toString().length());
+
+        List<Long> toAdd = new ArrayList<>();
+        toAdd.add(1L);
+        toAdd.add(2L);
+        toAdd.add(3L);
+
+        List<Long> old = new ArrayList<>();
+        old.add(1L);
+        old.add(4L);
+
+        List<Long> c = old.stream()
+                .filter(id -> !toAdd.contains(id))
+                .collect(Collectors.toList());
+        System.out.println(c);
     }
 }

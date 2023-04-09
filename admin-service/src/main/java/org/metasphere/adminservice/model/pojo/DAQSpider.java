@@ -24,10 +24,6 @@ public class DAQSpider extends MSEntity {
      * 爬虫的Cookie信息
      */
     private String cookie;
-    /**
-     * 爬虫用于检索的URL
-     */
-    private String searchUrl;
 
     public DAQSpider() {
     }
@@ -54,13 +50,5 @@ public class DAQSpider extends MSEntity {
 
     public void setCookie(String cookie) {
         this.cookie = cookie;
-    }
-
-    public String getSearchUrl() {
-        return searchUrl;
-    }
-
-    public void setSearchUrl(String searchUrl) {
-        this.searchUrl = searchUrl;
     }
 }

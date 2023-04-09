@@ -67,7 +67,7 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public Integer addDAQProject(String host, Integer port, String projectName, String version, String eggFileName) {
+    public Integer addDAQProject(String host, Integer port, String taskName, String version, String eggFileName) {
         // curl http://127.0.0.1:6800/addversion.json -F project=ms -F version=v1 -F egg=@ms.egg
         // {"status": "ok", "spiders": 0}
         String url = String.format(MSConstant.Scrapyd.URLTemplate.ADD_DAQ_PROJECT, host, port);
@@ -76,7 +76,7 @@ public class ScrapydServiceImpl implements ScrapydService {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-        formData.add(MSConstant.Scrapyd.ReqParam.PROJECT, projectName);
+        formData.add(MSConstant.Scrapyd.ReqParam.PROJECT, taskName);
         formData.add(MSConstant.Scrapyd.ReqParam.VERSION, version);
 
         String eggFilePath = String.format("eggs/%s", eggFileName);
@@ -95,7 +95,7 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public String scheduleDAQSpider(String host, Integer port, String projectName, String spiderName) {
+    public String scheduleDAQSpider(String host, Integer port, String taskName, String spiderName, String taskCode) {
         // curl http://127.0.0.1:6800/schedule.json -d project=ms -d spider=weibo
         // {"status": "ok", "jobid": "6487ec79947edab326d6db28a2d86511e8247444"}
         String url = String.format(MSConstant.Scrapyd.URLTemplate.SCHEDULE_DAQ_SPIDER, host, port);
@@ -104,8 +104,9 @@ public class ScrapydServiceImpl implements ScrapydService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add(MSConstant.Scrapyd.ReqParam.PROJECT, projectName);
+        formData.add(MSConstant.Scrapyd.ReqParam.PROJECT, taskName);
         formData.add(MSConstant.Scrapyd.ReqParam.SPIDER, spiderName);
+        formData.add(MSConstant.Scrapyd.ReqParam.TASK_CODE, taskCode);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
 
@@ -119,7 +120,7 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public String cancelDAQSpider(String host, Integer port, String projectName, String jobId) {
+    public String cancelDAQSpider(String host, Integer port, String taskName, String jobId) {
         // curl http://127.0.0.1:6800/cancel.json -d project=ms -d job=6487ec79947edab326d6db28a2d86511e8247444
         // {"status": "ok", "prevstate": "running"}
         String url = String.format(MSConstant.Scrapyd.URLTemplate.CANCEL_DAQ_SPIDER, host, port);
@@ -128,7 +129,7 @@ public class ScrapydServiceImpl implements ScrapydService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add(MSConstant.Scrapyd.ReqParam.PROJECT, projectName);
+        formData.add(MSConstant.Scrapyd.ReqParam.PROJECT, taskName);
         formData.add(MSConstant.Scrapyd.ReqParam.JOB, jobId);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
@@ -158,10 +159,10 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public List<String> findAllVersionsByDAQProject(String host, Integer port, String projectName) {
+    public List<String> findAllVersionsByDAQProject(String host, Integer port, String taskName) {
         // curl http://127.0.0.1:6800/listversions.json?project=ms
         // {"status": "ok", "versions": ["v1", "v2"]}
-        String url = String.format(MSConstant.Scrapyd.URLTemplate.QUERY_DAQ_PROJECT_VERSIONS, host, port, projectName);
+        String url = String.format(MSConstant.Scrapyd.URLTemplate.QUERY_DAQ_PROJECT_VERSIONS, host, port, taskName);
 
         ScrapydVersionsResp resp = restTemplate.getForObject(url, ScrapydVersionsResp.class);
 
@@ -173,10 +174,10 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public List<String> findAllDAQSpidersByDAQProject(String host, Integer port, String projectName) {
+    public List<String> findAllDAQSpidersByDAQProject(String host, Integer port, String taskName) {
         // curl http://120.27.34.25:6800/listspiders.json?project=ms
         // {"status": "ok", "spiders": ["weibo"]}
-        String url = String.format(MSConstant.Scrapyd.URLTemplate.QUERY_DAQ_PROJECT_SPIDERS, host, port, projectName);
+        String url = String.format(MSConstant.Scrapyd.URLTemplate.QUERY_DAQ_PROJECT_SPIDERS, host, port, taskName);
 
         ScrapydSpidersResp resp = restTemplate.getForObject(url, ScrapydSpidersResp.class);
 
@@ -188,12 +189,12 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public DAQJobs findAllDAQJobs(String host, Integer port, String projectName) {
+    public DAQJobs findAllDAQJobs(String host, Integer port, String taskName) {
         // curl http://120.27.34.25:6800/listjobs.json?project=weibo
         //{"status": "ok", "pending": [{"id": "", "spider": ""}],
         // "running": [{"id": "", "spider": "", "start_time": ""}],
         // "finished": [{"id": "", "spider": "", "start_time": "", "end_time": ""}]}
-        String url = String.format(MSConstant.Scrapyd.URLTemplate.QUERY_DAQ_PROJECT_JOBS, host, port, projectName);
+        String url = String.format(MSConstant.Scrapyd.URLTemplate.QUERY_DAQ_PROJECT_JOBS, host, port, taskName);
 
         ScrapydJobsResp resp = restTemplate.getForObject(url, ScrapydJobsResp.class);
 
@@ -237,7 +238,7 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public void deleteDAQProjectByVersion(String host, Integer port, String projectName, String version) {
+    public void deleteDAQProjectByVersion(String host, Integer port, String taskName, String version) {
         // curl http://127.0.0.1:6800/delversion.json -d project=ms -d version=v1
         // {"status": "ok"}
         String url = String.format(MSConstant.Scrapyd.URLTemplate.DELETE_DAQ_PROJECT_VERSION, host, port);
@@ -246,7 +247,7 @@ public class ScrapydServiceImpl implements ScrapydService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.set(MSConstant.Scrapyd.ReqParam.PROJECT, projectName);
+        formData.set(MSConstant.Scrapyd.ReqParam.PROJECT, taskName);
         formData.set(MSConstant.Scrapyd.ReqParam.VERSION, version);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
@@ -259,7 +260,7 @@ public class ScrapydServiceImpl implements ScrapydService {
     }
 
     @Override
-    public void deleteDAQProject(String host, Integer port, String projectName) {
+    public void deleteDAQProject(String host, Integer port, String taskName) {
         // curl http://127.0.0.1:6800/delproject.json -d project=ms
         // {"status": "ok"}
         String url = String.format(MSConstant.Scrapyd.URLTemplate.DELETE_DAQ_PROJECT, host, port);
@@ -268,7 +269,7 @@ public class ScrapydServiceImpl implements ScrapydService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.set(MSConstant.Scrapyd.ReqParam.PROJECT, projectName);
+        formData.set(MSConstant.Scrapyd.ReqParam.PROJECT, taskName);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
 

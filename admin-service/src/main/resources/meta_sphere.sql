@@ -91,8 +91,7 @@ CREATE TABLE IF NOT EXISTS ms_daq_spider
     `update_at`  DATETIME,
     `name`       VARCHAR(32),
     `code`       VARCHAR(32),
-    `cookie`     TEXT,
-    `search_url` VARCHAR(128)
+    `cookie`     TEXT
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_task_spider

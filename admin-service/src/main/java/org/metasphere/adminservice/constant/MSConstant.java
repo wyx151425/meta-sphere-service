@@ -28,6 +28,7 @@ public class MSConstant {
             public static final String SPIDER = "spider";
             public static final String EGG = "egg";
             public static final String JOB = "job";
+            public static final String TASK_CODE = "task_code";
         }
 
         public static class RespParam {
@@ -55,7 +56,7 @@ public class MSConstant {
         }
     }
 
-    public static class DAQProject {
+    public static class DAQTask {
         public static class Stage {
             public static final int CREATED = 11;
             public static final int DATA_TO_ACQUIRE = 21;
@@ -67,6 +68,16 @@ public class MSConstant {
             public static final int DATA_TO_COUNT = 51;
             public static final int DATA_COUNTING = 52;
             public static final int FINISHED = 61;
+        }
+    }
+
+    public static class DAQTaskSpider {
+        public static class SpiderStatus {
+            public static final int DISABLED = 0;
+            public static final int NEW = 1;
+            public static final int ENABLED = 2;
+            public static final int RUNNING = 3;
+            public static final int FINISHED = 4;
         }
     }
 }
