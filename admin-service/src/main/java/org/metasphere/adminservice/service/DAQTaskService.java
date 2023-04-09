@@ -2,6 +2,8 @@ package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.DAQTask;
+import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
+import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
 
 import java.util.List;
 
@@ -37,15 +39,45 @@ public interface DAQTaskService {
 
     /**
      * 添加数据采集任务关键词
+     *
      * @param daqTaskId 数据采集任务的ID
-     * @param keywords 数据采集任务的关键词
+     * @param keywords  数据采集任务的关键词
      */
     void addDAQTaskKeywords(Long daqTaskId, List<String> keywords);
 
     /**
      * 添加数据采集任务爬虫
-     * @param daqTaskId 数据采集任务ID
+     *
+     * @param daqTaskId    数据采集任务ID
      * @param daqSpiderIds 爬虫的ID
      */
     void addDAQTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds);
+
+    /**
+     * 根据数据采集任务获取数据采集任务爬虫
+     *
+     * @param daqTaskId 数据采集任务ID
+     * @return 数据采集任务爬虫
+     */
+    List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId);
+
+    /**
+     * 分页获取数据采集任务下的爬虫
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @param pageNum   分页页码
+     * @param pageSize  单页数据量
+     * @return 数据采集任务爬虫
+     */
+    MSPage<DAQTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 分页获取数据采集任务下的关键词
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @param pageNum   分页页码
+     * @param pageSize  单页数据量
+     * @return 数据采集任务关键词
+     */
+    MSPage<DAQTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

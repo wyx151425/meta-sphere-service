@@ -30,13 +30,4 @@ public interface DAQTaskSpiderRepository extends JpaRepository<DAQTaskSpider, Lo
      * @return 数据采集任务爬虫
      */
     List<DAQTaskSpider> findAllByTaskId(Long daqTaskId);
-
-    /**
-     * 根据数据采集任务ID和爬虫ID获取数据采集任务爬虫
-     *
-     * @param daqTaskId    数据采集任务ID
-     * @param daqSpiderIds 爬虫ID
-     * @return 数据采集任务爬虫
-     */
-    List<DAQTaskSpider> findAllByTaskIdAndSpiderIdIsIn(Long daqTaskId, List<Long> daqSpiderIds);
 }

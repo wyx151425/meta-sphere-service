@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: WangZhenqi
@@ -56,7 +57,7 @@ public class DAQTaskSpiderServiceImpl implements DAQTaskSpiderService {
     }
 
     @Override
-    public List<DAQTaskSpider> findAllDAQTaskSpidersByDAQTask(Long daqTaskId) {
+    public List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId) {
         return daqTaskSpiderRepository.findAllByTaskId(daqTaskId);
     }
 

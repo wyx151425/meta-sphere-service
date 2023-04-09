@@ -2,6 +2,7 @@ package org.metasphere.adminservice.controller;
 
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.DAQTask;
+import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
 import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
 import org.metasphere.adminservice.service.DAQTaskKeywordService;
@@ -23,18 +24,14 @@ import java.util.List;
 public class DAQTaskController {
 
     private final DAQTaskService daqTaskService;
-    private final DAQTaskKeywordService daqTaskKeywordService;
-    private final DAQTaskSpiderService daqTaskSpiderService;
 
     @Autowired
     public DAQTaskController(DAQTaskService daqTaskService, DAQTaskKeywordService daqTaskKeywordService, DAQTaskSpiderService daqTaskSpiderService) {
         this.daqTaskService = daqTaskService;
-        this.daqTaskKeywordService = daqTaskKeywordService;
-        this.daqTaskSpiderService = daqTaskSpiderService;
     }
 
     @PostMapping(value = "")
-    MSResponse<DAQTask> actionCreateDAQProject(@RequestBody DAQTask daqTask) {
+    MSResponse<DAQTask> actionCreateDAQTask(@RequestBody DAQTask daqTask) {
         daqTaskService.createDAQTask(daqTask);
         return MSResponse.success();
     }
@@ -49,15 +46,6 @@ public class DAQTaskController {
         return MSResponse.success(page);
     }
 
-    @PostMapping(value = "{daqTaskId}/daqTaskKeywords/queryAll")
-    MSResponse<DAQTask> actionAddDAQTaskKeywords(
-            @PathVariable(value = "daqTaskId") Long daqTaskId,
-            @RequestBody List<String> keywords
-    ) {
-        daqTaskService.addDAQTaskKeywords(daqTaskId, keywords);
-        return MSResponse.success();
-    }
-
     @PostMapping(value = "{daqTaskId}/daqTaskSpiders")
     MSResponse<DAQTask> actionAddDAQTaskSpiders(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
@@ -69,17 +57,36 @@ public class DAQTaskController {
 
     @GetMapping(value = "{daqTaskId}/daqTaskSpiders/queryAll")
     MSResponse<List<DAQTaskSpider>> actionQueryDAQTaskSpidersByDAQTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        List<DAQTaskSpider> daqTaskSpiders = daqTaskSpiderService.findAllDAQTaskSpidersByDAQTask(daqTaskId);
+        List<DAQTaskSpider> daqTaskSpiders = daqTaskService.findDAQTaskSpidersByDAQTask(daqTaskId);
         return MSResponse.success(daqTaskSpiders);
     }
 
     @GetMapping(value = "{daqTaskId}/daqTaskSpiders/queryByPagination")
-    MSResponse<List<DAQTaskSpider>> actionQueryDAQTaskSpidersByDAQTask(
+    MSResponse<MSPage<DAQTaskSpider>> actionQueryDAQTaskSpidersByDAQTaskAndPagination(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        List<DAQTaskSpider> daqTaskSpiders = daqTaskSpiderService.findAllDAQTaskSpidersByDAQTask(daqTaskId);
+        MSPage<DAQTaskSpider> daqTaskSpiders = daqTaskService.findDAQTaskSpidersByDAQTaskAndPagination(daqTaskId, pageNum, pageSize);
         return MSResponse.success(daqTaskSpiders);
+    }
+
+    @PostMapping(value = "{daqTaskId}/daqTaskKeywords")
+    MSResponse<DAQTask> actionAddDAQTaskKeywords(
+            @PathVariable(value = "daqTaskId") Long daqTaskId,
+            @RequestBody List<String> keywords
+    ) {
+        daqTaskService.addDAQTaskKeywords(daqTaskId, keywords);
+        return MSResponse.success();
+    }
+
+    @PostMapping(value = "{daqTaskId}/daqTaskKeywords/queryByPagination")
+    MSResponse<MSPage<DAQTaskKeyword>> actionQueryDAQTaskKeywordsByDAQTaskAndPagination(
+            @PathVariable(value = "daqTaskId") Long daqTaskId,
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize
+    ) {
+        MSPage<DAQTaskKeyword> page = daqTaskService.findDAQTaskKeywordsByDAQTaskAndPagination(daqTaskId, pageNum, pageSize);
+        return MSResponse.success(page);
     }
 }

@@ -5,24 +5,25 @@ import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.DAQTask;
 import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
+import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
 import org.metasphere.adminservice.repository.DAQTaskRepository;
 import org.metasphere.adminservice.service.DAQTaskKeywordService;
 import org.metasphere.adminservice.service.DAQTaskService;
 import org.metasphere.adminservice.service.DAQTaskSpiderService;
-import org.metasphere.adminservice.service.ScrapydService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @Author: WangZhenqi
@@ -41,12 +42,6 @@ public class DAQTaskServiceImpl implements DAQTaskService {
 
     @Autowired
     private DAQTaskSpiderService daqTaskSpiderService;
-
-    @Autowired
-    private ScrapydService scrapydService;
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -90,6 +85,22 @@ public class DAQTaskServiceImpl implements DAQTaskService {
     }
 
     @Override
+    public void addDAQTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
+        DAQTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
+        daqTaskSpiderService.addDAQTaskSpiders(daqTask, daqSpiderIds);
+    }
+
+    @Override
+    public List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId) {
+        return daqTaskSpiderService.findDAQTaskSpidersByDAQTask(daqTaskId);
+    }
+
+    @Override
+    public MSPage<DAQTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        return daqTaskSpiderService.findDAQTaskSpidersByDAQTaskAndPagination(daqTaskId, pageNum, pageSize);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void addDAQTaskKeywords(Long daqTaskId, List<String> keywords) {
         DAQTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
@@ -97,8 +108,7 @@ public class DAQTaskServiceImpl implements DAQTaskService {
     }
 
     @Override
-    public void addDAQTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
-        DAQTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
-        daqTaskSpiderService.addDAQTaskSpiders(daqTask, daqSpiderIds);
+    public MSPage<DAQTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        return daqTaskKeywordService.findDAQTaskKeywordsByDAQTaskAndPagination(daqTaskId, pageNum, pageSize);
     }
 }

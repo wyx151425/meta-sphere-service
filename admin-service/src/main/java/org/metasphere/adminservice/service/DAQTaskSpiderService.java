@@ -27,7 +27,7 @@ public interface DAQTaskSpiderService {
      * @param daqTaskId 数据采集任务ID
      * @return 数据采集任务爬虫
      */
-    List<DAQTaskSpider> findAllDAQTaskSpidersByDAQTask(Long daqTaskId);
+    List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的爬虫
