@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.repository;
 
-import org.metasphere.adminservice.model.pojo.DAQTask;
+import org.metasphere.adminservice.model.pojo.DaqTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  * @Modified By:
  */
 @Repository(value = "daqTaskRepository")
-public interface DAQTaskRepository extends JpaRepository<DAQTask, Long>, JpaSpecificationExecutor<DAQTask> {
+public interface DAQTaskRepository extends JpaRepository<DaqTask, Long>, JpaSpecificationExecutor<DaqTask> {
 
 }

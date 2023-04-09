@@ -18,4 +18,6 @@ public class MSStatusCode {
     public static final int USERNAME_OR_PASSWORD_ERROR = 20004;
 
     public static final int DATA_NOT_FOUND = 30001;
+
+    public static final int DAQ_TASK_STAGE_ERROR = 41001;
 }

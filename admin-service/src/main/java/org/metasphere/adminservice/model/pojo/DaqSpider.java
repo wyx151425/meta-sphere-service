@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ms_daq_spider")
-public class DAQSpider extends MSEntity {
+public class DaqSpider extends MSEntity {
     /**
      * 爬虫的名称
      */
@@ -25,7 +25,7 @@ public class DAQSpider extends MSEntity {
      */
     private String cookie;
 
-    public DAQSpider() {
+    public DaqSpider() {
     }
 
     public String getName() {

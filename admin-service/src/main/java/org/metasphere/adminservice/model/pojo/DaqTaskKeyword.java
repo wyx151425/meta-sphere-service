@@ -1,5 +1,7 @@
 package org.metasphere.adminservice.model.pojo;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -11,7 +13,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ms_daq_task_keyword")
-public class DAQTaskKeyword extends MSEntity {
+@Where(clause = "status = 1")
+public class DaqTaskKeyword extends MSEntity {
     /**
      * 数据采集项目的ID
      */
@@ -29,7 +32,7 @@ public class DAQTaskKeyword extends MSEntity {
      */
     private String keyword;
 
-    public DAQTaskKeyword() {
+    public DaqTaskKeyword() {
     }
 
     public Long getTaskId() {

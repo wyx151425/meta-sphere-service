@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.controller;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQSpider;
+import org.metasphere.adminservice.model.pojo.DaqSpider;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
-import org.metasphere.adminservice.service.DAQSpiderService;
+import org.metasphere.adminservice.service.DaqSpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,29 +17,29 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "daqSpiders")
-public class DAQSpiderController {
+public class DaqSpiderController {
 
     @Autowired
-    private DAQSpiderService daqSpiderService;
+    private DaqSpiderService daqSpiderService;
 
     @PostMapping(value = "")
-    public MSResponse<DAQSpider> actionSaveDAQSpider(@RequestBody DAQSpider daqSpider) {
+    public MSResponse<DaqSpider> actionSaveDAQSpider(@RequestBody DaqSpider daqSpider) {
         daqSpiderService.addDAQSpider(daqSpider);
         return MSResponse.success();
     }
 
     @GetMapping(value = "queryAll")
-    public MSResponse<List<DAQSpider>> actionQueryDAQSpiders() {
-        List<DAQSpider> daqSpiders = daqSpiderService.findDAQSpiders();
+    public MSResponse<List<DaqSpider>> actionQueryDAQSpiders() {
+        List<DaqSpider> daqSpiders = daqSpiderService.findDAQSpiders();
         return MSResponse.success(daqSpiders);
     }
 
     @GetMapping(value = "queryByPagination")
-    public MSResponse<MSPage<DAQSpider>> actionQueryDAQSpidersByPagination(
+    public MSResponse<MSPage<DaqSpider>> actionQueryDAQSpidersByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MSPage<DAQSpider> page = daqSpiderService.findDAQSpidersByPagination(pageNum, pageSize);
+        MSPage<DaqSpider> page = daqSpiderService.findDAQSpidersByPagination(pageNum, pageSize);
         return MSResponse.success(page);
     }
 }

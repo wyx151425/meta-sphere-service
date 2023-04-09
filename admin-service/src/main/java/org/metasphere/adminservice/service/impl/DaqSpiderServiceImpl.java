@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.service.impl;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQSpider;
+import org.metasphere.adminservice.model.pojo.DaqSpider;
 import org.metasphere.adminservice.repository.DAQSpiderRepository;
-import org.metasphere.adminservice.service.DAQSpiderService;
+import org.metasphere.adminservice.service.DaqSpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,14 +19,14 @@ import java.util.List;
  * @Modified By:
  */
 @Service(value = "daqSpiderService")
-public class DAQSpiderServiceImpl implements DAQSpiderService {
+public class DaqSpiderServiceImpl implements DaqSpiderService {
 
     @Autowired
     private DAQSpiderRepository daqSpiderRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDAQSpider(DAQSpider daqSpider) {
+    public void addDAQSpider(DaqSpider daqSpider) {
         daqSpiderRepository.save(daqSpider);
     }
 
@@ -37,19 +37,19 @@ public class DAQSpiderServiceImpl implements DAQSpiderService {
     }
 
     @Override
-    public List<DAQSpider> findDAQSpiders() {
+    public List<DaqSpider> findDAQSpiders() {
         return daqSpiderRepository.findAll();
     }
 
     @Override
-    public MSPage<DAQSpider> findDAQSpidersByPagination(Integer pageNum, Integer pageSize) {
+    public MSPage<DaqSpider> findDAQSpidersByPagination(Integer pageNum, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);
-        Page<DAQSpider> page = daqSpiderRepository.findAll(pageRequest);
+        Page<DaqSpider> page = daqSpiderRepository.findAll(pageRequest);
         return MSPage.newInstance(page);
     }
 
     @Override
-    public List<DAQSpider> findDAQSpidersByIds(List<Long> ids) {
+    public List<DaqSpider> findDAQSpidersByIds(List<Long> ids) {
         return daqSpiderRepository.findAllById(ids);
     }
 }

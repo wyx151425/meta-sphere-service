@@ -2,12 +2,12 @@ package org.metasphere.adminservice.service.impl;
 
 import org.metasphere.adminservice.constant.MSConstant;
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQSpider;
-import org.metasphere.adminservice.model.pojo.DAQTask;
-import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
+import org.metasphere.adminservice.model.pojo.DaqSpider;
+import org.metasphere.adminservice.model.pojo.DaqTask;
+import org.metasphere.adminservice.model.pojo.DaqTaskSpider;
 import org.metasphere.adminservice.repository.DAQTaskSpiderRepository;
-import org.metasphere.adminservice.service.DAQSpiderService;
-import org.metasphere.adminservice.service.DAQTaskSpiderService;
+import org.metasphere.adminservice.service.DaqSpiderService;
+import org.metasphere.adminservice.service.DaqTaskSpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,24 +27,24 @@ import java.util.List;
  * @Modified By:
  */
 @Service(value = "daqTaskSpiderService")
-public class DAQTaskSpiderServiceImpl implements DAQTaskSpiderService {
+public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
 
     @Autowired
     private DAQTaskSpiderRepository daqTaskSpiderRepository;
 
     @Autowired
-    private DAQSpiderService daqSpiderService;
+    private DaqSpiderService daqSpiderService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDAQTaskSpiders(DAQTask daqTask, List<Long> daqSpiderIds) {
+    public void addDAQTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds) {
         daqTaskSpiderRepository.deleteAllByTaskId(daqTask.getId());
 
-        List<DAQSpider> daqSpiders = daqSpiderService.findDAQSpidersByIds(daqSpiderIds);
+        List<DaqSpider> daqSpiders = daqSpiderService.findDAQSpidersByIds(daqSpiderIds);
 
-        List<DAQTaskSpider> taskSpiders = new ArrayList<>();
-        for (DAQSpider daqSpider : daqSpiders) {
-            DAQTaskSpider taskSpider = new DAQTaskSpider();
+        List<DaqTaskSpider> taskSpiders = new ArrayList<>();
+        for (DaqSpider daqSpider : daqSpiders) {
+            DaqTaskSpider taskSpider = new DaqTaskSpider();
             taskSpider.setTaskId(daqTask.getId());
             taskSpider.setTaskName(daqTask.getName());
             taskSpider.setTaskCode(daqTask.getCode());
@@ -57,14 +57,14 @@ public class DAQTaskSpiderServiceImpl implements DAQTaskSpiderService {
     }
 
     @Override
-    public List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId) {
+    public List<DaqTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId) {
         return daqTaskSpiderRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
-    public MSPage<DAQTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MSPage<DaqTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
-        Page<DAQTaskSpider> page = daqTaskSpiderRepository.findAll((Specification<DAQTaskSpider>) (root, query, criteriaBuilder) -> {
+        Page<DaqTaskSpider> page = daqTaskSpiderRepository.findAll((Specification<DaqTaskSpider>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);

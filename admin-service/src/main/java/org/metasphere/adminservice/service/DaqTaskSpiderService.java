@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQTask;
-import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
+import org.metasphere.adminservice.model.pojo.DaqTask;
+import org.metasphere.adminservice.model.pojo.DaqTaskSpider;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ import java.util.List;
  * @Date: Created in 2023-04-07 21:19
  * @Modified By:
  */
-public interface DAQTaskSpiderService {
+public interface DaqTaskSpiderService {
     /**
      * 添加数据采集任务爬虫
      *
      * @param daqTask      数据采集任务
      * @param daqSpiderIds 爬虫ID
      */
-    void addDAQTaskSpiders(DAQTask daqTask, List<Long> daqSpiderIds);
+    void addDAQTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds);
 
     /**
      * 根据数据采集任务获取数据采集任务爬虫
@@ -27,7 +27,7 @@ public interface DAQTaskSpiderService {
      * @param daqTaskId 数据采集任务ID
      * @return 数据采集任务爬虫
      */
-    List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId);
+    List<DaqTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的爬虫
@@ -37,5 +37,5 @@ public interface DAQTaskSpiderService {
      * @param pageSize  单页数据量
      * @return 数据采集任务爬虫
      */
-    MSPage<DAQTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

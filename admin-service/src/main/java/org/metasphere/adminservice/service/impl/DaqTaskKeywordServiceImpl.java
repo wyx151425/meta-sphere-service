@@ -1,10 +1,12 @@
 package org.metasphere.adminservice.service.impl;
 
+import org.metasphere.adminservice.constant.MSConstant;
+import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQTask;
-import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
+import org.metasphere.adminservice.model.pojo.DaqTask;
+import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
 import org.metasphere.adminservice.repository.DAQTaskKeywordRepository;
-import org.metasphere.adminservice.service.DAQTaskKeywordService;
+import org.metasphere.adminservice.service.DaqTaskKeywordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,18 +29,18 @@ import java.util.Set;
  * @Modified By:
  */
 @Service(value = "daqTaskKeywordService")
-public class DAQTaskKeywordServiceImpl implements DAQTaskKeywordService {
+public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
 
     @Autowired
     private DAQTaskKeywordRepository daqTaskKeywordRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDAQTaskKeywords(DAQTask daqTask, List<String> keywords) {
+    public void addDAQTaskKeywords(DaqTask daqTask, List<String> keywords) {
         Set<String> keywordSet = new HashSet<>(keywords);
-        List<DAQTaskKeyword> daqTaskKeywords = new ArrayList<>(keywordSet.size());
+        List<DaqTaskKeyword> daqTaskKeywords = new ArrayList<>(keywordSet.size());
         for (String keyword : keywordSet) {
-            DAQTaskKeyword daqTaskKeyword = new DAQTaskKeyword();
+            DaqTaskKeyword daqTaskKeyword = new DaqTaskKeyword();
             daqTaskKeyword.setTaskId(daqTask.getId());
             daqTaskKeyword.setTaskName(daqTask.getName());
             daqTaskKeyword.setTaskCode(daqTask.getCode());
@@ -51,7 +54,10 @@ public class DAQTaskKeywordServiceImpl implements DAQTaskKeywordService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDAQTaskKeyword(Long id) {
-        daqTaskKeywordRepository.deleteById(id);
+        DaqTaskKeyword daqTaskKeyword = daqTaskKeywordRepository.findById(id).orElseThrow(MSException::getDataNotFoundException);
+        daqTaskKeyword.setStatus(MSConstant.MSEntity.Status.DISABLED);
+        daqTaskKeyword.setUpdateAt(LocalDateTime.now());
+        daqTaskKeywordRepository.save(daqTaskKeyword);
     }
 
     @Override
@@ -61,14 +67,14 @@ public class DAQTaskKeywordServiceImpl implements DAQTaskKeywordService {
     }
 
     @Override
-    public List<DAQTaskKeyword> findDAQTaskKeywordsByDAQTask(Long daqTaskId) {
+    public List<DaqTaskKeyword> findDAQTaskKeywordsByDAQTask(Long daqTaskId) {
         return daqTaskKeywordRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
-    public MSPage<DAQTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MSPage<DaqTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
-        Page<DAQTaskKeyword> page = daqTaskKeywordRepository.findAll((Specification<DAQTaskKeyword>) (root, query, criteriaBuilder) -> {
+        Page<DaqTaskKeyword> page = daqTaskKeywordRepository.findAll((Specification<DaqTaskKeyword>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);

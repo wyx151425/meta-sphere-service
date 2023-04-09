@@ -1,7 +1,6 @@
 package org.metasphere.adminservice.controller;
 
-import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
-import org.metasphere.adminservice.service.DAQTaskSpiderService;
+import org.metasphere.adminservice.service.DaqTaskSpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "daqTaskSpiders")
-public class DAQTaskSpiderController {
+public class DaqTaskSpiderController {
 
     @Autowired
-    private DAQTaskSpiderService daqTaskSpiderService;
+    private DaqTaskSpiderService daqTaskSpiderService;
 }

@@ -8,11 +8,11 @@ package org.metasphere.adminservice.constant;
  */
 public class MSConstant {
 
-    public static class MetaSphereEntity {
+    public static class MSEntity {
 
         public static class Status {
-            private static final int ENABLE = 1;
-            private static final int DISABLE = 0;
+            public static final int ENABLED = 1;
+            public static final int DISABLED = 0;
         }
     }
 

@@ -40,7 +40,7 @@ public class MSPage<T> {
     Long totalData;
 
     public MSPage(Page<T> page) {
-        this.pageNum = page.getNumber();
+        this.pageNum = page.getNumber() + 1;
         this.pageSize = page.getSize();
         this.data = page.getContent();
         this.totalPages = page.getTotalPages();

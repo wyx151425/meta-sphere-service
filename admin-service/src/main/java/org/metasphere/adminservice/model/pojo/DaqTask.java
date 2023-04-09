@@ -1,5 +1,7 @@
 package org.metasphere.adminservice.model.pojo;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -12,7 +14,8 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "ms_daq_task")
-public class DAQTask extends MSEntity {
+@Where(clause = "status = 1")
+public class DaqTask extends MSEntity {
     /**
      * 项目名称
      */
@@ -34,7 +37,7 @@ public class DAQTask extends MSEntity {
      */
     private LocalDateTime finishedAt;
 
-    public DAQTask() {
+    public DaqTask() {
     }
 
     public String getName() {

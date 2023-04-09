@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQTask;
-import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
-import org.metasphere.adminservice.model.pojo.DAQTaskSpider;
+import org.metasphere.adminservice.model.pojo.DaqTask;
+import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
+import org.metasphere.adminservice.model.pojo.DaqTaskSpider;
 
 import java.util.List;
 
@@ -13,13 +13,27 @@ import java.util.List;
  * @Date: Created in 2023-02-21 16:57
  * @Modified By:
  */
-public interface DAQTaskService {
+public interface DaqTaskService {
     /**
      * 创建数据采集项目
      *
      * @param daqTask 数据采集项目信息
      */
-    void createDAQTask(DAQTask daqTask);
+    void createDaqTask(DaqTask daqTask);
+
+    /**
+     * 删除数据采集任务（在任务启动前允许删除）
+     *
+     * @param id 数据采集任务的ID
+     */
+    void deleteDaqTask(Long id);
+
+    /**
+     * 启动数据采集任务（启动后将创建数据存储空间，并允许配置爬虫和关键词）
+     *
+     * @param id 数据采集任务的ID
+     */
+    void startDaqTask(Long id);
 
     /**
      * 开始数据采集任务
@@ -35,7 +49,7 @@ public interface DAQTaskService {
      * @param pageSize 单页数据量
      * @return 查询到的数据采集项目信息
      */
-    MSPage<DAQTask> findDAQTasksByParams(Integer pageNum, Integer pageSize, Integer stage);
+    MSPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage);
 
     /**
      * 添加数据采集任务关键词
@@ -43,7 +57,7 @@ public interface DAQTaskService {
      * @param daqTaskId 数据采集任务的ID
      * @param keywords  数据采集任务的关键词
      */
-    void addDAQTaskKeywords(Long daqTaskId, List<String> keywords);
+    void addDaqTaskKeywords(Long daqTaskId, List<String> keywords);
 
     /**
      * 添加数据采集任务爬虫
@@ -51,7 +65,7 @@ public interface DAQTaskService {
      * @param daqTaskId    数据采集任务ID
      * @param daqSpiderIds 爬虫的ID
      */
-    void addDAQTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds);
+    void addDaqTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds);
 
     /**
      * 根据数据采集任务获取数据采集任务爬虫
@@ -59,7 +73,7 @@ public interface DAQTaskService {
      * @param daqTaskId 数据采集任务ID
      * @return 数据采集任务爬虫
      */
-    List<DAQTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId);
+    List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的爬虫
@@ -69,7 +83,7 @@ public interface DAQTaskService {
      * @param pageSize  单页数据量
      * @return 数据采集任务爬虫
      */
-    MSPage<DAQTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 
     /**
      * 分页获取数据采集任务下的关键词
@@ -79,5 +93,5 @@ public interface DAQTaskService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MSPage<DAQTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

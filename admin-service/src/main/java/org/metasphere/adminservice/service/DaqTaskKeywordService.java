@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.DAQTask;
-import org.metasphere.adminservice.model.pojo.DAQTaskKeyword;
+import org.metasphere.adminservice.model.pojo.DaqTask;
+import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ import java.util.List;
  * @Date: Created in 2023-04-07 14:46
  * @Modified By:
  */
-public interface DAQTaskKeywordService {
+public interface DaqTaskKeywordService {
     /**
      * 添加数据采集任务的关键词
      *
      * @param daqTask  数据采集任务
      * @param keywords 关键词
      */
-    void addDAQTaskKeywords(DAQTask daqTask, List<String> keywords);
+    void addDAQTaskKeywords(DaqTask daqTask, List<String> keywords);
 
     /**
      * 删除数据采集任务关键词
@@ -41,7 +41,7 @@ public interface DAQTaskKeywordService {
      * @param daqTaskId 数据采集项目的ID
      * @return 数据采集关键词
      */
-    List<DAQTaskKeyword> findDAQTaskKeywordsByDAQTask(Long daqTaskId);
+    List<DaqTaskKeyword> findDAQTaskKeywordsByDAQTask(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的关键词
@@ -51,5 +51,5 @@ public interface DAQTaskKeywordService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MSPage<DAQTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }
