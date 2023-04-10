@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_daq_task_keyword")
 @Where(clause = "status = 1")
-@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+@SQLDelete(sql = "UPDATE ms_daq_task_keyword SET status = 0 WHERE id = ?")
 public class DaqTaskKeyword extends MetaSphereEntity {
     /**
      * 数据采集项目的ID

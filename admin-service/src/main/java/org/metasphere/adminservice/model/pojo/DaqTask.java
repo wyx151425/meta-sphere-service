@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "ms_daq_task")
 @Where(clause = "status = 1")
-@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+@SQLDelete(sql = "UPDATE ms_daq_task SET status = 0 WHERE id = ?")
 public class DaqTask extends MetaSphereEntity {
     /**
      * 项目名称

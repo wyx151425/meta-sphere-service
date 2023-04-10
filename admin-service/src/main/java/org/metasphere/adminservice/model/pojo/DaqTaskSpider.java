@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_daq_task_spider")
 @Where(clause = "status = 1")
-@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+@SQLDelete(sql = "UPDATE ms_daq_task_spider SET status = 0 WHERE id = ?")
 public class DaqTaskSpider extends MetaSphereEntity {
     /**
      * 项目的ID
@@ -37,6 +37,10 @@ public class DaqTaskSpider extends MetaSphereEntity {
      * 爬虫的名称
      */
     private String spiderName;
+    /**
+     * 爬虫的编码
+     */
+    private String spiderCode;
     /**
      * 爬虫的状态（2-调度/1-启用/0-禁用）
      */
@@ -95,6 +99,14 @@ public class DaqTaskSpider extends MetaSphereEntity {
 
     public void setSpiderName(String spiderName) {
         this.spiderName = spiderName;
+    }
+
+    public String getSpiderCode() {
+        return spiderCode;
+    }
+
+    public void setSpiderCode(String spiderCode) {
+        this.spiderCode = spiderCode;
     }
 
     public Integer getSpiderStatus() {

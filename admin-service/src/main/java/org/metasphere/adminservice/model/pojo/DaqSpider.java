@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_daq_spider")
 @Where(clause = "status = 1")
-@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+@SQLDelete(sql = "UPDATE ms_daq_spider SET status = 0 WHERE id = ?")
 public class DaqSpider extends MetaSphereEntity {
     /**
      * 爬虫的名称

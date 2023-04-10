@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_role")
 @Where(clause = "status = 1")
-@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+@SQLDelete(sql = "UPDATE ms_role SET status = 0 WHERE id = ?")
 public class Role extends MetaSphereEntity {
     /**
      * 角色编码
