@@ -31,26 +31,31 @@ public class DaqTaskController {
     }
 
     @PostMapping(value = "")
-    MsResponse<DaqTask> actionCreateDAQTask(@RequestBody DaqTask daqTask) {
+    MsResponse<DaqTask> actionCreateDaqTask(@RequestBody DaqTask daqTask) {
         daqTaskService.createDaqTask(daqTask);
         return MsResponse.success();
     }
 
-    @DeleteMapping(value = "{id}")
-    MsResponse<DaqTask> actionDeleteDAQTask(@PathVariable(value = "id") Long id) {
-        daqTaskService.deleteDaqTask(id);
+    @DeleteMapping(value = "{daqTaskId}")
+    MsResponse<DaqTask> actionDeleteDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.deleteDaqTask(daqTaskId);
         return MsResponse.success();
     }
 
-    @PutMapping(value = "{id}/start")
-    MsResponse<DaqTask> actionStartDAQTask(@PathVariable(value = "id") Long id) {
-        daqTaskService.startDaqTask(id);
+    @PutMapping(value = "{daqTaskId}/start")
+    MsResponse<DaqTask> actionStartDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.startDaqTask(daqTaskId);
         return MsResponse.success();
     }
 
+    @PutMapping(value = "{daqTaskId}/execute")
+    MsResponse<DaqTask> actionExecuteDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.executeDaqTask(daqTaskId);
+        return MsResponse.success();
+    }
 
     @GetMapping(value = "queryByParams")
-    MsResponse<MsPage<DaqTask>> actionQueryDAQTasksByParams(
+    MsResponse<MsPage<DaqTask>> actionQueryDaqTasksByParams(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize,
             @RequestParam(value = "stage", required = false) Integer stage
@@ -59,8 +64,8 @@ public class DaqTaskController {
         return MsResponse.success(page);
     }
 
-    @PostMapping(value = "{daqTaskId}/daqTaskSpiders")
-    MsResponse<DaqTask> actionAddDAQTaskSpiders(
+    @PostMapping(value = "{daqTaskId}/spiders")
+    MsResponse<DaqTask> actionAddDaqTaskSpiders(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
             @RequestBody List<Long> daqSpiderIds
     ) {
@@ -68,24 +73,24 @@ public class DaqTaskController {
         return MsResponse.success();
     }
 
-    @GetMapping(value = "{daqTaskId}/daqTaskSpiders/queryAll")
-    MsResponse<List<DaqTaskSpider>> actionQueryDAQTaskSpidersByDAQTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        List<DaqTaskSpider> daqTaskSpiders = daqTaskService.findDaqTaskSpidersByDaqTask(daqTaskId);
+    @GetMapping(value = "{daqTaskId}/spiders/queryAll")
+    MsResponse<List<DaqTaskSpider>> actionQueryDaqTaskSpiders(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        List<DaqTaskSpider> daqTaskSpiders = daqTaskService.findDaqTaskSpiders(daqTaskId);
         return MsResponse.success(daqTaskSpiders);
     }
 
-    @GetMapping(value = "{daqTaskId}/daqTaskSpiders/queryByPagination")
-    MsResponse<MsPage<DaqTaskSpider>> actionQueryDAQTaskSpidersByDAQTaskAndPagination(
+    @GetMapping(value = "{daqTaskId}/spiders/queryByPagination")
+    MsResponse<MsPage<DaqTaskSpider>> actionQueryDaqTaskSpidersByPagination(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MsPage<DaqTaskSpider> daqTaskSpiders = daqTaskService.findDaqTaskSpidersByDaqTaskAndPagination(daqTaskId, pageNum, pageSize);
+        MsPage<DaqTaskSpider> daqTaskSpiders = daqTaskService.findDaqTaskSpidersByPagination(daqTaskId, pageNum, pageSize);
         return MsResponse.success(daqTaskSpiders);
     }
 
-    @PostMapping(value = "{daqTaskId}/daqTaskKeywords")
-    MsResponse<DaqTask> actionAddDAQTaskKeywords(
+    @PostMapping(value = "{daqTaskId}/keywords")
+    MsResponse<DaqTask> actionAddDaqTaskKeywords(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
             @RequestBody List<String> keywords
     ) {
@@ -93,13 +98,13 @@ public class DaqTaskController {
         return MsResponse.success();
     }
 
-    @GetMapping(value = "{daqTaskId}/daqTaskKeywords/queryByPagination")
-    MsResponse<MsPage<DaqTaskKeyword>> actionQueryDAQTaskKeywordsByDAQTaskAndPagination(
+    @GetMapping(value = "{daqTaskId}/keywords/queryByPagination")
+    MsResponse<MsPage<DaqTaskKeyword>> actionQueryDaqTaskKeywordsByPagination(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MsPage<DaqTaskKeyword> page = daqTaskService.findDaqTaskKeywordsByDaqTaskAndPagination(daqTaskId, pageNum, pageSize);
+        MsPage<DaqTaskKeyword> page = daqTaskService.findDaqTaskKeywordsByPagination(daqTaskId, pageNum, pageSize);
         return MsResponse.success(page);
     }
 }

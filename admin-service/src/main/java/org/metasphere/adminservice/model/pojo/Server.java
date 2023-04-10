@@ -15,20 +15,20 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_server")
 @Where(clause = "status = 1")
-@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+@SQLDelete(sql = "UPDATE ms_server SET status = 0 WHERE id = ?")
 public class Server extends MetaSphereEntity {
     /**
      * 主机IP
      */
-    private String host;
-    /**
-     * 主机端口号
-     */
-    private Integer port;
+    private String ipAddress;
     /**
      * 主机名称
      */
     private String name;
+    /**
+     * 端口号
+     */
+    private Integer port;
     /**
      * 服务器类型
      */
@@ -37,12 +37,12 @@ public class Server extends MetaSphereEntity {
     public Server() {
     }
 
-    public String getHost() {
-        return host;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setIpAddress(String host) {
+        this.ipAddress = host;
     }
 
     public Integer getPort() {

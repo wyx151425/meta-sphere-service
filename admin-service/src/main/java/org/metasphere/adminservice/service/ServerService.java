@@ -19,6 +19,14 @@ public interface ServerService {
     void saveServer(Server server);
 
     /**
+     * 根据ID获取服务器
+     *
+     * @param id 服务器的ID
+     * @return 服务器信息
+     */
+    Server findServerById(Long id);
+
+    /**
      * 分页查询服务器信息
      *
      * @param pageNum  分页页码
@@ -30,17 +38,17 @@ public interface ServerService {
     /**
      * 检查服务器的状态（能否PING通）
      *
-     * @param host 主机号
+     * @param ipAddress 主机IP地址
      * @return 状态代码
      */
-    Integer checkServerStatus(String host);
+    Integer checkServerStatus(String ipAddress);
 
     /**
      * 检查服务器状态（检查IP和端口能否连通）
      *
-     * @param host 主机号
+     * @param ipAddress 主机IP地址
      * @param port 端口号
      * @return 状态代码
      */
-    Integer checkServerStatus(String host, Integer port);
+    Integer checkServerStatus(String ipAddress, Integer port);
 }

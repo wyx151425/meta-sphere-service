@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.*;
@@ -28,13 +27,10 @@ public class ServerServiceImpl implements ServerService {
     @Autowired
     private ServerRepository serverRepository;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveServer(Server server) {
-        Integer status = checkServerStatus(server.getHost());
+        Integer status = checkServerStatus(server.getIpAddress());
         if (1 == status) {
             serverRepository.save(server);
         } else {
@@ -43,16 +39,21 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
+    public Server findServerById(Long id) {
+        return serverRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class, readOnly = true)
     public MsPage<Server> findServersByPagination(Integer pageNum, Integer pageSize) {
-        Page<Server> pageContext = serverRepository.findAll(PageRequest.of(pageNum, pageSize));
+        Page<Server> pageContext = serverRepository.findAll(PageRequest.of(pageNum - 1, pageSize));
         return new MsPage<>(pageContext);
     }
 
     @Override
-    public Integer checkServerStatus(String hostName) {
+    public Integer checkServerStatus(String ipAddress) {
         try {
-            InetAddress host = InetAddress.getByName(hostName);
+            InetAddress host = InetAddress.getByName(ipAddress);
             boolean isReachable = host.isReachable(3000);
             return isReachable ? 1 : 0;
         } catch (IOException e) {
@@ -61,9 +62,9 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
-    public Integer checkServerStatus(String host, Integer port) {
+    public Integer checkServerStatus(String ipAddress, Integer port) {
         try (Socket socket = new Socket()) {
-            InetSocketAddress address = new InetSocketAddress(host, port);
+            InetSocketAddress address = new InetSocketAddress(ipAddress, port);
             socket.connect(address, 3000);
             return 1;
         } catch (IOException e) {
