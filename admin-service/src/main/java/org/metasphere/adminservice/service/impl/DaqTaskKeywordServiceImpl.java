@@ -67,12 +67,12 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
     }
 
     @Override
-    public List<DaqTaskKeyword> findDaqTaskKeywordsByDaqTask(Long daqTaskId) {
+    public List<DaqTaskKeyword> findDaqTaskKeywords(Long daqTaskId) {
         return daqTaskKeywordRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
-    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskKeyword> page = daqTaskKeywordRepository.findAll((Specification<DaqTaskKeyword>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);

@@ -50,6 +50,7 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
             taskSpider.setTaskCode(daqTask.getCode());
             taskSpider.setSpiderId(daqSpider.getId());
             taskSpider.setSpiderName(daqSpider.getName());
+            taskSpider.setSpiderCode(daqSpider.getCode());
             taskSpider.setSpiderStatus(MsConst.DaqTaskSpider.SpiderStatus.NEW);
             taskSpiders.add(taskSpider);
         }
@@ -57,12 +58,18 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
     }
 
     @Override
-    public List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId) {
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDaqTaskSpider(DaqTaskSpider taskSpider) {
+        daqTaskSpiderRepository.save(taskSpider);
+    }
+
+    @Override
+    public List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId) {
         return daqTaskSpiderRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
-    public MsPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskSpider> page = daqTaskSpiderRepository.findAll((Specification<DaqTaskSpider>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);

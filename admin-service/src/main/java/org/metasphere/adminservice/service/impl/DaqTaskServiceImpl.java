@@ -6,18 +6,18 @@ import org.metasphere.adminservice.exception.MsException;
 import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.DaqTask;
 import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
+import org.metasphere.adminservice.model.pojo.DaqTaskServer;
 import org.metasphere.adminservice.model.pojo.DaqTaskSpider;
 import org.metasphere.adminservice.repository.DaqTaskRepository;
-import org.metasphere.adminservice.service.DaqDbService;
-import org.metasphere.adminservice.service.DaqTaskKeywordService;
-import org.metasphere.adminservice.service.DaqTaskService;
-import org.metasphere.adminservice.service.DaqTaskSpiderService;
+import org.metasphere.adminservice.service.*;
+import org.metasphere.adminservice.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +25,7 @@ import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @Author: WangZhenqi
@@ -46,7 +46,16 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private DaqTaskSpiderService daqTaskSpiderService;
 
     @Autowired
+    private DaqTaskServerService daqTaskServerService;
+
+    @Autowired
     private DaqDbService daqDbService;
+
+    @Autowired
+    private ScrapydService scrapydService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -54,12 +63,14 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         daqTask.setStage(MsConst.DaqTask.Stage.CREATED);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
+
+        daqTaskServerService.addDaqTaskServer(daqTask.getId(), 6L);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteDaqTask(Long id) {
-        DaqTask daqTask = daqTaskRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
+    public void deleteDaqTask(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
         if (MsConst.DaqTask.Stage.CREATED != daqTask.getStage()) {
             throw new MsException(MsStatusCode.DAQ_TASK_STAGE_ERROR);
         }
@@ -70,35 +81,64 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void startDaqTask(Long id) {
-        String taskCode = UUID.randomUUID().toString().replace("-", "");
+    public void startDaqTask(Long daqTaskId) {
+        String taskCode = UUIDUtils.getDaqTaskCode();
 
-        DaqTask daqTask = daqTaskRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
+        // 创建任务编号，更新任务运行阶段
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
         daqTask.setCode(taskCode);
-        daqTask.setStatus(MsConst.DaqTask.Stage.DATA_TO_ACQUIRE);
+        daqTask.setStage(MsConst.DaqTask.Stage.CONFIGURING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
+        // 创建Scrapy项目
+        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
+        for (DaqTaskServer taskServer : taskServers) {
+            scrapydService.addScrapyProject(taskServer.getServerHost(), taskServer.getServerPort(), taskCode);
+        }
+
+        // 创建数据存储表
         daqDbService.createDaqDataTable(taskCode);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void startDataAcquiring(Long daqProjectId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqProjectId).orElseThrow(MsException::getDataNotFoundException);
+    public void executeDaqTask(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
 
-        List<DaqTaskKeyword> daqTaskKeywords = daqTaskKeywordService.findDaqTaskKeywordsByDaqTask(daqProjectId);
+        // 将该项目的关键词放入缓存
+        List<DaqTaskKeyword> taskKeywords = daqTaskKeywordService.findDaqTaskKeywords(daqTaskId);
+        List<String> keywords = taskKeywords.stream().map(DaqTaskKeyword::getKeyword).collect(Collectors.toList());
+        String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
+        redisTemplate.opsForList().rightPushAll(keywordsCacheKey, keywords);
 
+        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
 
-        String daqUrls = daqTask.getName() + ":" + daqTask.getCode() + ":daqUrls";
+        // 启动数据采集爬虫
+        List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
 
+        taskSpiders.parallelStream().forEach(taskSpider -> taskServers.forEach(taskServer -> {
+            String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerHost(), taskServer.getServerPort(),
+                    taskSpider.getTaskCode(), taskSpider.getSpiderCode());
+            taskSpider.setJobId(jobId);
+            taskSpider.setUpdateAt(LocalDateTime.now());
+            daqTaskSpiderService.updateDaqTaskSpider(taskSpider);
+        }));
 
-//        redisTemplate.opsForList().leftPush(daqUrls, new ArrayList<>());
+        for (DaqTaskSpider taskSpider : taskSpiders) {
+            for (DaqTaskServer taskServer : taskServers) {
+                String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerHost(), taskServer.getServerPort(),
+                        taskSpider.getTaskCode(), taskSpider.getSpiderCode());
+                taskSpider.setJobId(jobId);
+                taskSpider.setUpdateAt(LocalDateTime.now());
+                daqTaskSpiderService.updateDaqTaskSpider(taskSpider);
+            }
+        }
     }
 
     @Override
     public MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Sort sort = Sort.by(Sort.Direction.DESC, "createAt");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         Page<DaqTask> page;
         if (null != stage) {
@@ -120,13 +160,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     }
 
     @Override
-    public List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId) {
-        return daqTaskSpiderService.findDaqTaskSpidersByDaqTask(daqTaskId);
+    public List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId) {
+        return daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
     }
 
     @Override
-    public MsPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
-        return daqTaskSpiderService.findDaqTaskSpidersByDaqTaskAndPagination(daqTaskId, pageNum, pageSize);
+    public MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        return daqTaskSpiderService.findDaqTaskSpidersByPagination(daqTaskId, pageNum, pageSize);
     }
 
     @Override
@@ -137,7 +177,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     }
 
     @Override
-    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
-        return daqTaskKeywordService.findDaqTaskKeywordsByDaqTaskAndPagination(daqTaskId, pageNum, pageSize);
+    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        return daqTaskKeywordService.findDaqTaskKeywordsByPagination(daqTaskId, pageNum, pageSize);
     }
 }

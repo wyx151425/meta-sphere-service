@@ -22,12 +22,19 @@ public interface DaqTaskSpiderService {
     void addDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds);
 
     /**
+     * 更新数据采集任务爬虫
+     *
+     * @param taskSpider 数据采集任务爬虫
+     */
+    void updateDaqTaskSpider(DaqTaskSpider taskSpider);
+
+    /**
      * 根据数据采集任务获取数据采集任务爬虫
      *
      * @param daqTaskId 数据采集任务ID
      * @return 数据采集任务爬虫
      */
-    List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId);
+    List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的爬虫
@@ -37,5 +44,5 @@ public interface DaqTaskSpiderService {
      * @param pageSize  单页数据量
      * @return 数据采集任务爬虫
      */
-    MsPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

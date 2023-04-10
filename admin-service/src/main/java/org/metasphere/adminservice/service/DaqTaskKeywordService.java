@@ -41,7 +41,7 @@ public interface DaqTaskKeywordService {
      * @param daqTaskId 数据采集项目的ID
      * @return 数据采集关键词
      */
-    List<DaqTaskKeyword> findDaqTaskKeywordsByDaqTask(Long daqTaskId);
+    List<DaqTaskKeyword> findDaqTaskKeywords(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的关键词
@@ -51,5 +51,5 @@ public interface DaqTaskKeywordService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

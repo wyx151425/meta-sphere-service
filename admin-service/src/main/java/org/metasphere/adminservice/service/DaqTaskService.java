@@ -15,39 +15,40 @@ import java.util.List;
  */
 public interface DaqTaskService {
     /**
-     * 创建数据采集项目
+     * 创建数据采集任务
      *
-     * @param daqTask 数据采集项目信息
+     * @param daqTask 数据采集任务信息
      */
     void createDaqTask(DaqTask daqTask);
 
     /**
      * 删除数据采集任务（在任务启动前允许删除）
      *
-     * @param id 数据采集任务的ID
+     * @param daqTaskId 数据采集任务的ID
      */
-    void deleteDaqTask(Long id);
+    void deleteDaqTask(Long daqTaskId);
 
     /**
      * 启动数据采集任务（启动后将创建数据存储空间，并允许配置爬虫和关键词）
      *
-     * @param id 数据采集任务的ID
+     * @param daqTaskId 数据采集任务的ID
      */
-    void startDaqTask(Long id);
+    void startDaqTask(Long daqTaskId);
 
     /**
      * 开始数据采集任务
      *
-     * @param daqProjectId 数据采集任务的ID
+     * @param daqTaskId 数据采集任务的ID
      */
-    void startDataAcquiring(Long daqProjectId);
+    void executeDaqTask(Long daqTaskId);
 
     /**
-     * 根据查询参数分页查询数据采集项目信息
+     * 根据查询参数分页查询数据采集任务信息
      *
      * @param pageNum  页码
      * @param pageSize 单页数据量
-     * @return 查询到的数据采集项目信息
+     * @param stage 任务运行阶段
+     * @return 查询到的数据采集任务信息
      */
     MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage);
 
@@ -73,7 +74,7 @@ public interface DaqTaskService {
      * @param daqTaskId 数据采集任务ID
      * @return 数据采集任务爬虫
      */
-    List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId);
+    List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的爬虫
@@ -83,7 +84,7 @@ public interface DaqTaskService {
      * @param pageSize  单页数据量
      * @return 数据采集任务爬虫
      */
-    MsPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 
     /**
      * 分页获取数据采集任务下的关键词
@@ -93,5 +94,5 @@ public interface DaqTaskService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }
