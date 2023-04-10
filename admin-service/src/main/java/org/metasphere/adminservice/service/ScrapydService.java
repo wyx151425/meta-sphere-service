@@ -25,101 +25,98 @@ public interface ScrapydService {
     /**
      * 查询所有Scrapyd服务的状态
      *
-     * @param servers 所有数据采集服务器的信息
+     * @param servers 所有Scrapy服务器的信息
      * @return 所有Scrapyd服务的状态
      */
     List<ScrapydStatus> findAllScrapydStatuses(List<Server> servers);
 
     /**
-     * 添加数据采集项目
+     * 添加Scrapy项目
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
-     * @param version  数据采集项目的版本
-     * @param egg      数据采集项目打包成Egg文件的存放位置
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
      * @return 项目所包含爬虫的数量
      */
-    Integer addDaqProject(String host, Integer port, String taskName, String version, String egg);
+    Integer addScrapyProject(String host, Integer port, String project);
 
     /**
      * 部署爬虫
      *
-     * @param host       Scrapy服务主机IP
-     * @param port       服务端口号
-     * @param taskName   数据采集任务的名称
-     * @param spiderName 爬虫名称
-     * @param taskCode   数据采集任务编号
-     * @return 爬虫的数据采集任务ID
-     */
-    String scheduleDaqSpider(String host, Integer port, String taskName, String spiderName, String taskCode);
-
-    /**
-     * 取消数据采集任务
-     *
      * @param host     Scrapy服务主机IP
      * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
-     * @param jobId    数据采集任务ID
-     * @return 任务取消前的状态
+     * @param project  Scrapy项目的名称
+     * @param spider   爬虫名称
+     * @return 爬虫的Scrapy任务ID
      */
-    String cancelDaqSpider(String host, Integer port, String taskName, String jobId);
+    String scheduleScrapySpider(String host, Integer port, String project, String spider);
 
     /**
-     * 查询Scrapyd服务内部署的所有数据采集项目的名称
+     * 取消Scrapy任务
+     *
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
+     * @param jobId   Scrapy作业ID
+     * @return 任务取消前的状态
+     */
+    String cancelScrapySpider(String host, Integer port, String project, String jobId);
+
+    /**
+     * 查询Scrapyd服务内部署的所有Scrapy项目的名称
      *
      * @param host Scrapy服务主机IP
      * @param port 服务端口号
-     * @return 数据采集项目名称列表
+     * @return Scrapy项目名称列表
      */
-    List<String> findAllDaqProjects(String host, Integer port);
+    List<String> findScrapyProjects(String host, Integer port);
 
     /**
-     * 查询数据采集项目所有版本名
+     * 查询Scrapy项目所有版本名
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
      * @return 所有版本名组成的列表
      */
-    List<String> findAllVersionsByDaqTask(String host, Integer port, String taskName);
+    List<String> findScrapyProjectVersions(String host, Integer port, String project);
 
     /**
-     * 查询数据采集项目中所有爬虫的名称
+     * 查询Scrapy项目中所有爬虫的名称
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
      * @return 所有爬虫的名称组成的列表
      */
-    List<String> findAllDaqSpidersByDaqTask(String host, Integer port, String taskName);
+    List<String> findScrapyProjectSpiders(String host, Integer port, String project);
 
     /**
-     * 查询数据采集项目中所有任务的详细信息
+     * 查询Scrapy项目中所有任务的详细信息
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
      * @return 所有任务的信息
      */
-    DaqJobs findAllDaqJobs(String host, Integer port, String taskName);
+    DaqJobs findScrapyProjectJobs(String host, Integer port, String project);
 
     /**
-     * 删除某个版本的数据采集项目
+     * 删除某个版本的Scrapy项目
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
-     * @param version  版本号
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
+     * @param version 版本号
      */
-    void deleteDaqTaskByVersion(String host, Integer port, String taskName, String version);
+    void deleteScrapyProjectByVersion(String host, Integer port, String project, String version);
 
     /**
-     * 删除数据采集项目
+     * 删除Scrapy项目
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param taskName 数据采集任务的名称
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
      */
-    void deleteDaqProject(String host, Integer port, String taskName);
+    void deleteScrapyProject(String host, Integer port, String project);
 }
