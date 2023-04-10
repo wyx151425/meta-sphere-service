@@ -26,6 +26,7 @@ public class DaqDbServiceImpl implements DaqDbService {
                 "`create_at` DATETIME COMMENT '数据入库时间'," +
                 "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
                 "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
+                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
 
                 "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
                 "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +

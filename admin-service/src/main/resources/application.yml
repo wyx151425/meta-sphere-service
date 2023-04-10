@@ -25,10 +25,11 @@ spring:
     host: 127.0.0.1
     port: 6379
     password: 151425
-    jedis:
+    lettuce:
       pool:
+        min-idle: 2
+        max-idle: 20
         max-active: 20
-        max-idle: 5
   data:
     mongodb:
       host: 127.0.0.1

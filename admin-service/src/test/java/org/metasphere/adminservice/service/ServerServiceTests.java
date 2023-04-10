@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @Author: WangZhenqi
@@ -38,7 +36,7 @@ public class ServerServiceTests {
     @Test
     void testSaveServer() {
         Server server = new Server();
-        server.setHost("180.201.163.246");
+        server.setIpAddress("180.201.163.246");
         server.setPort(5200);
         server.setName("NLP引擎服务器");
         server.setType(2);
