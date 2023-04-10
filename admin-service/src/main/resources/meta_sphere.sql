@@ -57,15 +57,14 @@ CREATE TABLE IF NOT EXISTS ms_role_permission
 
 CREATE TABLE IF NOT EXISTS ms_server
 (
-    `id`        BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `object_id` CHAR(32),
-    `status`    TINYINT,
-    `create_at` DATETIME,
-    `update_at` DATETIME,
-    `host`      VARCHAR(15),
-    `port`      INT,
-    `name`      VARCHAR(32),
-    `type`      INT
+    `id`         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`  CHAR(32),
+    `status`     TINYINT,
+    `create_at`  DATETIME,
+    `update_at`  DATETIME,
+    `ip_address` VARCHAR(15),
+    `name`       VARCHAR(32),
+    `type`       INT
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_task
@@ -84,14 +83,14 @@ CREATE TABLE IF NOT EXISTS ms_daq_task
 
 CREATE TABLE IF NOT EXISTS ms_daq_spider
 (
-    `id`         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `object_id`  CHAR(32),
-    `status`     TINYINT,
-    `create_at`  DATETIME,
-    `update_at`  DATETIME,
-    `name`       VARCHAR(32),
-    `code`       VARCHAR(32),
-    `cookie`     TEXT
+    `id`        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id` CHAR(32),
+    `status`    TINYINT,
+    `create_at` DATETIME,
+    `update_at` DATETIME,
+    `name`      VARCHAR(32),
+    `code`      VARCHAR(32),
+    `cookie`    TEXT
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_task_spider
@@ -106,6 +105,7 @@ CREATE TABLE IF NOT EXISTS ms_daq_task_spider
     `task_code`     CHAR(36),
     `spider_id`     BIGINT,
     `spider_name`   VARCHAR(32),
+    `spider_code`   VARCHAR(32),
     `spider_status` INT,
     `server_host`   VARCHAR(15),
     `server_port`   INT,
@@ -122,5 +122,18 @@ CREATE TABLE IF NOT EXISTS ms_daq_task_keyword
     `task_id`   BIGINT,
     `task_name` VARCHAR(64),
     `task_code` CHAR(36),
-    `keyword`   VARCHAR(64)
+    `keyword`   VARCHAR(128)
+);
+
+CREATE TABLE IF NOT EXISTS ms_daq_task_server
+(
+    `id`          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`   CHAR(32),
+    `status`      TINYINT,
+    `create_at`   DATETIME,
+    `update_at`   DATETIME,
+    `task_id`     BIGINT,
+    `server_id`   BIGINT,
+    `server_host` VARCHAR(15),
+    `server_port` INT
 );
