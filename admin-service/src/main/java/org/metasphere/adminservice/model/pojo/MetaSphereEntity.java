@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.model.pojo;
 
 import org.metasphere.adminservice.constant.MsConst;
+import org.metasphere.adminservice.util.UUIDUtils;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * @Author: WangZhenqi
@@ -47,7 +47,7 @@ public class MetaSphereEntity implements Serializable {
 
     public MetaSphereEntity() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
-        this.objectId = UUID.randomUUID().toString().replace("-", "");
+        this.objectId = UUIDUtils.getMsObjectId();
         this.status = MsConst.MetaSphereEntity.Status.ENABLED;
         this.createAt = dateTime;
         this.updateAt = dateTime;

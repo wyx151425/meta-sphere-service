@@ -3,8 +3,7 @@ package org.metasphere.adminservice.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
-public final class MD5Utils {
+public final class Md5Utils {
 
     public static String encrypt(String strSrc) {
         try {

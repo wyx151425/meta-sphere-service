@@ -1,5 +1,8 @@
 package org.metasphere.adminservice.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Author: WangZhenqi
  * @Description:
@@ -16,7 +19,25 @@ public class MsConst {
         }
     }
 
+    public static class Server {
+        public static class Type {
+            public static final int DAQ = 1;
+            public static final int NLP = 2;
+        }
+
+        public static final Map<Integer, Integer> TYPE2PORT = new HashMap<>();
+
+        static {
+            for (ServerType2Port tp : ServerType2Port.values()) {
+                TYPE2PORT.put(tp.getType(), tp.getPort());
+            }
+        }
+    }
+
     public static class Scrapyd {
+        public static final String PROJECT_VERSION = "1681132034";
+        public static final String EGG_FILE_PATH = "eggs/1681132034.egg";
+
         public static class RespStatus {
             public static final String OK = "ok";
             public static final String ERROR = "Error";
@@ -56,18 +77,24 @@ public class MsConst {
         }
     }
 
+    public static class CacheKeyTemplate {
+        public static final String DAQ_TASK_KEYWORDS = "DAQ_TASK:KEYWORDS:%s";
+    }
+
     public static class DaqTask {
         public static class Stage {
-            public static final int CREATED = 11;
-            public static final int DATA_TO_ACQUIRE = 21;
-            public static final int DATA_ACQUIRING = 22;
-            public static final int DATA_TO_ENTER = 31;
-            public static final int DATA_ENTERING = 32;
-            public static final int DATA_TO_ANALYZE = 41;
-            public static final int DATA_ANALYZING = 42;
-            public static final int DATA_TO_COUNT = 51;
-            public static final int DATA_COUNTING = 52;
-            public static final int FINISHED = 61;
+            public static final int CREATED = 10;
+            public static final int CONFIGURING = 20;
+            public static final int RUNNING = 31;
+            public static final int SUSPENDED = 32;
+            public static final int EXECUTED = 33;
+            public static final int DATA_ENTERING = 41;
+            public static final int DATA_ENTERED = 42;
+            public static final int DATA_ANALYZING = 51;
+            public static final int DATA_ANALYZED = 52;
+            public static final int DATA_COUNTING = 61;
+            public static final int DATA_COUNTED = 62;
+            public static final int FINISHED = 0;
         }
     }
 
@@ -78,6 +105,42 @@ public class MsConst {
             public static final int ENABLED = 2;
             public static final int RUNNING = 3;
             public static final int FINISHED = 4;
+        }
+    }
+
+    /**
+     * 服务器类型
+     */
+    public enum ServerType2Port {
+        /**
+         * 数据采集服务器
+         */
+        DAQ(1, 6800),
+        /**
+         * 自然语言处理服务器
+         */
+        NLP(2, 9000);
+
+        /**
+         * 类型
+         */
+        private final Integer type;
+        /**
+         * 端口号
+         */
+        private final Integer port;
+
+        ServerType2Port(Integer type, Integer port) {
+            this.type = type;
+            this.port = port;
+        }
+
+        public Integer getType() {
+            return type;
+        }
+
+        public Integer getPort() {
+            return port;
         }
     }
 }
