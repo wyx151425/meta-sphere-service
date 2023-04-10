@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Permission;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public interface PermissionService {
      * @param pageSize 单页数据量
      * @return 包含分页信息的权限数据
      */
-    MSPage<Permission> findPermissionsByPagination(Integer pageNum, Integer pageSize);
+    MsPage<Permission> findPermissionsByPagination(Integer pageNum, Integer pageSize);
 
     /**
      * 根据用户ID获取权限

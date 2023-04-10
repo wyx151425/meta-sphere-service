@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.controller;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Server;
-import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.model.vo.resp.MsResponse;
 import org.metasphere.adminservice.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,17 +21,17 @@ public class ServerController {
     private ServerService serverService;
 
     @PostMapping(value = "")
-    public MSResponse<Server> actionSaveServer(@RequestBody Server server) {
+    public MsResponse<Server> actionSaveServer(@RequestBody Server server) {
         serverService.saveServer(server);
-        return MSResponse.success();
+        return MsResponse.success();
     }
 
     @GetMapping(value = "queryByPagination")
-    public MSResponse<MSPage<Server>> actionQueryServersByPagination(
+    public MsResponse<MsPage<Server>> actionQueryServersByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MSPage<Server> page = serverService.findServersByPagination(pageNum, pageSize);
-        return MSResponse.success(page);
+        MsPage<Server> page = serverService.findServersByPagination(pageNum, pageSize);
+        return MsResponse.success(page);
     }
 }

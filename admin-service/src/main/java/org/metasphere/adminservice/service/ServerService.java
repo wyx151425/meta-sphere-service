@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Server;
 
 /**
@@ -25,7 +25,7 @@ public interface ServerService {
      * @param pageSize 单页数据量
      * @return 查询到的服务器信息
      */
-    MSPage<Server> findServersByPagination(Integer pageNum, Integer pageSize);
+    MsPage<Server> findServersByPagination(Integer pageNum, Integer pageSize);
 
     /**
      * 检查服务器的状态（能否PING通）

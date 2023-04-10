@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.repository;
 
-import org.metasphere.adminservice.model.pojo.DaqTask;
+import org.metasphere.adminservice.model.pojo.DaqSpider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -8,10 +8,9 @@ import org.springframework.stereotype.Repository;
 /**
  * @Author: WangZhenqi
  * @Description:
- * @Date: Created in 2023-04-06 16:27
+ * @Date: Created in 2023-04-07 21:58
  * @Modified By:
  */
-@Repository(value = "daqTaskRepository")
-public interface DAQTaskRepository extends JpaRepository<DaqTask, Long>, JpaSpecificationExecutor<DaqTask> {
-
+@Repository(value = "daqSpiderRepository")
+public interface DaqSpiderRepository extends JpaRepository<DaqSpider, Long>, JpaSpecificationExecutor<DaqSpider> {
 }

@@ -1,13 +1,14 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.constant.MSConstant;
-import org.metasphere.adminservice.constant.MSStatusCode;
-import org.metasphere.adminservice.exception.MSException;
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.constant.MsConst;
+import org.metasphere.adminservice.constant.MsStatusCode;
+import org.metasphere.adminservice.exception.MsException;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.DaqTask;
 import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
 import org.metasphere.adminservice.model.pojo.DaqTaskSpider;
-import org.metasphere.adminservice.repository.DAQTaskRepository;
+import org.metasphere.adminservice.repository.DaqTaskRepository;
+import org.metasphere.adminservice.service.DaqDbService;
 import org.metasphere.adminservice.service.DaqTaskKeywordService;
 import org.metasphere.adminservice.service.DaqTaskService;
 import org.metasphere.adminservice.service.DaqTaskSpiderService;
@@ -36,7 +37,7 @@ import java.util.UUID;
 public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Autowired
-    private DAQTaskRepository daqTaskRepository;
+    private DaqTaskRepository daqTaskRepository;
 
     @Autowired
     private DaqTaskKeywordService daqTaskKeywordService;
@@ -44,10 +45,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Autowired
     private DaqTaskSpiderService daqTaskSpiderService;
 
+    @Autowired
+    private DaqDbService daqDbService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createDaqTask(DaqTask daqTask) {
-        daqTask.setStage(MSConstant.DAQTask.Stage.CREATED);
+        daqTask.setStage(MsConst.DaqTask.Stage.CREATED);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -55,11 +59,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTask(Long id) {
-        DaqTask daqTask = daqTaskRepository.findById(id).orElseThrow(MSException::getDataNotFoundException);
-        if (MSConstant.DAQTask.Stage.CREATED != daqTask.getStage()) {
-            throw new MSException(MSStatusCode.DAQ_TASK_STAGE_ERROR);
+        DaqTask daqTask = daqTaskRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
+        if (MsConst.DaqTask.Stage.CREATED != daqTask.getStage()) {
+            throw new MsException(MsStatusCode.DAQ_TASK_STAGE_ERROR);
         }
-        daqTask.setStatus(MSConstant.MSEntity.Status.DISABLED);
+        daqTask.setStatus(MsConst.MetaSphereEntity.Status.DISABLED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -67,23 +71,23 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void startDaqTask(Long id) {
-        String taskCode = UUID.randomUUID().toString();
+        String taskCode = UUID.randomUUID().toString().replace("-", "");
 
-        DaqTask daqTask = daqTaskRepository.findById(id).orElseThrow(MSException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
         daqTask.setCode(taskCode);
-        daqTask.setStatus(MSConstant.DAQTask.Stage.DATA_TO_ACQUIRE);
+        daqTask.setStatus(MsConst.DaqTask.Stage.DATA_TO_ACQUIRE);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
-
+        daqDbService.createDaqDataTable(taskCode);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void startDataAcquiring(Long daqProjectId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqProjectId).orElseThrow(MSException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqProjectId).orElseThrow(MsException::getDataNotFoundException);
 
-        List<DaqTaskKeyword> daqTaskKeywords = daqTaskKeywordService.findDAQTaskKeywordsByDAQTask(daqProjectId);
+        List<DaqTaskKeyword> daqTaskKeywords = daqTaskKeywordService.findDaqTaskKeywordsByDaqTask(daqProjectId);
 
 
         String daqUrls = daqTask.getName() + ":" + daqTask.getCode() + ":daqUrls";
@@ -93,7 +97,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     }
 
     @Override
-    public MSPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
+    public MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         Page<DaqTask> page;
@@ -106,34 +110,34 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         } else {
             page = daqTaskRepository.findAll(pageable);
         }
-        return MSPage.newInstance(page);
+        return MsPage.newInstance(page);
     }
 
     @Override
     public void addDaqTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
-        daqTaskSpiderService.addDAQTaskSpiders(daqTask, daqSpiderIds);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        daqTaskSpiderService.addDaqTaskSpiders(daqTask, daqSpiderIds);
     }
 
     @Override
     public List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId) {
-        return daqTaskSpiderService.findDAQTaskSpidersByDAQTask(daqTaskId);
+        return daqTaskSpiderService.findDaqTaskSpidersByDaqTask(daqTaskId);
     }
 
     @Override
-    public MSPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
-        return daqTaskSpiderService.findDAQTaskSpidersByDAQTaskAndPagination(daqTaskId, pageNum, pageSize);
+    public MsPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        return daqTaskSpiderService.findDaqTaskSpidersByDaqTaskAndPagination(daqTaskId, pageNum, pageSize);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addDaqTaskKeywords(Long daqTaskId, List<String> keywords) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
-        daqTaskKeywordService.addDAQTaskKeywords(daqTask, keywords);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        daqTaskKeywordService.addDaqTaskKeywords(daqTask, keywords);
     }
 
     @Override
-    public MSPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
-        return daqTaskKeywordService.findDAQTaskKeywordsByDAQTaskAndPagination(daqTaskId, pageNum, pageSize);
+    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+        return daqTaskKeywordService.findDaqTaskKeywordsByDaqTaskAndPagination(daqTaskId, pageNum, pageSize);
     }
 }

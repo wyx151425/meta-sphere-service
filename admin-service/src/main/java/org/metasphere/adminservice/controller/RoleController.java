@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.controller;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Role;
-import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.model.vo.resp.MsResponse;
 import org.metasphere.adminservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,35 +23,35 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping(value = "")
-    public MSResponse actionSaveRole(@RequestBody Role role) {
+    public MsResponse actionSaveRole(@RequestBody Role role) {
         roleService.saveRole(role);
-        return MSResponse.success();
+        return MsResponse.success();
     }
 
     @DeleteMapping(value = "{id}")
-    public MSResponse actionDeleteRole(@PathVariable(value = "id") Long id) {
+    public MsResponse actionDeleteRole(@PathVariable(value = "id") Long id) {
         roleService.deleteRole(id);
-        return MSResponse.success();
+        return MsResponse.success();
     }
 
     @DeleteMapping(value = "{ids}")
-    public MSResponse actionDeleteRoles(@PathVariable(value = "ids") List<Long> ids) {
+    public MsResponse actionDeleteRoles(@PathVariable(value = "ids") List<Long> ids) {
         roleService.deleteRoles(ids);
-        return MSResponse.success();
+        return MsResponse.success();
     }
 
     @PutMapping(value = "name")
-    public MSResponse actionUpdateRoleName(@RequestBody Role role) {
+    public MsResponse actionUpdateRoleName(@RequestBody Role role) {
         roleService.updateRoleName(role);
-        return MSResponse.success();
+        return MsResponse.success();
     }
 
     @GetMapping(value = "queryByPagination")
-    public MSResponse actionQueryRolesByPagination(
+    public MsResponse actionQueryRolesByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MSPage<Role> page = roleService.findRolesByPagination(pageNum, pageSize);
-        return MSResponse.success(page);
+        MsPage<Role> page = roleService.findRolesByPagination(pageNum, pageSize);
+        return MsResponse.success(page);
     }
 }

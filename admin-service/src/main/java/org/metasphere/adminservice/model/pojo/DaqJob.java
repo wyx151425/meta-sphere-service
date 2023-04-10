@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * @Date: Created in 2023-02-21 19:06
  * @Modified By:
  */
-public class DAQJob {
+public class DaqJob {
     /**
      * 任务在Scrapyd中的ID
      */
@@ -26,7 +26,7 @@ public class DAQJob {
      */
     private LocalDateTime endTime;
 
-    public DAQJob() {
+    public DaqJob() {
     }
 
     public String getId() {
@@ -63,7 +63,7 @@ public class DAQJob {
 
     @Override
     public String toString() {
-        return "DAQJob{" +
+        return "DaqJob{" +
                 "id='" + id + '\'' +
                 ", spiderName='" + spiderName + '\'' +
                 ", startTime=" + startTime +

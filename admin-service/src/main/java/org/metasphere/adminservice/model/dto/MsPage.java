@@ -12,7 +12,7 @@ import java.util.List;
  * @Modified By:
  */
 @Data
-public class MSPage<T> {
+public class MsPage<T> {
 
     /**
      * 分页页码
@@ -39,7 +39,7 @@ public class MSPage<T> {
      */
     Long totalData;
 
-    public MSPage(Page<T> page) {
+    public MsPage(Page<T> page) {
         this.pageNum = page.getNumber() + 1;
         this.pageSize = page.getSize();
         this.data = page.getContent();
@@ -47,7 +47,7 @@ public class MSPage<T> {
         this.totalData = page.getTotalElements();
     }
 
-    public static <T> MSPage<T> newInstance(Page<T> page) {
-        return new MSPage<>(page);
+    public static <T> MsPage<T> newInstance(Page<T> page) {
+        return new MsPage<>(page);
     }
 }

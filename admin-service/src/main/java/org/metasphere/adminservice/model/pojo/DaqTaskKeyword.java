@@ -1,5 +1,6 @@
 package org.metasphere.adminservice.model.pojo;
 
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
@@ -14,7 +15,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ms_daq_task_keyword")
 @Where(clause = "status = 1")
-public class DaqTaskKeyword extends MSEntity {
+@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+public class DaqTaskKeyword extends MetaSphereEntity {
     /**
      * 数据采集项目的ID
      */

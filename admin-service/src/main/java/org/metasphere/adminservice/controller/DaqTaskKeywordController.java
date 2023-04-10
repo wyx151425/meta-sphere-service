@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.controller;
 
 import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
-import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.model.vo.resp.MsResponse;
 import org.metasphere.adminservice.service.DaqTaskKeywordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,8 +23,8 @@ public class DaqTaskKeywordController {
     private DaqTaskKeywordService daqTaskKeywordService;
 
     @DeleteMapping(value = "{id}")
-    MSResponse<DaqTaskKeyword> actionDeleteDAQTaskKeyword(@PathVariable(value = "id") Long id) {
-        daqTaskKeywordService.deleteDAQTaskKeyword(id);
-        return MSResponse.success();
+    MsResponse<DaqTaskKeyword> actionDeleteDAQTaskKeyword(@PathVariable(value = "id") Long id) {
+        daqTaskKeywordService.deleteDaqTaskKeyword(id);
+        return MsResponse.success();
     }
 }

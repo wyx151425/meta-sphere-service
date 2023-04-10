@@ -14,7 +14,7 @@ import java.util.List;
  * @Modified By:
  */
 @Repository(value = "daqTaskSpiderRepository")
-public interface DAQTaskSpiderRepository extends JpaRepository<DaqTaskSpider, Long>, JpaSpecificationExecutor<DaqTaskSpider> {
+public interface DaqTaskSpiderRepository extends JpaRepository<DaqTaskSpider, Long>, JpaSpecificationExecutor<DaqTaskSpider> {
     /**
      * 根据数据采集任务ID删除数据采集任务爬虫
      *

@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.model.pojo;
 
-import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,8 +14,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ms_user")
-@Data
-public class User extends MSEntity {
+@Where(clause = "status = 1")
+@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+public class User extends MetaSphereEntity {
     /**
      * 邮箱
      */
@@ -31,4 +33,39 @@ public class User extends MSEntity {
      * 手机号
      */
     private String mobilePhoneNumber;
+
+    public User() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMobilePhoneNumber() {
+        return mobilePhoneNumber;
+    }
+
+    public void setMobilePhoneNumber(String mobilePhoneNumber) {
+        this.mobilePhoneNumber = mobilePhoneNumber;
+    }
 }

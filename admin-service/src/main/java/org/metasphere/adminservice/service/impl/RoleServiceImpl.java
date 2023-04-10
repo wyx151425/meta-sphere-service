@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service.impl;
 
 import org.metasphere.adminservice.exception.PermissionExistException;
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Role;
 import org.metasphere.adminservice.repository.RoleRepository;
 import org.metasphere.adminservice.service.RoleService;
@@ -56,8 +56,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public MSPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize) {
+    public MsPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize) {
         Page<Role> pageContext = roleRepository.findAll(PageRequest.of(pageNum - 1, pageSize));
-        return new MSPage<>(pageContext);
+        return new MsPage<>(pageContext);
     }
 }

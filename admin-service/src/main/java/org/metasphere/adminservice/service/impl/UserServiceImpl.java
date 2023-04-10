@@ -1,8 +1,7 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.constant.MSConstant;
-import org.metasphere.adminservice.constant.MSStatusCode;
-import org.metasphere.adminservice.exception.MSException;
+import org.metasphere.adminservice.constant.MsStatusCode;
+import org.metasphere.adminservice.exception.MsException;
 import org.metasphere.adminservice.model.pojo.User;
 import org.metasphere.adminservice.repository.UserRepository;
 import org.metasphere.adminservice.service.UserService;
@@ -28,10 +27,10 @@ public class UserServiceImpl implements UserService {
             if (targetUser.getPassword().equals(password)) {
                 return targetUser;
             } else {
-                throw new MSException(MSStatusCode.ACCOUNT_AUTHENTICATION_FAILED);
+                throw new MsException(MsStatusCode.ACCOUNT_AUTHENTICATION_FAILED);
             }
         } else {
-            throw new MSException(MSStatusCode.USER_NOT_FOUND);
+            throw new MsException(MsStatusCode.USER_NOT_FOUND);
         }
     }
 

@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.DaqSpider;
 
 import java.util.List;
@@ -17,21 +17,21 @@ public interface DaqSpiderService {
      *
      * @param daqSpider 数据采集爬虫
      */
-    void addDAQSpider(DaqSpider daqSpider);
+    void addDaqSpider(DaqSpider daqSpider);
 
     /**
      * 根据ID删除数据采集爬虫
      *
      * @param id 数据采集爬虫的ID
      */
-    void deleteDAQSpiderById(Long id);
+    void deleteDaqSpiderById(Long id);
 
     /**
      * 获取所有的爬虫
      *
      * @return 爬虫数据
      */
-    List<DaqSpider> findDAQSpiders();
+    List<DaqSpider> findDaqSpiders();
 
     /**
      * 分页获取所有的爬虫
@@ -40,13 +40,13 @@ public interface DaqSpiderService {
      * @param pageSize 单页数据量
      * @return 爬虫数据
      */
-    MSPage<DaqSpider> findDAQSpidersByPagination(Integer pageNum, Integer pageSize);
+    MsPage<DaqSpider> findDaqSpidersByPagination(Integer pageNum, Integer pageSize);
 
     /**
      * 根据ID获取所有的爬虫
      *
-     * @param ids
+     * @param ids 爬虫的ID
      * @return 爬虫数据
      */
-    List<DaqSpider> findDAQSpidersByIds(List<Long> ids);
+    List<DaqSpider> findDaqSpidersByIds(List<Long> ids);
 }

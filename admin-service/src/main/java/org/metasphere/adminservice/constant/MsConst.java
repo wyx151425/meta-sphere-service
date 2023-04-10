@@ -6,9 +6,9 @@ package org.metasphere.adminservice.constant;
  * @Date: Created in 2022-11-10 20:26
  * @Modified By:
  */
-public class MSConstant {
+public class MsConst {
 
-    public static class MSEntity {
+    public static class MetaSphereEntity {
 
         public static class Status {
             public static final int ENABLED = 1;
@@ -56,7 +56,7 @@ public class MSConstant {
         }
     }
 
-    public static class DAQTask {
+    public static class DaqTask {
         public static class Stage {
             public static final int CREATED = 11;
             public static final int DATA_TO_ACQUIRE = 21;
@@ -71,7 +71,7 @@ public class MSConstant {
         }
     }
 
-    public static class DAQTaskSpider {
+    public static class DaqTaskSpider {
         public static class SpiderStatus {
             public static final int DISABLED = 0;
             public static final int NEW = 1;

@@ -1,11 +1,11 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.constant.MSConstant;
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.constant.MsConst;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.DaqSpider;
 import org.metasphere.adminservice.model.pojo.DaqTask;
 import org.metasphere.adminservice.model.pojo.DaqTaskSpider;
-import org.metasphere.adminservice.repository.DAQTaskSpiderRepository;
+import org.metasphere.adminservice.repository.DaqTaskSpiderRepository;
 import org.metasphere.adminservice.service.DaqSpiderService;
 import org.metasphere.adminservice.service.DaqTaskSpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +30,17 @@ import java.util.List;
 public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
 
     @Autowired
-    private DAQTaskSpiderRepository daqTaskSpiderRepository;
+    private DaqTaskSpiderRepository daqTaskSpiderRepository;
 
     @Autowired
     private DaqSpiderService daqSpiderService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDAQTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds) {
+    public void addDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds) {
         daqTaskSpiderRepository.deleteAllByTaskId(daqTask.getId());
 
-        List<DaqSpider> daqSpiders = daqSpiderService.findDAQSpidersByIds(daqSpiderIds);
+        List<DaqSpider> daqSpiders = daqSpiderService.findDaqSpidersByIds(daqSpiderIds);
 
         List<DaqTaskSpider> taskSpiders = new ArrayList<>();
         for (DaqSpider daqSpider : daqSpiders) {
@@ -50,24 +50,24 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
             taskSpider.setTaskCode(daqTask.getCode());
             taskSpider.setSpiderId(daqSpider.getId());
             taskSpider.setSpiderName(daqSpider.getName());
-            taskSpider.setSpiderStatus(MSConstant.DAQTaskSpider.SpiderStatus.NEW);
+            taskSpider.setSpiderStatus(MsConst.DaqTaskSpider.SpiderStatus.NEW);
             taskSpiders.add(taskSpider);
         }
         daqTaskSpiderRepository.saveAll(taskSpiders);
     }
 
     @Override
-    public List<DaqTaskSpider> findDAQTaskSpidersByDAQTask(Long daqTaskId) {
+    public List<DaqTaskSpider> findDaqTaskSpidersByDaqTask(Long daqTaskId) {
         return daqTaskSpiderRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
-    public MSPage<DaqTaskSpider> findDAQTaskSpidersByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MsPage<DaqTaskSpider> findDaqTaskSpidersByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskSpider> page = daqTaskSpiderRepository.findAll((Specification<DaqTaskSpider>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);
-        return MSPage.newInstance(page);
+        return MsPage.newInstance(page);
     }
 }

@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.DaqTask;
 import org.metasphere.adminservice.model.pojo.DaqTaskKeyword;
 
@@ -19,21 +19,21 @@ public interface DaqTaskKeywordService {
      * @param daqTask  数据采集任务
      * @param keywords 关键词
      */
-    void addDAQTaskKeywords(DaqTask daqTask, List<String> keywords);
+    void addDaqTaskKeywords(DaqTask daqTask, List<String> keywords);
 
     /**
      * 删除数据采集任务关键词
      *
      * @param id 关键词的ID
      */
-    void deleteDAQTaskKeyword(Long id);
+    void deleteDaqTaskKeyword(Long id);
 
     /**
      * 批量删除数据采集任务关键词
      *
      * @param ids 关键词ID
      */
-    void batchDeleteDAQTaskKeywords(List<Long> ids);
+    void batchDeleteDaqTaskKeywords(List<Long> ids);
 
     /**
      * 根据数据采集项目查询数据采集关键词
@@ -41,7 +41,7 @@ public interface DaqTaskKeywordService {
      * @param daqTaskId 数据采集项目的ID
      * @return 数据采集关键词
      */
-    List<DaqTaskKeyword> findDAQTaskKeywordsByDAQTask(Long daqTaskId);
+    List<DaqTaskKeyword> findDaqTaskKeywordsByDaqTask(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的关键词
@@ -51,5 +51,5 @@ public interface DaqTaskKeywordService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MSPage<DaqTaskKeyword> findDAQTaskKeywordsByDAQTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByDaqTaskAndPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

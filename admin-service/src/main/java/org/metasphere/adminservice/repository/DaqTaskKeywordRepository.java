@@ -14,7 +14,7 @@ import java.util.List;
  * @Modified By:
  */
 @Repository(value = "daqTaskKeywordRepository")
-public interface DAQTaskKeywordRepository extends JpaRepository<DaqTaskKeyword, Long>, JpaSpecificationExecutor<DaqTaskKeyword> {
+public interface DaqTaskKeywordRepository extends JpaRepository<DaqTaskKeyword, Long>, JpaSpecificationExecutor<DaqTaskKeyword> {
     /**
      * 根据数据采集任务ID查询数据采集关键词
      *

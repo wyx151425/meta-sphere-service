@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Role;
 
 import java.util.List;
@@ -48,5 +48,5 @@ public interface RoleService {
      * @param pageSize 单页数据量
      * @return 查询到的
      */
-    MSPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize);
+    MsPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize);
 }

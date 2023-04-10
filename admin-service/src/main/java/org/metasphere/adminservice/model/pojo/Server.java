@@ -1,5 +1,8 @@
 package org.metasphere.adminservice.model.pojo;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -11,10 +14,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ms_server")
-public class Server extends MSEntity {
+@Where(clause = "status = 1")
+@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+public class Server extends MetaSphereEntity {
+    /**
+     * 主机IP
+     */
     private String host;
+    /**
+     * 主机端口号
+     */
     private Integer port;
+    /**
+     * 主机名称
+     */
     private String name;
+    /**
+     * 服务器类型
+     */
     private Integer type;
 
     public Server() {

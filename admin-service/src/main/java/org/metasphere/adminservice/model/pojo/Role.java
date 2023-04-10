@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.model.pojo;
 
-import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,11 +12,36 @@ import javax.persistence.Table;
  * @Date: Created in 2022-11-14 10:57
  * @Modified By:
  */
-@Data
 @Entity
 @Table(name = "ms_role")
-@SQLDelete(sql = "UPDATE ms_role SET status = 0 WHERE id = ?")
-public class Role extends MSEntity {
+@Where(clause = "status = 1")
+@SQLDelete(sql = "UPDATE ms_permission SET status = 0 WHERE id = ?")
+public class Role extends MetaSphereEntity {
+    /**
+     * 角色编码
+     */
     private String code;
+    /**
+     * 角色名称
+     */
     private String name;
+
+    public Role() {
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

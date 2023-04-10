@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service.impl;
 
 import org.metasphere.adminservice.exception.PermissionExistException;
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Permission;
 import org.metasphere.adminservice.repository.PermissionRepository;
 import org.metasphere.adminservice.service.PermissionService;
@@ -57,9 +57,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public MSPage<Permission> findPermissionsByPagination(Integer pageNum, Integer pageSize) {
+    public MsPage<Permission> findPermissionsByPagination(Integer pageNum, Integer pageSize) {
         Page<Permission> pageContext =  permissionRepository.findAll(PageRequest.of(pageNum, pageSize));
-        return new MSPage<>(pageContext);
+        return new MsPage<>(pageContext);
     }
 
     @Override

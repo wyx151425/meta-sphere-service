@@ -1,26 +1,18 @@
 package org.metasphere.adminservice.service.impl;
 
-import org.metasphere.adminservice.constant.MSConstant;
-import org.metasphere.adminservice.constant.MSStatusCode;
-import org.metasphere.adminservice.exception.MSException;
-import org.metasphere.adminservice.model.dto.MSPage;
+import org.metasphere.adminservice.constant.MsStatusCode;
+import org.metasphere.adminservice.exception.MsException;
+import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.Server;
 import org.metasphere.adminservice.repository.ServerRepository;
 import org.metasphere.adminservice.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.net.*;
 
@@ -46,15 +38,15 @@ public class ServerServiceImpl implements ServerService {
         if (1 == status) {
             serverRepository.save(server);
         } else {
-            throw new MSException(MSStatusCode.SERVER_UNREACHABLE);
+            throw new MsException(MsStatusCode.SERVER_UNREACHABLE);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public MSPage<Server> findServersByPagination(Integer pageNum, Integer pageSize) {
+    public MsPage<Server> findServersByPagination(Integer pageNum, Integer pageSize) {
         Page<Server> pageContext = serverRepository.findAll(PageRequest.of(pageNum, pageSize));
-        return new MSPage<>(pageContext);
+        return new MsPage<>(pageContext);
     }
 
     @Override
