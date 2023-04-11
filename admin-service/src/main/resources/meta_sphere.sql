@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS ms_server
     `create_at`  DATETIME,
     `update_at`  DATETIME,
     `ip_address` VARCHAR(15),
+    `port`       INT,
     `name`       VARCHAR(32),
     `type`       INT
 );
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS ms_daq_spider
     `update_at` DATETIME,
     `name`      VARCHAR(32),
     `code`      VARCHAR(32),
-    `cookie`    TEXT
+    `cookies`    TEXT
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_task_spider
@@ -134,6 +135,6 @@ CREATE TABLE IF NOT EXISTS ms_daq_task_server
     `update_at`   DATETIME,
     `task_id`     BIGINT,
     `server_id`   BIGINT,
-    `server_host` VARCHAR(15),
+    `server_ip_address` VARCHAR(15),
     `server_port` INT
 );

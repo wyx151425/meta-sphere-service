@@ -29,10 +29,6 @@ public class UserServiceTests {
     void testSaveMsUser() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
         User user = new User();
-        user.setStatus(1);
-        user.setObjectId(UUID.randomUUID().toString().replace("-", "").toUpperCase());
-        user.setCreateAt(dateTime);
-        user.setUpdateAt(dateTime);
         user.setEmail("wyx151425@163.com");
         user.setName("王振琦");
         user.setPassword(Md5Utils.encrypt("151425"));
