@@ -23,19 +23,19 @@ public class DaqSpiderController {
     private DaqSpiderService daqSpiderService;
 
     @PostMapping(value = "")
-    public MsResponse<DaqSpider> actionSaveDAQSpider(@RequestBody DaqSpider daqSpider) {
+    public MsResponse<DaqSpider> actionSaveDaqSpider(@RequestBody DaqSpider daqSpider) {
         daqSpiderService.saveDaqSpider(daqSpider);
         return MsResponse.success();
     }
 
     @GetMapping(value = "queryAll")
-    public MsResponse<List<DaqSpider>> actionQueryDAQSpiders() {
+    public MsResponse<List<DaqSpider>> actionQueryDaqSpiders() {
         List<DaqSpider> daqSpiders = daqSpiderService.findDaqSpiders();
         return MsResponse.success(daqSpiders);
     }
 
     @GetMapping(value = "queryByPagination")
-    public MsResponse<MsPage<DaqSpider>> actionQueryDAQSpidersByPagination(
+    public MsResponse<MsPage<DaqSpider>> actionQueryDaqSpidersByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
