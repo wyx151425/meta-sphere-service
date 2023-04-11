@@ -97,7 +97,6 @@ public class ScrapydServiceImpl implements ScrapydService {
 
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(formData, headers);
         ScrapydResp resp = restTemplate.postForObject(url, httpEntity, ScrapydResp.class);
-        System.out.println(resp);
 
         if (MsConst.Scrapyd.RespStatus.OK.equals(resp.getStatus())) {
             return resp.getSpiders();

@@ -91,26 +91,26 @@ CREATE TABLE IF NOT EXISTS ms_daq_spider
     `update_at` DATETIME,
     `name`      VARCHAR(32),
     `code`      VARCHAR(32),
-    `cookies`    TEXT
+    `cookies`   TEXT
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_task_spider
 (
-    `id`            BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `object_id`     CHAR(32),
-    `status`        TINYINT,
-    `create_at`     DATETIME,
-    `update_at`     DATETIME,
-    `task_id`       BIGINT,
-    `task_name`     VARCHAR(64),
-    `task_code`     CHAR(36),
-    `spider_id`     BIGINT,
-    `spider_name`   VARCHAR(32),
-    `spider_code`   VARCHAR(32),
-    `spider_status` INT,
-    `server_host`   VARCHAR(15),
-    `server_port`   INT,
-    `job_id`        VARCHAR(40)
+    `id`                BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`         CHAR(32),
+    `status`            TINYINT,
+    `create_at`         DATETIME,
+    `update_at`         DATETIME,
+    `task_id`           BIGINT,
+    `task_name`         VARCHAR(64),
+    `task_code`         CHAR(36),
+    `spider_id`         BIGINT,
+    `spider_name`       VARCHAR(32),
+    `spider_code`       VARCHAR(32),
+    `spider_status`     INT,
+    `server_ip_address` VARCHAR(15),
+    `server_port`       INT,
+    `job_id`            VARCHAR(40)
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_task_keyword
@@ -128,13 +128,13 @@ CREATE TABLE IF NOT EXISTS ms_daq_task_keyword
 
 CREATE TABLE IF NOT EXISTS ms_daq_task_server
 (
-    `id`          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `object_id`   CHAR(32),
-    `status`      TINYINT,
-    `create_at`   DATETIME,
-    `update_at`   DATETIME,
-    `task_id`     BIGINT,
-    `server_id`   BIGINT,
+    `id`                BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`         CHAR(32),
+    `status`            TINYINT,
+    `create_at`         DATETIME,
+    `update_at`         DATETIME,
+    `task_id`           BIGINT,
+    `server_id`         BIGINT,
     `server_ip_address` VARCHAR(15),
-    `server_port` INT
+    `server_port`       INT
 );

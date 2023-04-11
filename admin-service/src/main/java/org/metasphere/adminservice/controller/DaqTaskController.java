@@ -107,4 +107,13 @@ public class DaqTaskController {
         MsPage<DaqTaskKeyword> page = daqTaskService.findDaqTaskKeywordsByPagination(daqTaskId, pageNum, pageSize);
         return MsResponse.success(page);
     }
+
+    @PutMapping(value = "{daqTaskId}/server")
+    MsResponse<DaqTask> actionBindDaqTaskServer(
+            @PathVariable(value = "daqTaskId") Long daqTaskId,
+            @RequestBody Long serverId
+    ) {
+        daqTaskService.bindDaqTaskServer(daqTaskId, serverId);
+        return MsResponse.success();
+    }
 }

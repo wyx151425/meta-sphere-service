@@ -77,8 +77,13 @@ public class MsConst {
         }
     }
 
+    public static class CacheKey {
+        public static final String RUNNING_DAQ_TASKS_CODE = "DAQ_TASK:RUNNING:CODES";
+    }
+
     public static class CacheKeyTemplate {
         public static final String DAQ_TASK_KEYWORDS = "DAQ_TASK:KEYWORDS:%s";
+        public static final String DAQ_TASK_SPIDERS = "DAQ_TASK:SPIDERS:%s";
     }
 
     public static class DaqTask {

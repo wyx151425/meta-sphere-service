@@ -37,11 +37,30 @@ public class DaqTaskServerServiceImpl implements DaqTaskServerService {
         taskServer.setTaskId(daqTaskId);
         taskServer.setServerId(serverId);
         taskServer.setServerIpAddress(server.getIpAddress());
+        taskServer.setServerPort(server.getPort());
         taskServerRepository.save(taskServer);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteDaqTaskServersByTaskId(Long daqTaskId) {
+        taskServerRepository.deleteAllByTaskId(daqTaskId);
+    }
+
+    @Override
+    public DaqTaskServer findDaqTaskServer(Long daqTaskId) {
+        return taskServerRepository.findOneByTaskId(daqTaskId);
     }
 
     @Override
     public List<DaqTaskServer> findDaqTaskServers(Long daqTaskId) {
         return taskServerRepository.findAllByTaskId(daqTaskId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void bindDaqTaskServer(Long daqTaskId, Long serverId) {
+        deleteDaqTaskServersByTaskId(daqTaskId);
+        saveDaqTaskServer(daqTaskId, serverId);
     }
 }

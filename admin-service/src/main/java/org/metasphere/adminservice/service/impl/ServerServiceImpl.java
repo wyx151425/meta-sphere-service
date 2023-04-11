@@ -11,9 +11,15 @@ import org.metasphere.adminservice.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.net.*;
 
@@ -50,6 +56,16 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public Server findServerById(Long id) {
         return serverRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
+    }
+
+    @Override
+    public MsPage<Server> findServersByTypeAndPagination(Integer type, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        Page<Server> page = serverRepository.findAll((Specification<Server>) (root, query, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.equal(root.get("type"), type);
+            return query.where(new Predicate[]{predicate}).getRestriction();
+        }, pageable);
+        return MsPage.newInstance(page);
     }
 
     @Override

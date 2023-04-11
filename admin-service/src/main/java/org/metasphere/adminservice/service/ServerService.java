@@ -27,6 +27,16 @@ public interface ServerService {
     Server findServerById(Long id);
 
     /**
+     * 根据类型获取服务器
+     *
+     * @param type     服务器的类型
+     * @param pageNum  分页页码
+     * @param pageSize 单页数据量
+     * @return 服务器信息
+     */
+    MsPage<Server> findServersByTypeAndPagination(Integer type, Integer pageNum, Integer pageSize);
+
+    /**
      * 分页查询服务器信息
      *
      * @param pageNum  分页页码

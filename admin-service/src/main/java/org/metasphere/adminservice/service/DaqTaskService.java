@@ -47,7 +47,7 @@ public interface DaqTaskService {
      *
      * @param pageNum  页码
      * @param pageSize 单页数据量
-     * @param stage 任务运行阶段
+     * @param stage    任务运行阶段
      * @return 查询到的数据采集任务信息
      */
     MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage);
@@ -95,4 +95,12 @@ public interface DaqTaskService {
      * @return 数据采集任务关键词
      */
     MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 绑定数据采集任务服务器
+     *
+     * @param daqTaskId 数据采集任务ID
+     * @param serverId  服务器ID
+     */
+    void bindDaqTaskServer(Long daqTaskId, Long serverId);
 }

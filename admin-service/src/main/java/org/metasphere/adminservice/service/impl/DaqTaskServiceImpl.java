@@ -90,10 +90,8 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         daqTaskRepository.save(daqTask);
 
         // 创建Scrapy项目
-        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
-        for (DaqTaskServer taskServer : taskServers) {
-            scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode);
-        }
+        DaqTaskServer taskServer = daqTaskServerService.findDaqTaskServer(daqTaskId);
+        scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode);
 
         // 创建数据存储表
         daqDbService.createDaqDataTable(taskCode);
@@ -110,33 +108,32 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(keywordsCacheKey, keywords);
 
-        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
+        DaqTaskServer taskServer = daqTaskServerService.findDaqTaskServer(daqTaskId);
 
         // 启动数据采集爬虫
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
 
-        taskSpiders.parallelStream().forEach(taskSpider -> taskServers.forEach(taskServer -> {
+        taskSpiders.parallelStream().forEach(taskSpider -> {
             String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(),
                     taskSpider.getTaskCode(), taskSpider.getSpiderCode());
             taskSpider.setJobId(jobId);
+            taskSpider.setServerIpAddress(taskServer.getServerIpAddress());
+            taskSpider.setServerPort(taskServer.getServerPort());
             taskSpider.setUpdateAt(LocalDateTime.now());
             daqTaskSpiderService.updateDaqTaskSpider(taskSpider);
-        }));
+        });
 
-        for (DaqTaskSpider taskSpider : taskSpiders) {
-            for (DaqTaskServer taskServer : taskServers) {
-                String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(),
-                        taskSpider.getTaskCode(), taskSpider.getSpiderCode());
-                taskSpider.setJobId(jobId);
-                taskSpider.setUpdateAt(LocalDateTime.now());
-                daqTaskSpiderService.updateDaqTaskSpider(taskSpider);
-            }
-        }
+        // 将数据采集任务及启用的爬虫计入缓存，用于数据量统计
+        redisTemplate.opsForList().rightPushAll(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
+
+        List<String> spiderCodes = taskSpiders.stream().map(DaqTaskSpider::getSpiderCode).collect(Collectors.toList());
+        String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
+        redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
     }
 
     @Override
     public MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createAt");
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         Page<DaqTask> page;
         if (null != stage) {
@@ -177,5 +174,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         return daqTaskKeywordService.findDaqTaskKeywordsByPagination(daqTaskId, pageNum, pageSize);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void bindDaqTaskServer(Long daqTaskId, Long serverId) {
+        daqTaskServerService.bindDaqTaskServer(daqTaskId, serverId);
     }
 }

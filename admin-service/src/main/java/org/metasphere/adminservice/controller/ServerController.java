@@ -26,6 +26,16 @@ public class ServerController {
         return MsResponse.success();
     }
 
+    @GetMapping(value = "queryByTypeAndPagination")
+    public MsResponse<MsPage<Server>> actionQueryServersByTypeAndPagination(
+            @RequestParam(value = "type") Integer type,
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize
+    ) {
+        MsPage<Server> page = serverService.findServersByTypeAndPagination(type, pageNum, pageSize);
+        return MsResponse.success(page);
+    }
+
     @GetMapping(value = "queryByPagination")
     public MsResponse<MsPage<Server>> actionQueryServersByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
