@@ -37,7 +37,7 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds) {
+    public void saveDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds) {
         daqTaskSpiderRepository.deleteAllByTaskId(daqTask.getId());
 
         List<DaqSpider> daqSpiders = daqSpiderService.findDaqSpidersByIds(daqSpiderIds);

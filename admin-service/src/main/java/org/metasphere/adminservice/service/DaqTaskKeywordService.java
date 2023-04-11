@@ -19,7 +19,7 @@ public interface DaqTaskKeywordService {
      * @param daqTask  数据采集任务
      * @param keywords 关键词
      */
-    void addDaqTaskKeywords(DaqTask daqTask, List<String> keywords);
+    void saveDaqTaskKeywords(DaqTask daqTask, List<String> keywords);
 
     /**
      * 删除数据采集任务关键词

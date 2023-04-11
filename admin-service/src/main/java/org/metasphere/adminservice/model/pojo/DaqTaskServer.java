@@ -28,7 +28,7 @@ public class DaqTaskServer extends MetaSphereEntity {
     /**
      * 服务器主机IP
      */
-    private String serverHost;
+    private String serverIpAddress;
     /**
      * 服务器主机端口号
      */
@@ -53,12 +53,12 @@ public class DaqTaskServer extends MetaSphereEntity {
         this.serverId = serverId;
     }
 
-    public String getServerHost() {
-        return serverHost;
+    public String getServerIpAddress() {
+        return serverIpAddress;
     }
 
-    public void setServerHost(String serverHost) {
-        this.serverHost = serverHost;
+    public void setServerIpAddress(String serverHost) {
+        this.serverIpAddress = serverHost;
     }
 
     public Integer getServerPort() {

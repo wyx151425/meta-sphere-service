@@ -17,7 +17,7 @@ public interface DaqSpiderService {
      *
      * @param daqSpider 数据采集爬虫
      */
-    void addDaqSpider(DaqSpider daqSpider);
+    void saveDaqSpider(DaqSpider daqSpider);
 
     /**
      * 根据ID删除数据采集爬虫

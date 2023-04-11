@@ -17,7 +17,7 @@ public interface DaqTaskServerService {
      * @param daqTaskId 数据采集任务的ID
      * @param serverId  服务器的ID
      */
-    void addDaqTaskServer(Long daqTaskId, Long serverId);
+    void saveDaqTaskServer(Long daqTaskId, Long serverId);
 
     /**
      * 根据数据采集任务ID获取数据采集服务器

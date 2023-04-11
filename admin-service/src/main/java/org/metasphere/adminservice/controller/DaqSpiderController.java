@@ -24,7 +24,7 @@ public class DaqSpiderController {
 
     @PostMapping(value = "")
     public MsResponse<DaqSpider> actionSaveDAQSpider(@RequestBody DaqSpider daqSpider) {
-        daqSpiderService.addDaqSpider(daqSpider);
+        daqSpiderService.saveDaqSpider(daqSpider);
         return MsResponse.success();
     }
 

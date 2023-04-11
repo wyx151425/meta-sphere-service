@@ -31,12 +31,12 @@ public class DaqTaskServerServiceImpl implements DaqTaskServerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDaqTaskServer(Long daqTaskId, Long serverId) {
+    public void saveDaqTaskServer(Long daqTaskId, Long serverId) {
         Server server = serverService.findServerById(serverId);
         DaqTaskServer taskServer = new DaqTaskServer();
         taskServer.setTaskId(daqTaskId);
         taskServer.setServerId(serverId);
-        taskServer.setServerHost(server.getIpAddress());
+        taskServer.setServerIpAddress(server.getIpAddress());
         taskServerRepository.save(taskServer);
     }
 

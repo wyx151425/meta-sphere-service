@@ -26,7 +26,7 @@ public class DaqSpiderServiceImpl implements DaqSpiderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDaqSpider(DaqSpider daqSpider) {
+    public void saveDaqSpider(DaqSpider daqSpider) {
         daqSpiderRepository.save(daqSpider);
     }
 

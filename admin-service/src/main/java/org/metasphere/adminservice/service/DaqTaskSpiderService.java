@@ -19,7 +19,7 @@ public interface DaqTaskSpiderService {
      * @param daqTask      数据采集任务
      * @param daqSpiderIds 爬虫ID
      */
-    void addDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds);
+    void saveDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds);
 
     /**
      * 更新数据采集任务爬虫

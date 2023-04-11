@@ -63,8 +63,6 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         daqTask.setStage(MsConst.DaqTask.Stage.CREATED);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
-
-        daqTaskServerService.addDaqTaskServer(daqTask.getId(), 6L);
     }
 
     @Override
@@ -94,7 +92,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         // 创建Scrapy项目
         List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
         for (DaqTaskServer taskServer : taskServers) {
-            scrapydService.addScrapyProject(taskServer.getServerHost(), taskServer.getServerPort(), taskCode);
+            scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode);
         }
 
         // 创建数据存储表
@@ -118,7 +116,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
 
         taskSpiders.parallelStream().forEach(taskSpider -> taskServers.forEach(taskServer -> {
-            String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerHost(), taskServer.getServerPort(),
+            String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(),
                     taskSpider.getTaskCode(), taskSpider.getSpiderCode());
             taskSpider.setJobId(jobId);
             taskSpider.setUpdateAt(LocalDateTime.now());
@@ -127,7 +125,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
         for (DaqTaskSpider taskSpider : taskSpiders) {
             for (DaqTaskServer taskServer : taskServers) {
-                String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerHost(), taskServer.getServerPort(),
+                String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(),
                         taskSpider.getTaskCode(), taskSpider.getSpiderCode());
                 taskSpider.setJobId(jobId);
                 taskSpider.setUpdateAt(LocalDateTime.now());
@@ -156,7 +154,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     public void addDaqTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
-        daqTaskSpiderService.addDaqTaskSpiders(daqTask, daqSpiderIds);
+        daqTaskSpiderService.saveDaqTaskSpiders(daqTask, daqSpiderIds);
     }
 
     @Override
@@ -173,7 +171,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Transactional(rollbackFor = Exception.class)
     public void addDaqTaskKeywords(Long daqTaskId, List<String> keywords) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
-        daqTaskKeywordService.addDaqTaskKeywords(daqTask, keywords);
+        daqTaskKeywordService.saveDaqTaskKeywords(daqTask, keywords);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDaqTaskKeywords(DaqTask daqTask, List<String> keywords) {
+    public void saveDaqTaskKeywords(DaqTask daqTask, List<String> keywords) {
         Set<String> keywordSet = new HashSet<>(keywords);
         List<DaqTaskKeyword> daqTaskKeywords = new ArrayList<>(keywordSet.size());
         for (String keyword : keywordSet) {

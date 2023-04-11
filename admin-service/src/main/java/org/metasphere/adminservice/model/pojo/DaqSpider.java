@@ -28,7 +28,7 @@ public class DaqSpider extends MetaSphereEntity {
     /**
      * 爬虫的Cookie信息
      */
-    private String cookie;
+    private String cookies;
 
     public DaqSpider() {
     }
@@ -49,11 +49,11 @@ public class DaqSpider extends MetaSphereEntity {
         this.code = code;
     }
 
-    public String getCookie() {
-        return cookie;
+    public String getCookies() {
+        return cookies;
     }
 
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
+    public void setCookies(String cookie) {
+        this.cookies = cookie;
     }
 }
