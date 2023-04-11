@@ -14,6 +14,15 @@ import java.util.List;
  */
 public interface ScrapydService {
     /**
+     * 检查Scrapyd服务器是否可访问
+     *
+     * @param ipAddress Scrapy服务主机IP
+     * @param port      服务端口号
+     * @return 可达状态
+     */
+    Boolean checkScrapydStatus(String ipAddress, Integer port);
+
+    /**
      * 查询Scrapyd服务的状态
      *
      * @param host Scrapy服务主机IP
@@ -43,10 +52,10 @@ public interface ScrapydService {
     /**
      * 部署爬虫
      *
-     * @param host     Scrapy服务主机IP
-     * @param port     服务端口号
-     * @param project  Scrapy项目的名称
-     * @param spider   爬虫名称
+     * @param host    Scrapy服务主机IP
+     * @param port    服务端口号
+     * @param project Scrapy项目的名称
+     * @param spider  爬虫名称
      * @return 爬虫的Scrapy任务ID
      */
     String scheduleScrapySpider(String host, Integer port, String project, String spider);

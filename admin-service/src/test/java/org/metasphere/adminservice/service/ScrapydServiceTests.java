@@ -34,6 +34,12 @@ public class ScrapydServiceTests {
     private RestTemplate restTemplate;
 
     @Test
+    void testCheckScrapydStatus() {
+        boolean a = scrapydService.checkScrapydStatus("180.201.163.246", 51001);
+        System.out.println(a);
+    }
+
+    @Test
     void testFindScrapydStatus() {
         ScrapydStatus scrapydStatus = scrapydService.findScrapydStatus("127.0.0.1", 6800);
         System.out.println(scrapydStatus);
@@ -41,7 +47,7 @@ public class ScrapydServiceTests {
 
     @Test
     void testAddDaqProject() {
-        Integer spidersCount = scrapydService.addScrapyProject("127.0.0.1", 6800, UUID.randomUUID().toString().replace("-", ""));
+        Integer spidersCount = scrapydService.addScrapyProject("180.201.163.246", 51001, UUID.randomUUID().toString().replace("-", ""));
         System.out.println(spidersCount);
     }
 

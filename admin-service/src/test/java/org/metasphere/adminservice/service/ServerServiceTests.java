@@ -23,7 +23,7 @@ public class ServerServiceTests {
 
     @Test
     void testCheckServerStatus() {
-        int status = serverService.checkServerStatus("180.201.163.246");
+        int status = serverService.checkServerStatus("180.201.163.246", 6800);
         System.out.println(status);
     }
 

@@ -39,15 +39,15 @@ public interface ServerService {
      * 检查服务器的状态（能否PING通）
      *
      * @param ipAddress 主机IP地址
-     * @return 状态代码
+     * @return 可达标志
      */
-    Integer checkServerStatus(String ipAddress);
+    Boolean checkServerStatus(String ipAddress);
 
     /**
      * 检查服务器状态（检查IP和端口能否连通）
      *
      * @param ipAddress 主机IP地址
-     * @param port 端口号
+     * @param port      端口号
      * @return 状态代码
      */
     Integer checkServerStatus(String ipAddress, Integer port);

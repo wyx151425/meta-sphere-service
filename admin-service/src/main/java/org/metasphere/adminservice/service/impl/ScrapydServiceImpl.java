@@ -1,5 +1,6 @@
 package org.metasphere.adminservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.exception.ScrapydReqException;
 import org.metasphere.adminservice.model.dto.scrapyd.*;
@@ -28,11 +29,24 @@ import java.util.stream.Collectors;
  * @Date: Created in 2023-02-21 19:46
  * @Modified By:
  */
+@Slf4j
 @Service(value = "scrapydService")
 public class ScrapydServiceImpl implements ScrapydService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Override
+    public Boolean checkScrapydStatus(String ipAddress, Integer port) {
+        String url = String.format(MsConst.Scrapyd.URLTemplate.QUERY_SCRAPYD_STATUS, ipAddress, port);
+        try {
+            ScrapydResp resp = restTemplate.getForObject(url, ScrapydResp.class);
+            return MsConst.Scrapyd.RespStatus.OK.equals(resp.getStatus());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return false;
+    }
 
     @Override
     public ScrapydStatus findScrapydStatus(String host, Integer port) {
@@ -83,6 +97,7 @@ public class ScrapydServiceImpl implements ScrapydService {
 
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(formData, headers);
         ScrapydResp resp = restTemplate.postForObject(url, httpEntity, ScrapydResp.class);
+        System.out.println(resp);
 
         if (MsConst.Scrapyd.RespStatus.OK.equals(resp.getStatus())) {
             return resp.getSpiders();
