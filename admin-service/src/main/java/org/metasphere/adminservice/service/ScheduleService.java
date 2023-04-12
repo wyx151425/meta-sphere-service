@@ -1,5 +1,8 @@
 package org.metasphere.adminservice.service;
 
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+
 /**
  * @Author: WangZhenqi
  * @Description:
@@ -8,4 +11,7 @@ package org.metasphere.adminservice.service;
  */
 public interface ScheduleService {
 
+    @Async
+    @Scheduled(cron = "0/30 * * * * ?")
+    void scheduleCountDaqDataVolume();
 }

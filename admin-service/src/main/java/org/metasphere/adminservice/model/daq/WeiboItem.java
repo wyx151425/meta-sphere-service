@@ -13,6 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class WeiboItem {
     @Id
     private String id;
+    private String spiderCode;
+    private String taskCode;
+    private String keyword;
     private String mid;
     private String mblogId;
     private String createdAt;
@@ -39,6 +42,30 @@ public class WeiboItem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSpiderCode() {
+        return spiderCode;
+    }
+
+    public void setSpiderCode(String spiderCode) {
+        this.spiderCode = spiderCode;
+    }
+
+    public String getTaskCode() {
+        return taskCode;
+    }
+
+    public void setTaskCode(String taskCode) {
+        this.taskCode = taskCode;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 
     public String getMid() {

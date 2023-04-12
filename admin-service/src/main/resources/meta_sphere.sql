@@ -138,3 +138,19 @@ CREATE TABLE IF NOT EXISTS ms_daq_task_server
     `server_ip_address` VARCHAR(15),
     `server_port`       INT
 );
+
+CREATE TABLE IF NOT EXISTS ms_daq_data_volume
+(
+    `id`          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`   CHAR(32),
+    `status`      TINYINT,
+    `create_at`   DATETIME,
+    `update_at`   DATETIME,
+    `task_id`     BIGINT,
+    `task_name`   VARCHAR(64),
+    `task_code`   CHAR(36),
+    `spider_name` VARCHAR(32),
+    `spider_code` VARCHAR(32),
+    `counted_at`  DATETIME,
+    `data_volume` BIGINT
+);

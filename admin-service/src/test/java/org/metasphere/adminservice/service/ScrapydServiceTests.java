@@ -94,7 +94,7 @@ public class ScrapydServiceTests {
 
     @Test
     void testDeleteDaqProject() {
-        scrapydService.deleteScrapyProject("127.0.0.1", 6800, "ms-daq-engine");
+        scrapydService.deleteScrapyProject("180.201.163.246", 51001, "c54fa19b66734b33b1180e6f539af589");
     }
 
     @Test
