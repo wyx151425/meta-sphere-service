@@ -4,6 +4,7 @@ import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
+import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 
 import java.util.List;
 
@@ -103,4 +104,12 @@ public interface DaqTaskService {
      * @param serverId  服务器ID
      */
     void bindDaqTaskServer(Long daqTaskId, Long serverId);
+
+    /**
+     * 根据数据采集任务的ID获取该任务的时序数据量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 时序数据量
+     */
+    DaqTaskTimingDataVolumes findDaqTaskTimingDataVolumes(Long daqTaskId);
 }

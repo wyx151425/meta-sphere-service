@@ -4,12 +4,12 @@ import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.constant.MsStatusCode;
 import org.metasphere.adminservice.exception.MsException;
 import org.metasphere.adminservice.model.dto.MsPage;
-import org.metasphere.adminservice.model.pojo.daq.DaqTask;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskServer;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
+import org.metasphere.adminservice.model.pojo.daq.*;
+import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
+import org.metasphere.adminservice.model.vo.DataVolume;
+import org.metasphere.adminservice.model.vo.TimingDataVolumes;
 import org.metasphere.adminservice.repository.daq.DaqTaskRepository;
-import org.metasphere.adminservice.service.*;
+import org.metasphere.adminservice.service.ScrapydService;
 import org.metasphere.adminservice.service.daq.*;
 import org.metasphere.adminservice.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -53,10 +55,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private DaqEngineDbService daqEngineDbService;
 
     @Autowired
+    private DaqDataVolumeService daqDataVolumeService;
+
+    @Autowired
     private ScrapydService scrapydService;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private StringRedisTemplate redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -186,5 +191,38 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Transactional(rollbackFor = Exception.class)
     public void bindDaqTaskServer(Long daqTaskId, Long serverId) {
         daqTaskServerService.bindDaqTaskServer(daqTaskId, serverId);
+    }
+
+    @Override
+    public DaqTaskTimingDataVolumes findDaqTaskTimingDataVolumes(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+
+        Map<String, List<DaqDataVolume>> dataVolumesMap = daqDataVolumeService.findSpiderCode2DaqDataVolumesMap(daqTask.getCode());
+        List<TimingDataVolumes> tdvs = dataVolumesMap.keySet()
+                .stream().map(spiderCode -> {
+                    List<DaqDataVolume> dataVolumes = dataVolumesMap.get(spiderCode);
+
+                    List<DataVolume> dvs = dataVolumes
+                            .stream().map(dataVolume -> {
+                                DataVolume dv = new DataVolume();
+                                dv.setCountedAt(dataVolume.getCountedAt().toInstant(ZoneOffset.ofHours(8)).toEpochMilli());
+                                dv.setDataVolume(dataVolume.getDataVolume());
+                                return dv;
+                            }).collect(Collectors.toList());
+
+                    TimingDataVolumes tdv = new TimingDataVolumes();
+                    tdv.setSpiderName(MsConst.DaqSpider.CODE2NAME.get(spiderCode));
+                    tdv.setSpiderCode(spiderCode);
+                    tdv.setDataVolumes(dvs);
+
+                    return tdv;
+                }).collect(Collectors.toList());
+
+        DaqTaskTimingDataVolumes dttdvs = new DaqTaskTimingDataVolumes();
+        dttdvs.setTaskName(daqTask.getName());
+        dttdvs.setTaskCode(daqTask.getCode());
+        dttdvs.setTimingDataVolumes(tdvs);
+
+        return dttdvs;
     }
 }

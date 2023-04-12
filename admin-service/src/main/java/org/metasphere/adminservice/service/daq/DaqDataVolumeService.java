@@ -3,6 +3,7 @@ package org.metasphere.adminservice.service.daq;
 import org.metasphere.adminservice.model.pojo.daq.DaqDataVolume;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: WangZhenqi
@@ -25,4 +26,12 @@ public interface DaqDataVolumeService {
      * @param dataVolumes 数据量
      */
     void saveDaqDataVolumes(List<DaqDataVolume> dataVolumes);
+
+    /**
+     * 根据数据采集任务编码获取爬虫编码与时序数据量的映射
+     *
+     * @param taskCode 数据采集任务编码
+     * @return 爬虫编码与时序数据量的映射
+     */
+    Map<String, List<DaqDataVolume>> findSpiderCode2DaqDataVolumesMap(String taskCode);
 }

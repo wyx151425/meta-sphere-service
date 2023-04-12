@@ -4,6 +4,7 @@ import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
+import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 import org.metasphere.adminservice.model.vo.resp.MsResponse;
 import org.metasphere.adminservice.service.daq.DaqTaskKeywordService;
 import org.metasphere.adminservice.service.daq.DaqTaskService;
@@ -115,5 +116,11 @@ public class DaqTaskController {
     ) {
         daqTaskService.bindDaqTaskServer(daqTaskId, serverId);
         return MsResponse.success();
+    }
+
+    @GetMapping(value = "{daqTaskId}/timingDataVolumes")
+    MsResponse<DaqTaskTimingDataVolumes> actionQueryDaqTaskTimingDataVolumes(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        DaqTaskTimingDataVolumes timingDataVolumes = daqTaskService.findDaqTaskTimingDataVolumes(daqTaskId);
+        return MsResponse.success(timingDataVolumes);
     }
 }
