@@ -5,6 +5,7 @@ import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.model.daq.WeiboItem;
 import org.metasphere.adminservice.model.pojo.daq.DaqDataVolume;
 import org.metasphere.adminservice.service.ScheduleService;
+import org.metasphere.adminservice.service.daq.DaqDataVolumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -34,8 +35,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private DaqDataVolumeService daqDataVolumeService;
+
     @Async
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     @Override
     public void scheduleCountDaqDataVolume() {
         List<DaqDataVolume> dataVolumes = new ArrayList<>();
@@ -50,7 +54,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                     Query query = Query.query(Criteria.where("task_code").is(taskCode).and("spider_code").is(spiderCode));
                     long dataVolume = mongoTemplate.count(query, WeiboItem.class);
 
-
+                    DaqDataVolume daqDataVolume = new DaqDataVolume();
+                    daqDataVolume.setTaskCode(taskCode);
+                    daqDataVolume.setSpiderCode(spiderCode);
+                    daqDataVolume.setCountedAt(countedAt);
+                    daqDataVolume.setDataVolume(dataVolume);
+                    dataVolumes.add(daqDataVolume);
 
                     log.info("daq data volume of " + taskCode + "'s " + spiderCode + " spider is " + dataVolume);
                 });
@@ -58,6 +67,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        log.info("Counting data acquisition engine data volume");
+
+        daqDataVolumeService.saveDaqDataVolumes(dataVolumes);
     }
 }

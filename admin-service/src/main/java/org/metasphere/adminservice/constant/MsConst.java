@@ -36,7 +36,7 @@ public class MsConst {
 
     public static class Scrapyd {
         public static final String PROJECT_VERSION = "v1";
-        public static final String EGG_FILE_PATH = "eggs/1681267197.egg";
+        public static final String EGG_FILE_PATH = "eggs/1681297293.egg";
 
         public static class RespStatus {
             public static final String OK = "ok";

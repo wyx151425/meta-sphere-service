@@ -117,6 +117,7 @@ public class ScrapydServiceImpl implements ScrapydService {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add(MsConst.Scrapyd.ReqParam.PROJECT, project);
         formData.add(MsConst.Scrapyd.ReqParam.SPIDER, spider);
+        formData.add(MsConst.Scrapyd.ReqParam.TASK_CODE, project);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
 

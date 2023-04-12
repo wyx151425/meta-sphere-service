@@ -30,6 +30,7 @@ public class MetaSphereConfig {
         // 设置Key的序列化方式为String
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         // 设置Value的序列化方式JSON，使用GenericJackson2JsonRedisSerializer替换默认序列化
+//        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());

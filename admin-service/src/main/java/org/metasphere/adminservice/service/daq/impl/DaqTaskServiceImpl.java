@@ -114,7 +114,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         // 启动数据采集爬虫
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
 
-        taskSpiders.parallelStream().forEach(taskSpider -> {
+        taskSpiders.forEach(taskSpider -> {
             String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(),
                     taskSpider.getTaskCode(), taskSpider.getSpiderCode());
             taskSpider.setJobId(jobId);
@@ -130,6 +130,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         List<String> spiderCodes = taskSpiders.stream().map(DaqTaskSpider::getSpiderCode).collect(Collectors.toList());
         String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
+
+        // 修改数据采集任务运行阶段
+        daqTask.setStage(MsConst.DaqTask.Stage.RUNNING);
+        daqTask.setUpdateAt(LocalDateTime.now());
+        daqTaskRepository.save(daqTask);
     }
 
     @Override

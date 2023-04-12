@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @Modified By:
  */
 @Entity
-@Table(name = "ms_daq_task_data_volume")
+@Table(name = "ms_daq_data_volume")
 @Where(clause = "status = 1")
 public class DaqDataVolume extends MetaSphereEntity {
     /**
