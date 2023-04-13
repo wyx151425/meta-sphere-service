@@ -1,10 +1,15 @@
 package org.metasphere.adminservice.service.daq.impl;
 
+import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
 import org.metasphere.adminservice.service.daq.DaqEngineDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @Author: WangZhenqi
@@ -20,7 +25,7 @@ public class DaqEngineDbServiceImpl implements DaqEngineDbService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createDaqDataTable(String tableName) {
+    public void createDaqTaskDataTable(String tableName) {
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
                 "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
                 "`create_at` DATETIME COMMENT '数据入库时间'," +
@@ -45,5 +50,40 @@ public class DaqEngineDbServiceImpl implements DaqEngineDbService {
                 "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
                 "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
                 ");");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDaqEngineWeiboItem(String tableName, DaqEngineWeiboItem daqEngineWeiboItem) {
+        LocalDateTime createAt = LocalDateTime.now();
+        String sql = "INSERT INTO `" + tableName + "`(create_at, task_name, task_code, task_keyword, " +
+                "source_id, source_blog_id, source_origin_id, source_create_at, " +
+                "text, likes_count, comments_count, reposts_count, " +
+                "account_id, account_name, region_name, platform_name, platform_code) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, createAt, daqEngineWeiboItem.getTaskName(), daqEngineWeiboItem.getTaskCode(), daqEngineWeiboItem.getTaskKeyword(),
+                daqEngineWeiboItem.getSourceId(), daqEngineWeiboItem.getSourceBlogId(), daqEngineWeiboItem.getSourceOriginId(), daqEngineWeiboItem.getSourceCreateAt(),
+                daqEngineWeiboItem.getText(), daqEngineWeiboItem.getLikesCount(), daqEngineWeiboItem.getCommentsCount(), daqEngineWeiboItem.getRepostsCount(),
+                daqEngineWeiboItem.getAccountId(), daqEngineWeiboItem.getAccountName(), daqEngineWeiboItem.getRegionName(), daqEngineWeiboItem.getPlatformName(), daqEngineWeiboItem.getPlatformCode());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDaqEngineWeiboItems(String tableName, List<DaqEngineWeiboItem> daqEngineWeiboItems) {
+        LocalDateTime createAt = LocalDateTime.now();
+        String sql = "INSERT INTO `" + tableName + "`(create_at, task_name, task_code, task_keyword, " +
+                "source_id, source_blog_id, source_origin_id, source_create_at, " +
+                "text, likes_count, comments_count, reposts_count, " +
+                "account_id, account_name, region_name, platform_name, platform_code) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        daqEngineWeiboItems.forEach(weiboItem -> jdbcTemplate.update(sql, createAt, weiboItem.getTaskName(), weiboItem.getTaskCode(), weiboItem.getTaskKeyword(),
+                weiboItem.getSourceId(), weiboItem.getSourceBlogId(), weiboItem.getSourceOriginId(), weiboItem.getSourceCreateAt(),
+                weiboItem.getText(), weiboItem.getLikesCount(), weiboItem.getCommentsCount(), weiboItem.getRepostsCount(),
+                weiboItem.getAccountId(), weiboItem.getAccountName(), weiboItem.getRegionName(), weiboItem.getPlatformName(), weiboItem.getPlatformCode()));
+    }
+
+    @Override
+    public void findDaqTaskDataByPagination(String tableName, Integer pageNum, Integer pageSize) {
+
     }
 }

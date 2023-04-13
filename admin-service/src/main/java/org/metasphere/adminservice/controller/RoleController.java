@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.controller;
 
 import org.metasphere.adminservice.model.dto.MsPage;
-import org.metasphere.adminservice.model.pojo.Role;
+import org.metasphere.adminservice.model.pojo.auth.Role;
 import org.metasphere.adminservice.model.vo.resp.MsResponse;
 import org.metasphere.adminservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;

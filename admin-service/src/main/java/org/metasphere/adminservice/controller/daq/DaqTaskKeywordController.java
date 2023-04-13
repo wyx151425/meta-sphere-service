@@ -23,7 +23,7 @@ public class DaqTaskKeywordController {
     private DaqTaskKeywordService daqTaskKeywordService;
 
     @DeleteMapping(value = "{id}")
-    MsResponse<DaqTaskKeyword> actionDeleteDAQTaskKeyword(@PathVariable(value = "id") Long id) {
+    MsResponse<DaqTaskKeyword> actionDeleteDaqTaskKeyword(@PathVariable(value = "id") Long id) {
         daqTaskKeywordService.deleteDaqTaskKeyword(id);
         return MsResponse.success();
     }

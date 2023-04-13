@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.model.daq;
+package org.metasphere.adminservice.model.bo.daq;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,9 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @Date: Created in 2023-04-06 16:18
  * @Modified By:
  */
-@Document(collection = "weibo_user")
-public class WeiboUserItem {
-    @Id
+public class MongoWeiboUserItem {
+
     private String id;
     private String idStr;
     private String screenName;
@@ -29,7 +28,7 @@ public class WeiboUserItem {
     private String statusesCount;
     private String statusesCountStr;
 
-    public WeiboUserItem() {
+    public MongoWeiboUserItem() {
     }
 
     public String getId() {

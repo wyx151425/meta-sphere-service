@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.repository;
 
-import org.metasphere.adminservice.model.pojo.User;
+import org.metasphere.adminservice.model.pojo.auth.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

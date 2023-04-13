@@ -2,15 +2,14 @@ package org.metasphere.adminservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.model.daq.WeiboItem;
-import org.metasphere.adminservice.model.pojo.daq.DaqDataVolume;
+import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
+import org.metasphere.adminservice.model.pojo.daq.DaqTaskDataVolume;
 import org.metasphere.adminservice.service.ScheduleService;
-import org.metasphere.adminservice.service.daq.DaqDataVolumeService;
+import org.metasphere.adminservice.service.daq.DaqTaskDataVolumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -37,13 +36,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private DaqDataVolumeService daqDataVolumeService;
+    private DaqTaskDataVolumeService daqTaskDataVolumeService;
 
     @Async
     @Scheduled(cron = "0 0/1 * * * ?")
     @Override
     public void scheduleCountDaqDataVolume() {
-        List<DaqDataVolume> dataVolumes = new ArrayList<>();
+        List<DaqTaskDataVolume> dataVolumes = new ArrayList<>();
         LocalDateTime countedAt = LocalDateTime.now();
 
         List<String> taskCodes = redisTemplate.opsForList().range(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, -1);
@@ -53,14 +52,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                 List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
                 spiderCodes.forEach(spiderCode -> {
                     Query query = Query.query(Criteria.where("task_code").is(taskCode).and("spider_code").is(spiderCode));
-                    long dataVolume = mongoTemplate.count(query, WeiboItem.class);
+                    long dataVolume = mongoTemplate.count(query, MongoWeiboItem.class);
 
-                    DaqDataVolume daqDataVolume = new DaqDataVolume();
-                    daqDataVolume.setTaskCode(taskCode);
-                    daqDataVolume.setSpiderCode(spiderCode);
-                    daqDataVolume.setCountedAt(countedAt);
-                    daqDataVolume.setDataVolume(dataVolume);
-                    dataVolumes.add(daqDataVolume);
+                    DaqTaskDataVolume daqTaskDataVolume = new DaqTaskDataVolume();
+                    daqTaskDataVolume.setTaskCode(taskCode);
+                    daqTaskDataVolume.setSpiderCode(spiderCode);
+                    daqTaskDataVolume.setCountedAt(countedAt);
+                    daqTaskDataVolume.setDataVolume(dataVolume);
+                    dataVolumes.add(daqTaskDataVolume);
 
                     log.info("daq data volume of " + taskCode + "'s " + spiderCode + " spider is " + dataVolume);
                 });
@@ -69,6 +68,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             log.error(e.getMessage());
         }
 
-        daqDataVolumeService.saveDaqDataVolumes(dataVolumes);
+        daqTaskDataVolumeService.saveDaqDataVolumes(dataVolumes);
     }
 }

@@ -5,7 +5,7 @@ import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.exception.ScrapydReqException;
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydResp;
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydStatus;
-import org.metasphere.adminservice.model.pojo.DaqJobs;
+import org.metasphere.adminservice.model.pojo.daq.DaqJobs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;

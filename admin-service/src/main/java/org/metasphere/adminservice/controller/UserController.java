@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.controller;
 
-import org.metasphere.adminservice.model.pojo.User;
+import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.model.vo.req.UserLoginVO;
 import org.metasphere.adminservice.model.vo.resp.MsResponse;
 import org.metasphere.adminservice.service.UserService;

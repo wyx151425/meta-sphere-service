@@ -1,8 +1,11 @@
 package org.metasphere.adminservice.service.daq.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.constant.MsStatusCode;
 import org.metasphere.adminservice.exception.MsException;
+import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
+import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
 import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.daq.*;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
@@ -18,6 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +36,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.metasphere.adminservice.model.bo.daq.MongoWeiboItem.batchConvertToDaqEngineWeiboItem;
+
 /**
  * @Author: WangZhenqi
  * @Description:
  * @Date: Created in 2023-04-06 20:13
  * @Modified By:
  */
+@Slf4j
 @Service(value = "daqTaskService")
 public class DaqTaskServiceImpl implements DaqTaskService {
 
@@ -55,7 +64,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private DaqEngineDbService daqEngineDbService;
 
     @Autowired
-    private DaqDataVolumeService daqDataVolumeService;
+    private DaqTaskDataVolumeService daqTaskDataVolumeService;
 
     @Autowired
     private ScrapydService scrapydService;
@@ -63,10 +72,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createDaqTask(DaqTask daqTask) {
-        daqTask.setStage(MsConst.DaqTask.Stage.CREATED);
+        daqTask.setStage(MsConst.DaqTask.Stage.NEW);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -75,7 +87,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTask(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
-        if (MsConst.DaqTask.Stage.CREATED != daqTask.getStage()) {
+        if (MsConst.DaqTask.Stage.NEW != daqTask.getStage()) {
             throw new MsException(MsStatusCode.DAQ_TASK_STAGE_ERROR);
         }
         daqTask.setStatus(MsConst.MetaSphereEntity.Status.DISABLED);
@@ -85,13 +97,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void startDaqTask(Long daqTaskId) {
+    public void initDaqTask(Long daqTaskId) {
         String taskCode = UUIDUtils.getDaqTaskCode();
 
         // 创建任务编号，更新任务运行阶段
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
         daqTask.setCode(taskCode);
-        daqTask.setStage(MsConst.DaqTask.Stage.CONFIGURING);
+        daqTask.setStage(MsConst.DaqTask.Stage.TASK_CONFIGURING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
@@ -100,7 +112,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode);
 
         // 创建数据存储表
-        daqEngineDbService.createDaqDataTable(taskCode);
+        daqEngineDbService.createDaqTaskDataTable(taskCode);
     }
 
     @Override
@@ -137,14 +149,14 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
 
         // 修改数据采集任务运行阶段为执行中
-        daqTask.setStage(MsConst.DaqTask.Stage.RUNNING);
+        daqTask.setStage(MsConst.DaqTask.Stage.TASK_RUNNING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void stopPerformingDaqTask(Long daqTaskId) {
+    public void stopDaqTaskPerforming(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
 
         // 从运行数据采集任务编码缓存中删除该编码
@@ -170,7 +182,29 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         scrapydService.deleteScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode());
 
         // 修改数据采集任务运行阶段为已执行
-        daqTask.setStage(MsConst.DaqTask.Stage.EXECUTED);
+        daqTask.setStage(MsConst.DaqTask.Stage.TASK_PERFORMED);
+        daqTask.setUpdateAt(LocalDateTime.now());
+        daqTaskRepository.save(daqTask);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void enterDaqTaskAcquiredData(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+
+        int pageNum = 0;
+        int pageSize = 10;
+
+        List<MongoWeiboItem> mongoWeiboItems = mongoTemplate.find(Query.query(Criteria.where("task_code").is(daqTask.getCode())).skip(0L).limit(pageSize), MongoWeiboItem.class);
+        while (mongoWeiboItems.size() > 0) {
+            List<DaqEngineWeiboItem> daqEngineWeiboItems = MongoWeiboItem.batchConvertToDaqEngineWeiboItem(daqTask.getName(), mongoWeiboItems);
+            daqEngineDbService.saveDaqEngineWeiboItems(daqTask.getCode(), daqEngineWeiboItems);
+            pageNum++;
+            mongoWeiboItems = mongoTemplate.find(Query.query(Criteria.where("task_code").is(daqTask.getCode())).skip((long) pageNum * pageSize).limit(pageSize), MongoWeiboItem.class);
+        }
+
+        // 修改数据采集任务运行阶段为数据已录入
+        daqTask.setStage(MsConst.DaqTask.Stage.DATA_ENTERED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -230,10 +264,10 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     public DaqTaskTimingDataVolumes findDaqTaskTimingDataVolumes(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
 
-        Map<String, List<DaqDataVolume>> dataVolumesMap = daqDataVolumeService.findSpiderCode2DaqDataVolumesMap(daqTask.getCode());
+        Map<String, List<DaqTaskDataVolume>> dataVolumesMap = daqTaskDataVolumeService.findSpiderCode2DaqDataVolumesMap(daqTask.getCode());
         List<TimingDataVolumes> tdvs = dataVolumesMap.keySet()
                 .stream().map(spiderCode -> {
-                    List<DaqDataVolume> dataVolumes = dataVolumesMap.get(spiderCode);
+                    List<DaqTaskDataVolume> dataVolumes = dataVolumesMap.get(spiderCode);
 
                     List<DataVolume> dvs = dataVolumes
                             .stream().map(dataVolume -> {

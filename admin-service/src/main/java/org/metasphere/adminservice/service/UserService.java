@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service;
 
-import org.metasphere.adminservice.model.pojo.User;
+import org.metasphere.adminservice.model.pojo.auth.User;
 
 /**
  * @Author: WangZhenqi

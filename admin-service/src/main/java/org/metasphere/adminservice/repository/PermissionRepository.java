@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.repository;
 
-import org.metasphere.adminservice.model.pojo.Permission;
+import org.metasphere.adminservice.model.pojo.auth.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

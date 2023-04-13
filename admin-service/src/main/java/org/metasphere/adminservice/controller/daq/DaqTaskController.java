@@ -27,7 +27,7 @@ public class DaqTaskController {
     private final DaqTaskService daqTaskService;
 
     @Autowired
-    public DaqTaskController(DaqTaskService daqTaskService, DaqTaskKeywordService daqTaskKeywordService, DaqTaskSpiderService daqTaskSpiderService) {
+    public DaqTaskController(DaqTaskService daqTaskService) {
         this.daqTaskService = daqTaskService;
     }
 
@@ -43,21 +43,27 @@ public class DaqTaskController {
         return MsResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/start")
-    MsResponse<DaqTask> actionStartDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.startDaqTask(daqTaskId);
+    @PutMapping(value = "{daqTaskId}/init")
+    MsResponse<DaqTask> actionInitDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.initDaqTask(daqTaskId);
         return MsResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/execute")
-    MsResponse<DaqTask> actionExecuteDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+    @PutMapping(value = "{daqTaskId}/perform")
+    MsResponse<DaqTask> actionPerformDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
         daqTaskService.performDaqTask(daqTaskId);
         return MsResponse.success();
     }
 
     @PutMapping(value = "{daqTaskId}/stopPerforming")
     MsResponse<DaqTask> actionStopPerformingDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.stopPerformingDaqTask(daqTaskId);
+        daqTaskService.stopDaqTaskPerforming(daqTaskId);
+        return MsResponse.success();
+    }
+
+    @PutMapping(value = "{daqTaskId}/enterAcquiredData")
+    MsResponse<DaqTask> actionEnterDaqTaskAcquiredData(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.enterDaqTaskAcquiredData(daqTaskId);
         return MsResponse.success();
     }
 

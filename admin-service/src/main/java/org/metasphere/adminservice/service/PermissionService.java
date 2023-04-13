@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.MsPage;
-import org.metasphere.adminservice.model.pojo.Permission;
+import org.metasphere.adminservice.model.pojo.auth.Permission;
 
 import java.util.List;
 

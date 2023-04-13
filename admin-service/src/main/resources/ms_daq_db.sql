@@ -24,6 +24,22 @@ CREATE TABLE IF NOT EXISTS `uuid`
     `platform_code`    VARCHAR(32) COMMENT '源平台的编码'
 );
 
+CREATE TABLE IF NOT EXISTS `ms_weibo_account_item`
+(
+    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    `create_at`       DATETIME COMMENT '数据入库时间',
+
+    `source_id`       VARCHAR(32) COMMENT '源平台中的ID',
+    `screen_name`     VARCHAR(64) COMMENT '微博昵称',
+    `gender`          TINYINT COMMENT '性别(1男0女)',
+    `location`        VARCHAR(64) COMMENT '所在地区',
+    `description`     VARCHAR(128) COMMENT '简介',
+    `weibos_count`    INT COMMENT '微博数',
+    `follows_count`   INT COMMENT '关注数',
+    `followers_count` INT COMMENT '粉丝数',
+    `profile_url`     VARCHAR(64) COMMENT '微博主页URL'
+);
+
 /**
   account
 uid

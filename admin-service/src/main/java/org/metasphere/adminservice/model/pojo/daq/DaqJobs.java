@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.model.pojo;
+package org.metasphere.adminservice.model.pojo.daq;
 
 import java.util.List;
 

@@ -104,11 +104,11 @@ public class MsConst {
 
     public static class DaqTask {
         public static class Stage {
-            public static final int CREATED = 10;
-            public static final int CONFIGURING = 20;
-            public static final int RUNNING = 31;
-            public static final int SUSPENDED = 32;
-            public static final int EXECUTED = 33;
+            public static final int NEW = 10;
+            public static final int TASK_CONFIGURING = 20;
+            public static final int TASK_RUNNING = 31;
+            public static final int TASK_SUSPENDED = 32;
+            public static final int TASK_PERFORMED = 33;
             public static final int DATA_ENTERING = 41;
             public static final int DATA_ENTERED = 42;
             public static final int DATA_ANALYZING = 51;

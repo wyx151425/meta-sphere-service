@@ -38,3 +38,4 @@ spring:
       username: wyx151425
       password: 'MsMongo001@dmin'
       authentication-database: ms_daq_engine
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy

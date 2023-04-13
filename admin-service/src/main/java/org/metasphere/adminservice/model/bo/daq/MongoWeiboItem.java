@@ -1,7 +1,14 @@
-package org.metasphere.adminservice.model.daq;
+package org.metasphere.adminservice.model.bo.daq;
 
+import org.metasphere.adminservice.constant.MsConst;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: WangZhenqi
@@ -10,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @Modified By:
  */
 @Document(collection = "weibo")
-public class WeiboItem {
+public class MongoWeiboItem {
     @Id
     private String id;
     private String spiderCode;
@@ -33,7 +40,7 @@ public class WeiboItem {
     private String userScreenName;
     private String userProfileUrl;
 
-    public WeiboItem() {
+    public MongoWeiboItem() {
     }
 
     public String getId() {
@@ -194,5 +201,55 @@ public class WeiboItem {
 
     public void setUserProfileUrl(String userProfileUrl) {
         this.userProfileUrl = userProfileUrl;
+    }
+
+    public static List<DaqEngineWeiboItem> batchConvertToDaqEngineWeiboItem(String taskName, List<MongoWeiboItem> mongoWeiboItems) {
+        return mongoWeiboItems
+                .stream().map(mongoWeiboItem -> {
+                    System.out.println(mongoWeiboItem);
+                    DaqEngineWeiboItem weiboItem = new DaqEngineWeiboItem();
+                    weiboItem.setTaskName(taskName);
+                    weiboItem.setTaskCode(mongoWeiboItem.getTaskCode());
+                    weiboItem.setTaskKeyword(mongoWeiboItem.getKeyword());
+                    weiboItem.setSourceId(mongoWeiboItem.getMid());
+                    weiboItem.setSourceBlogId(mongoWeiboItem.getMblogId());
+                    weiboItem.setSourceCreateAt(LocalDateTime.parse(mongoWeiboItem.getCreatedAt(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    weiboItem.setText(mongoWeiboItem.getTextRaw());
+                    weiboItem.setLikesCount(Integer.valueOf(mongoWeiboItem.getAttitudesCount()));
+                    weiboItem.setCommentsCount(Integer.valueOf(mongoWeiboItem.getCommentsCount()));
+                    weiboItem.setRepostsCount(Integer.valueOf(mongoWeiboItem.getRepostsCount()));
+                    weiboItem.setAccountId(mongoWeiboItem.getUserId());
+                    weiboItem.setAccountName(mongoWeiboItem.getUserScreenName());
+                    weiboItem.setRegionName(mongoWeiboItem.getRegionName());
+                    weiboItem.setPlatformName(MsConst.DaqSpider.CODE2NAME.get(mongoWeiboItem.getSpiderCode()));
+                    weiboItem.setPlatformCode(mongoWeiboItem.getSpiderCode());
+                    return weiboItem;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "MongoWeiboItem{" +
+                "id='" + id + '\'' +
+                ", spiderCode='" + spiderCode + '\'' +
+                ", taskCode='" + taskCode + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", mid='" + mid + '\'' +
+                ", mblogId='" + mblogId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", textRaw='" + textRaw + '\'' +
+                ", text='" + text + '\'' +
+                ", textLength='" + textLength + '\'' +
+                ", repostsCount='" + repostsCount + '\'' +
+                ", commentsCount='" + commentsCount + '\'' +
+                ", attitudesCount='" + attitudesCount + '\'' +
+                ", regionName='" + regionName + '\'' +
+                ", source='" + source + '\'' +
+                ", weiboUrl='" + weiboUrl + '\'' +
+                ", user='" + user + '\'' +
+                ", userId='" + userId + '\'' +
+                ", userScreenName='" + userScreenName + '\'' +
+                ", userProfileUrl='" + userProfileUrl + '\'' +
+                '}';
     }
 }

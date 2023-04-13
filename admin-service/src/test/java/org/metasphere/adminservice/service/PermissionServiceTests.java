@@ -2,7 +2,7 @@ package org.metasphere.adminservice.service;
 
 import org.junit.jupiter.api.Test;
 import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.model.pojo.Permission;
+import org.metasphere.adminservice.model.pojo.auth.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.service.daq.impl;
 
 import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.model.pojo.daq.DaqDataVolume;
+import org.metasphere.adminservice.model.pojo.daq.DaqTaskDataVolume;
 import org.metasphere.adminservice.repository.daq.DaqDataVolumeRepository;
-import org.metasphere.adminservice.service.daq.DaqDataVolumeService;
+import org.metasphere.adminservice.service.daq.DaqTaskDataVolumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @Author: WangZhenqi
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  * @Modified By:
  */
 @Service(value = "daqDataVolumeService")
-public class DaqDataVolumeServiceImpl implements DaqDataVolumeService {
+public class DaqTaskDataVolumeServiceImpl implements DaqTaskDataVolumeService {
 
     @Autowired
     private DaqDataVolumeRepository daqDataVolumeRepository;
@@ -31,24 +30,24 @@ public class DaqDataVolumeServiceImpl implements DaqDataVolumeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveDaqDataVolume(DaqDataVolume dataVolume) {
+    public void saveDaqDataVolume(DaqTaskDataVolume dataVolume) {
         daqDataVolumeRepository.save(dataVolume);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveDaqDataVolumes(List<DaqDataVolume> dataVolumes) {
+    public void saveDaqDataVolumes(List<DaqTaskDataVolume> dataVolumes) {
         daqDataVolumeRepository.saveAll(dataVolumes);
     }
 
     @Override
-    public Map<String, List<DaqDataVolume>> findSpiderCode2DaqDataVolumesMap(String taskCode) {
+    public Map<String, List<DaqTaskDataVolume>> findSpiderCode2DaqDataVolumesMap(String taskCode) {
         String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, taskCode);
         List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
 
-        Map<String, List<DaqDataVolume>> dataVolumesMap = new HashMap<>();
+        Map<String, List<DaqTaskDataVolume>> dataVolumesMap = new HashMap<>();
         spiderCodes.forEach(spiderCode -> {
-            List<DaqDataVolume> dataVolumes = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, spiderCode);
+            List<DaqTaskDataVolume> dataVolumes = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, spiderCode);
             dataVolumesMap.put(spiderCode, dataVolumes);
         });
         return dataVolumesMap;

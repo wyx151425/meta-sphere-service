@@ -2,7 +2,7 @@ package org.metasphere.adminservice.service.impl;
 
 import org.metasphere.adminservice.constant.MsStatusCode;
 import org.metasphere.adminservice.exception.MsException;
-import org.metasphere.adminservice.model.pojo.User;
+import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.repository.UserRepository;
 import org.metasphere.adminservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

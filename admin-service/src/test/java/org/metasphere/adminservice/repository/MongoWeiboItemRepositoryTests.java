@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.repository;
 
 import org.junit.jupiter.api.Test;
-import org.metasphere.adminservice.model.daq.WeiboItem;
+import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,18 +16,18 @@ import java.util.List;
  * @Modified By:
  */
 @SpringBootTest
-public class WeiboItemRepositoryTests {
+public class MongoWeiboItemRepositoryTests {
 
     @Autowired
     private WeiboItemRepository weiboItemRepository;
 
     @Test
     void testFindAll() {
-        Iterator<WeiboItem> iterator = weiboItemRepository.findAll().iterator();
-        List<WeiboItem> weiboItems = new ArrayList<>();
+        Iterator<MongoWeiboItem> iterator = weiboItemRepository.findAll().iterator();
+        List<MongoWeiboItem> mongoWeiboItems = new ArrayList<>();
         while (iterator.hasNext()) {
-            weiboItems.add(iterator.next());
+            mongoWeiboItems.add(iterator.next());
         }
-        System.out.println(weiboItems.size());
+        System.out.println(mongoWeiboItems.size());
     }
 }

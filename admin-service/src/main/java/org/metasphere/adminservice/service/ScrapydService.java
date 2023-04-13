@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service;
 
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydStatus;
-import org.metasphere.adminservice.model.pojo.DaqJobs;
+import org.metasphere.adminservice.model.pojo.daq.DaqJobs;
 import org.metasphere.adminservice.model.pojo.Server;
 
 import java.util.List;

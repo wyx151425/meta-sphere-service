@@ -1,7 +1,8 @@
-package org.metasphere.adminservice.model.pojo;
+package org.metasphere.adminservice.model.pojo.auth;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.metasphere.adminservice.model.pojo.MetaSphereEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

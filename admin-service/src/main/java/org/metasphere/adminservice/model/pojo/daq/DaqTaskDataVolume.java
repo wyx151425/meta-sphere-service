@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "ms_daq_data_volume")
 @Where(clause = "status = 1")
-public class DaqDataVolume extends MetaSphereEntity {
+public class DaqTaskDataVolume extends MetaSphereEntity {
     /**
      * 任务ID
      */
@@ -46,7 +46,7 @@ public class DaqDataVolume extends MetaSphereEntity {
      */
     private Long dataVolume;
 
-    public DaqDataVolume() {
+    public DaqTaskDataVolume() {
     }
 
     public Long getTaskId() {

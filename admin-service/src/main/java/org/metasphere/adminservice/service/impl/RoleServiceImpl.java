@@ -2,7 +2,7 @@ package org.metasphere.adminservice.service.impl;
 
 import org.metasphere.adminservice.exception.PermissionExistException;
 import org.metasphere.adminservice.model.dto.MsPage;
-import org.metasphere.adminservice.model.pojo.Role;
+import org.metasphere.adminservice.model.pojo.auth.Role;
 import org.metasphere.adminservice.repository.RoleRepository;
 import org.metasphere.adminservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
