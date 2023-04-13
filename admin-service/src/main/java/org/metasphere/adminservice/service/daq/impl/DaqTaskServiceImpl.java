@@ -105,7 +105,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void executeDaqTask(Long daqTaskId) {
+    public void performDaqTask(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
 
         // 将该项目的关键词放入缓存
@@ -136,8 +136,41 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
 
-        // 修改数据采集任务运行阶段
+        // 修改数据采集任务运行阶段为执行中
         daqTask.setStage(MsConst.DaqTask.Stage.RUNNING);
+        daqTask.setUpdateAt(LocalDateTime.now());
+        daqTaskRepository.save(daqTask);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void stopPerformingDaqTask(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+
+        // 从运行数据采集任务编码缓存中删除该编码
+        redisTemplate.opsForList().remove(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, daqTask.getCode());
+
+        // 删除缓存中该数据采集任务所有的爬虫
+        String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
+        List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
+        redisTemplate.delete(spidersCacheKey);
+
+        // 删除缓存中该数据采集任务所有的关键词
+        String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
+        redisTemplate.delete(keywordsCacheKey);
+
+        // 停止Scrapyd中该数据采集任务所有的爬虫
+        DaqTaskServer taskServer = daqTaskServerService.findDaqTaskServer(daqTaskId);
+        spiderCodes.forEach(spiderCode -> {
+            scrapydService.cancelScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode(), spiderCode);
+            // TODO: 将数据库中的DaqTaskSpider状态设置为已停止
+        });
+
+        // 从Scrapyd中删除该数据采集任务
+        scrapydService.deleteScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode());
+
+        // 修改数据采集任务运行阶段为已执行
+        daqTask.setStage(MsConst.DaqTask.Stage.EXECUTED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }

@@ -51,7 +51,13 @@ public class DaqTaskController {
 
     @PutMapping(value = "{daqTaskId}/execute")
     MsResponse<DaqTask> actionExecuteDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.executeDaqTask(daqTaskId);
+        daqTaskService.performDaqTask(daqTaskId);
+        return MsResponse.success();
+    }
+
+    @PutMapping(value = "{daqTaskId}/stopPerforming")
+    MsResponse<DaqTask> actionStopPerformingDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.stopPerformingDaqTask(daqTaskId);
         return MsResponse.success();
     }
 

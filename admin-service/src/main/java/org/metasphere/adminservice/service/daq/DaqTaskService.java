@@ -41,7 +41,14 @@ public interface DaqTaskService {
      *
      * @param daqTaskId 数据采集任务的ID
      */
-    void executeDaqTask(Long daqTaskId);
+    void performDaqTask(Long daqTaskId);
+
+    /**
+     * 停止执行数据采集任务
+     *
+     * @param daqTaskId 数据采集任务ID
+     */
+    void stopPerformingDaqTask(Long daqTaskId);
 
     /**
      * 根据查询参数分页查询数据采集任务信息
