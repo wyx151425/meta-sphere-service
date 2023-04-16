@@ -2,7 +2,7 @@ package org.metasphere.adminservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
+import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskDataVolume;
 import org.metasphere.adminservice.service.ScheduleService;
 import org.metasphere.adminservice.service.daq.DaqTaskDataVolumeService;
@@ -51,8 +51,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, taskCode);
                 List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
                 spiderCodes.forEach(spiderCode -> {
-                    Query query = Query.query(Criteria.where("task_code").is(taskCode).and("spider_code").is(spiderCode));
-                    long dataVolume = mongoTemplate.count(query, MongoWeiboItem.class);
+                    Query query = Query.query(Criteria.where("task_code").is(taskCode));
+                    long dataVolume = mongoTemplate.count(query, MongoWeibo.class, spiderCode);
 
                     DaqTaskDataVolume daqTaskDataVolume = new DaqTaskDataVolume();
                     daqTaskDataVolume.setTaskCode(taskCode);

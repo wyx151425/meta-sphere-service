@@ -49,4 +49,12 @@ public interface DaqTaskServerService {
      * @param serverId  服务器ID
      */
     void bindDaqTaskServer(Long daqTaskId, Long serverId);
+
+    /**
+     * 绑定数据采集任务服务器
+     *
+     * @param daqTaskId 数据采集任务ID
+     * @param serverIds  服务器ID
+     */
+    void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds);
 }

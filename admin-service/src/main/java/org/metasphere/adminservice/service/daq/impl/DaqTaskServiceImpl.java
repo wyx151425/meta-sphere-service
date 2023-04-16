@@ -5,7 +5,7 @@ import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.constant.MsStatusCode;
 import org.metasphere.adminservice.exception.MsException;
 import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
-import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
+import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
 import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.daq.*;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
@@ -35,8 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.metasphere.adminservice.model.bo.daq.MongoWeiboItem.batchConvertToDaqEngineWeiboItem;
 
 /**
  * @Author: WangZhenqi
@@ -108,8 +106,9 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         daqTaskRepository.save(daqTask);
 
         // 创建Scrapy项目
-        DaqTaskServer taskServer = daqTaskServerService.findDaqTaskServer(daqTaskId);
-        scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode);
+        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
+        taskServers.forEach(taskServer ->
+                scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode));
 
         // 创建数据存储表
         daqEngineDbService.createDaqTaskDataTable(taskCode);
@@ -126,20 +125,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(keywordsCacheKey, keywords);
 
-        DaqTaskServer taskServer = daqTaskServerService.findDaqTaskServer(daqTaskId);
-
         // 启动数据采集爬虫
+        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
-
-        taskSpiders.forEach(taskSpider -> {
-            String jobId = scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(),
-                    taskSpider.getTaskCode(), taskSpider.getSpiderCode());
-            taskSpider.setJobId(jobId);
-            taskSpider.setServerIpAddress(taskServer.getServerIpAddress());
-            taskSpider.setServerPort(taskServer.getServerPort());
-            taskSpider.setUpdateAt(LocalDateTime.now());
-            daqTaskSpiderService.updateDaqTaskSpider(taskSpider);
-        });
+        taskServers.forEach(taskServer -> taskSpiders.forEach(taskSpider ->
+                scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskSpider.getTaskCode(), taskSpider.getSpiderCode())));
 
         // 将数据采集任务及启用的爬虫计入缓存，用于数据量统计
         redisTemplate.opsForList().rightPushAll(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
@@ -172,14 +162,15 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         redisTemplate.delete(keywordsCacheKey);
 
         // 停止Scrapyd中该数据采集任务所有的爬虫
-        DaqTaskServer taskServer = daqTaskServerService.findDaqTaskServer(daqTaskId);
-        spiderCodes.forEach(spiderCode -> {
-            scrapydService.cancelScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode(), spiderCode);
-            // TODO: 将数据库中的DaqTaskSpider状态设置为已停止
+        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
+        taskServers.forEach(taskServer -> {
+            spiderCodes.forEach(spiderCode -> {
+                scrapydService.cancelScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode(), spiderCode);
+                // TODO: 将数据库中的DaqTaskSpider状态设置为已停止
+            });
+            // 从Scrapyd中删除该数据采集任务
+            scrapydService.deleteScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode());
         });
-
-        // 从Scrapyd中删除该数据采集任务
-        scrapydService.deleteScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode());
 
         // 修改数据采集任务运行阶段为已执行
         daqTask.setStage(MsConst.DaqTask.Stage.TASK_PERFORMED);
@@ -195,12 +186,12 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         int pageNum = 0;
         int pageSize = 10;
 
-        List<MongoWeiboItem> mongoWeiboItems = mongoTemplate.find(Query.query(Criteria.where("task_code").is(daqTask.getCode())).skip(0L).limit(pageSize), MongoWeiboItem.class);
-        while (mongoWeiboItems.size() > 0) {
-            List<DaqEngineWeiboItem> daqEngineWeiboItems = MongoWeiboItem.batchConvertToDaqEngineWeiboItem(daqTask.getName(), mongoWeiboItems);
+        List<MongoWeibo> mongoWeibos = mongoTemplate.find(Query.query(Criteria.where("task_code").is(daqTask.getCode())).skip(0L).limit(pageSize), MongoWeibo.class);
+        while (mongoWeibos.size() > 0) {
+            List<DaqEngineWeiboItem> daqEngineWeiboItems = MongoWeibo.batchConvertToDaqEngineWeiboItem(daqTask.getName(), mongoWeibos);
             daqEngineDbService.saveDaqEngineWeiboItems(daqTask.getCode(), daqEngineWeiboItems);
             pageNum++;
-            mongoWeiboItems = mongoTemplate.find(Query.query(Criteria.where("task_code").is(daqTask.getCode())).skip((long) pageNum * pageSize).limit(pageSize), MongoWeiboItem.class);
+            mongoWeibos = mongoTemplate.find(Query.query(Criteria.where("task_code").is(daqTask.getCode())).skip((long) pageNum * pageSize).limit(pageSize), MongoWeibo.class);
         }
 
         // 修改数据采集任务运行阶段为数据已录入
@@ -256,8 +247,8 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void bindDaqTaskServer(Long daqTaskId, Long serverId) {
-        daqTaskServerService.bindDaqTaskServer(daqTaskId, serverId);
+    public void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds) {
+        daqTaskServerService.bindDaqTaskServers(daqTaskId, serverIds);
     }
 
     @Override

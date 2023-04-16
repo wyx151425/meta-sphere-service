@@ -89,6 +89,22 @@ public class DaqEngineWeiboItem {
     public DaqEngineWeiboItem() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
+    }
+
     public String getTaskName() {
         return taskName;
     }

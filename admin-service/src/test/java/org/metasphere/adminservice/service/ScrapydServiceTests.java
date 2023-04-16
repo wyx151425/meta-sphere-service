@@ -53,13 +53,13 @@ public class ScrapydServiceTests {
 
     @Test
     void testScheduleDaqSpider() {
-        String jobId = scrapydService.scheduleScrapySpider("180.201.163.246", 51001, "ms-daq-engine", "weibo");
+        String jobId = scrapydService.scheduleScrapySpider("180.201.163.246", 51001, "aaeebf9834444950b741dbb32fb13a9e", "weibo");
         System.out.println(jobId);
     }
 
     @Test
     void testCancelDaqSpider() {
-        String prevState = scrapydService.cancelScrapySpider("127.0.0.1", 6800, "ms-daq-engine", "7d1eb500d90e11edb32b0242ac110007");
+        String prevState = scrapydService.cancelScrapySpider("180.201.163.246", 51001, "e249541708be4eb0b8674ca2d7f316d2", "044a1d98dc3011ed883d0242ac110007");
         System.out.println(prevState);
     }
 
@@ -94,7 +94,7 @@ public class ScrapydServiceTests {
 
     @Test
     void testDeleteDaqProject() {
-        scrapydService.deleteScrapyProject("180.201.163.246", 51001, "c610050b22724505b46093744579e150");
+        scrapydService.deleteScrapyProject("180.201.163.246", 51001, "e249541708be4eb0b8674ca2d7f316d2");
     }
 
     @Test

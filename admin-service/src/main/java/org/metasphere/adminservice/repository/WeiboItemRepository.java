@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.repository;
 
-import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
+import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @Modified By:
  */
 @Repository(value = "weiboItemRepository")
-public interface WeiboItemRepository extends CrudRepository<MongoWeiboItem, String> {
+public interface WeiboItemRepository extends CrudRepository<MongoWeibo, String> {
 
 }

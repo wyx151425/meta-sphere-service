@@ -39,8 +39,10 @@ public class MsConst {
 
         static {
             CODE2NAME.put("weibo", "微博");
-            CODE2NAME.put("weibo_account", "微博账号");
+            CODE2NAME.put("weibo_user", "微博用户");
+            CODE2NAME.put("weibo_like", "微博点赞");
             CODE2NAME.put("weibo_comment", "微博评论");
+            CODE2NAME.put("weibo_repost", "微博转发");
             CODE2NAME.put("ifeng", "凤凰网");
             CODE2NAME.put("huanqiu", "环球网");
             CODE2NAME.put("people", "人民网");
@@ -52,7 +54,7 @@ public class MsConst {
 
     public static class Scrapyd {
         public static final String PROJECT_VERSION = "v1";
-        public static final String EGG_FILE_PATH = "eggs/1681297293.egg";
+        public static final String EGG_FILE_PATH = "eggs/1681544618.egg";
 
         public static class RespStatus {
             public static final String OK = "ok";

@@ -115,9 +115,9 @@ public interface DaqTaskService {
      * 绑定数据采集任务服务器
      *
      * @param daqTaskId 数据采集任务ID
-     * @param serverId  服务器ID
+     * @param serverIds  服务器ID
      */
-    void bindDaqTaskServer(Long daqTaskId, Long serverId);
+    void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds);
 
     /**
      * 根据数据采集任务的ID获取该任务的时序数据量

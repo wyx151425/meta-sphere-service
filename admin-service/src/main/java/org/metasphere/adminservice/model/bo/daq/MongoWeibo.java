@@ -1,10 +1,8 @@
 package org.metasphere.adminservice.model.bo.daq;
 
-import org.metasphere.adminservice.constant.MsConst;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -17,30 +15,31 @@ import java.util.stream.Collectors;
  * @Modified By:
  */
 @Document(collection = "weibo")
-public class MongoWeiboItem {
+public class MongoWeibo {
     @Id
     private String id;
-    private String spiderCode;
     private String taskCode;
-    private String keyword;
+    private String taskKeyword;
+
     private String mid;
-    private String mblogId;
+    private String uid;
+    private String hashMid;
     private String createdAt;
+
     private String textRaw;
     private String text;
     private String textLength;
-    private String repostsCount;
-    private String commentsCount;
-    private String attitudesCount;
-    private String regionName;
     private String source;
     private String weiboUrl;
-    private String user;
-    private String userId;
-    private String userScreenName;
-    private String userProfileUrl;
+    private String regionName;
 
-    public MongoWeiboItem() {
+    private Integer likesCount;
+    private Integer commentsCount;
+    private Integer repostsCount;
+
+    private String userScreenName;
+
+    public MongoWeibo() {
     }
 
     public String getId() {
@@ -51,14 +50,6 @@ public class MongoWeiboItem {
         this.id = id;
     }
 
-    public String getSpiderCode() {
-        return spiderCode;
-    }
-
-    public void setSpiderCode(String spiderCode) {
-        this.spiderCode = spiderCode;
-    }
-
     public String getTaskCode() {
         return taskCode;
     }
@@ -67,12 +58,12 @@ public class MongoWeiboItem {
         this.taskCode = taskCode;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getTaskKeyword() {
+        return taskKeyword;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public void setTaskKeyword(String taskKeyword) {
+        this.taskKeyword = taskKeyword;
     }
 
     public String getMid() {
@@ -83,12 +74,20 @@ public class MongoWeiboItem {
         this.mid = mid;
     }
 
-    public String getMblogId() {
-        return mblogId;
+    public String getUid() {
+        return uid;
     }
 
-    public void setMblogId(String mblogId) {
-        this.mblogId = mblogId;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getHashMid() {
+        return hashMid;
+    }
+
+    public void setHashMid(String hashMid) {
+        this.hashMid = hashMid;
     }
 
     public String getCreatedAt() {
@@ -123,38 +122,6 @@ public class MongoWeiboItem {
         this.textLength = textLength;
     }
 
-    public String getRepostsCount() {
-        return repostsCount;
-    }
-
-    public void setRepostsCount(String repostsCount) {
-        this.repostsCount = repostsCount;
-    }
-
-    public String getCommentsCount() {
-        return commentsCount;
-    }
-
-    public void setCommentsCount(String commentsCount) {
-        this.commentsCount = commentsCount;
-    }
-
-    public String getAttitudesCount() {
-        return attitudesCount;
-    }
-
-    public void setAttitudesCount(String attitudesCount) {
-        this.attitudesCount = attitudesCount;
-    }
-
-    public String getRegionName() {
-        return regionName;
-    }
-
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
-    }
-
     public String getSource() {
         return source;
     }
@@ -171,20 +138,36 @@ public class MongoWeiboItem {
         this.weiboUrl = weiboUrl;
     }
 
-    public String getUser() {
-        return user;
+    public String getRegionName() {
+        return regionName;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
-    public String getUserId() {
-        return userId;
+    public Integer getLikesCount() {
+        return likesCount;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setLikesCount(Integer likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public Integer getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(Integer commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
+    public Integer getRepostsCount() {
+        return repostsCount;
+    }
+
+    public void setRepostsCount(Integer repostsCount) {
+        this.repostsCount = repostsCount;
     }
 
     public String getUserScreenName() {
@@ -195,61 +178,48 @@ public class MongoWeiboItem {
         this.userScreenName = userScreenName;
     }
 
-    public String getUserProfileUrl() {
-        return userProfileUrl;
-    }
-
-    public void setUserProfileUrl(String userProfileUrl) {
-        this.userProfileUrl = userProfileUrl;
-    }
-
-    public static List<DaqEngineWeiboItem> batchConvertToDaqEngineWeiboItem(String taskName, List<MongoWeiboItem> mongoWeiboItems) {
-        return mongoWeiboItems
+    public static List<DaqEngineWeiboItem> batchConvertToDaqEngineWeiboItem(String taskName, List<MongoWeibo> mongoWeibos) {
+        return mongoWeibos
                 .stream().map(mongoWeiboItem -> {
                     System.out.println(mongoWeiboItem);
                     DaqEngineWeiboItem weiboItem = new DaqEngineWeiboItem();
                     weiboItem.setTaskName(taskName);
                     weiboItem.setTaskCode(mongoWeiboItem.getTaskCode());
-                    weiboItem.setTaskKeyword(mongoWeiboItem.getKeyword());
+                    weiboItem.setTaskKeyword(mongoWeiboItem.getTaskKeyword());
                     weiboItem.setSourceId(mongoWeiboItem.getMid());
-                    weiboItem.setSourceBlogId(mongoWeiboItem.getMblogId());
+                    weiboItem.setSourceBlogId(mongoWeiboItem.getHashMid());
                     weiboItem.setSourceCreateAt(LocalDateTime.parse(mongoWeiboItem.getCreatedAt(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     weiboItem.setText(mongoWeiboItem.getTextRaw());
-                    weiboItem.setLikesCount(Integer.valueOf(mongoWeiboItem.getAttitudesCount()));
+                    weiboItem.setLikesCount(Integer.valueOf(mongoWeiboItem.getLikesCount()));
                     weiboItem.setCommentsCount(Integer.valueOf(mongoWeiboItem.getCommentsCount()));
                     weiboItem.setRepostsCount(Integer.valueOf(mongoWeiboItem.getRepostsCount()));
-                    weiboItem.setAccountId(mongoWeiboItem.getUserId());
+                    weiboItem.setAccountId(mongoWeiboItem.getUid());
                     weiboItem.setAccountName(mongoWeiboItem.getUserScreenName());
                     weiboItem.setRegionName(mongoWeiboItem.getRegionName());
-                    weiboItem.setPlatformName(MsConst.DaqSpider.CODE2NAME.get(mongoWeiboItem.getSpiderCode()));
-                    weiboItem.setPlatformCode(mongoWeiboItem.getSpiderCode());
                     return weiboItem;
                 }).collect(Collectors.toList());
     }
 
     @Override
     public String toString() {
-        return "MongoWeiboItem{" +
+        return "MongoWeibo{" +
                 "id='" + id + '\'' +
-                ", spiderCode='" + spiderCode + '\'' +
                 ", taskCode='" + taskCode + '\'' +
-                ", keyword='" + keyword + '\'' +
+                ", taskKeyword='" + taskKeyword + '\'' +
                 ", mid='" + mid + '\'' +
-                ", mblogId='" + mblogId + '\'' +
+                ", uid='" + uid + '\'' +
+                ", hashMid='" + hashMid + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", textRaw='" + textRaw + '\'' +
                 ", text='" + text + '\'' +
                 ", textLength='" + textLength + '\'' +
-                ", repostsCount='" + repostsCount + '\'' +
-                ", commentsCount='" + commentsCount + '\'' +
-                ", attitudesCount='" + attitudesCount + '\'' +
-                ", regionName='" + regionName + '\'' +
                 ", source='" + source + '\'' +
                 ", weiboUrl='" + weiboUrl + '\'' +
-                ", user='" + user + '\'' +
-                ", userId='" + userId + '\'' +
+                ", regionName='" + regionName + '\'' +
+                ", likesCount='" + likesCount + '\'' +
+                ", commentsCount='" + commentsCount + '\'' +
+                ", repostsCount='" + repostsCount + '\'' +
                 ", userScreenName='" + userScreenName + '\'' +
-                ", userProfileUrl='" + userProfileUrl + '\'' +
                 '}';
     }
 }

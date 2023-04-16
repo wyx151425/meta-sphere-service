@@ -6,9 +6,7 @@ import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 import org.metasphere.adminservice.model.vo.resp.MsResponse;
-import org.metasphere.adminservice.service.daq.DaqTaskKeywordService;
 import org.metasphere.adminservice.service.daq.DaqTaskService;
-import org.metasphere.adminservice.service.daq.DaqTaskSpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -121,12 +119,12 @@ public class DaqTaskController {
         return MsResponse.success(page);
     }
 
-    @PutMapping(value = "{daqTaskId}/server")
+    @PutMapping(value = "{daqTaskId}/servers")
     MsResponse<DaqTask> actionBindDaqTaskServer(
             @PathVariable(value = "daqTaskId") Long daqTaskId,
-            @RequestBody Long serverId
+            @RequestBody List<Long> serverIds
     ) {
-        daqTaskService.bindDaqTaskServer(daqTaskId, serverId);
+        daqTaskService.bindDaqTaskServers(daqTaskId, serverIds);
         return MsResponse.success();
     }
 

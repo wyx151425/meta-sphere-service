@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS ms_daq_task_server
     `server_port`       INT
 );
 
-CREATE TABLE IF NOT EXISTS ms_daq_data_volume
+CREATE TABLE IF NOT EXISTS ms_daq_task_data_volume
 (
     `id`          BIGINT PRIMARY KEY AUTO_INCREMENT,
     `object_id`   CHAR(32),
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `ms_weibo_item`
     `platform_code`    VARCHAR(32) COMMENT '源平台的编码'
 );
 
-CREATE TABLE IF NOT EXISTS `ms_weibo_account_item`
+CREATE TABLE IF NOT EXISTS `ms_weibo_user_item`
 (
     `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
     `object_id`       CHAR(32) COMMENT '分布式ID',

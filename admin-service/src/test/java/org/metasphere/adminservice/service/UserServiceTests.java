@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service;
 
 import org.junit.jupiter.api.Test;
-import org.metasphere.adminservice.model.bo.daq.MongoWeiboItem;
+import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
 import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.repository.UserRepository;
 import org.metasphere.adminservice.util.Md5Utils;
@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -69,17 +68,17 @@ public class UserServiceTests {
 
         int pageNum = 0;
         int pageSize = 100;
-        List<MongoWeiboItem> mongoWeiboItem = mongoTemplate.find(Query.query(Criteria.where("task_code").is("fc49a8b7e21d4341898c23fd34996504")).skip(0).limit(pageSize), MongoWeiboItem.class);
+        List<MongoWeibo> mongoWeibo = mongoTemplate.find(Query.query(Criteria.where("task_code").is("fc49a8b7e21d4341898c23fd34996504")).skip(0).limit(pageSize), MongoWeibo.class);
         int count = 0;
-        while (mongoWeiboItem.size() > 0) {
-            System.out.println(mongoWeiboItem);
-            count += mongoWeiboItem.size();
+        while (mongoWeibo.size() > 0) {
+            System.out.println(mongoWeibo);
+            count += mongoWeibo.size();
             pageNum++;
-            mongoWeiboItem = mongoTemplate.find(Query.query(Criteria.where("task_code").is("fc49a8b7e21d4341898c23fd34996504")).skip((long) pageSize * pageNum).limit(pageSize), MongoWeiboItem.class);
+            mongoWeibo = mongoTemplate.find(Query.query(Criteria.where("task_code").is("fc49a8b7e21d4341898c23fd34996504")).skip((long) pageSize * pageNum).limit(pageSize), MongoWeibo.class);
         }
         System.out.println(count);
 
-        long count1 = mongoTemplate.count(Query.query(Criteria.where("task_code").is("fc49a8b7e21d4341898c23fd34996504")), MongoWeiboItem.class);
+        long count1 = mongoTemplate.count(Query.query(Criteria.where("task_code").is("fc49a8b7e21d4341898c23fd34996504")), MongoWeibo.class);
         System.out.println(count1);
     }
 }
