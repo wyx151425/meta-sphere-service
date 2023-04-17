@@ -59,7 +59,7 @@ public class ScrapydServiceTests {
 
     @Test
     void testCancelDaqSpider() {
-        String prevState = scrapydService.cancelScrapySpider("180.201.163.246", 51001, "e249541708be4eb0b8674ca2d7f316d2", "044a1d98dc3011ed883d0242ac110007");
+        String prevState = scrapydService.cancelScrapySpider("180.201.163.246", 51001, "2d69b1ecb1de480f8ecd74030268ee68", "ac058c4cdc3611ed8ec00242ac110007");
         System.out.println(prevState);
     }
 

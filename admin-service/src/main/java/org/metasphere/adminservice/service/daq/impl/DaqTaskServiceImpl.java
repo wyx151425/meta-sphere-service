@@ -164,6 +164,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         // 停止Scrapyd中该数据采集任务所有的爬虫
         List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
         taskServers.forEach(taskServer -> {
+
             spiderCodes.forEach(spiderCode -> {
                 scrapydService.cancelScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode(), spiderCode);
                 // TODO: 将数据库中的DaqTaskSpider状态设置为已停止
