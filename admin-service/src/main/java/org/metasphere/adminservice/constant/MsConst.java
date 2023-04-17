@@ -1,5 +1,7 @@
 package org.metasphere.adminservice.constant;
 
+import org.metasphere.adminservice.model.bo.daq.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,35 @@ public class MsConst {
 
     public static class DaqSpider {
         public static final Map<String, String> CODE2NAME = new HashMap<>();
+        public static final Map<String, Class<?>> CODE2CLASS = new HashMap<>();
+
+        public static class Codes {
+            public static final String WEIBO = "weibo";
+            public static final String WEIBO_USER = "weibo_user";
+            public static final String WEIBO_LIKE = "weibo_like";
+            public static final String WEIBO_COMMENT = "weibo_comment";
+            public static final String WEIBO_REPOST = "weibo_repost";
+            public static final String IFENG = "ifeng";
+            public static final String HUANQIU = "huanqiu";
+            public static final String PEOPLE = "people";
+            public static final String THEPAPER = "thepaper";
+            public static final String XINHUANET = "xinhuanet";
+            public static final String ZHIHU = "zhihu";
+        }
+
+        static {
+            CODE2CLASS.put("weibo", MongoWeibo.class);
+            CODE2CLASS.put("weibo_user", MongoWeiboUser.class);
+            CODE2CLASS.put("weibo_like", MongoWeiboLike.class);
+            CODE2CLASS.put("weibo_comment", MongoWeiboComment.class);
+            CODE2CLASS.put("weibo_repost", MongoWeiboRepost.class);
+            CODE2CLASS.put("ifeng", MongoWeibo.class);
+            CODE2CLASS.put("huanqiu", MongoWeibo.class);
+            CODE2CLASS.put("people", MongoWeibo.class);
+            CODE2CLASS.put("thepaper", MongoWeibo.class);
+            CODE2CLASS.put("xinhuanet", MongoWeibo.class);
+            CODE2CLASS.put("zhihu", MongoWeibo.class);
+        }
 
         static {
             CODE2NAME.put("weibo", "微博");
@@ -125,7 +156,7 @@ public class MsConst {
         public static class SpiderStatus {
             public static final int DISABLED = 0;
             public static final int NEW = 1;
-            public static final int ENABLED = 2;
+            public static final int PENDING = 2;
             public static final int RUNNING = 3;
             public static final int FINISHED = 4;
         }

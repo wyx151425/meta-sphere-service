@@ -49,16 +49,6 @@ public class DaqTaskDataVolumeServiceImpl implements DaqTaskDataVolumeService {
         spiderCodes.forEach(spiderCode -> {
             List<DaqTaskDataVolume> dataVolumes = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, spiderCode);
             dataVolumesMap.put(spiderCode, dataVolumes);
-            if ("weibo".equals(spiderCode)) {
-                List<DaqTaskDataVolume> dataVolumes1 = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, "weibo_user");
-                dataVolumesMap.put(spiderCode, dataVolumes1);
-                List<DaqTaskDataVolume> dataVolumes2 = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, "weibo_like");
-                dataVolumesMap.put(spiderCode, dataVolumes2);
-                List<DaqTaskDataVolume> dataVolumes3 = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, "weibo_comment");
-                dataVolumesMap.put(spiderCode, dataVolumes3);
-                List<DaqTaskDataVolume> dataVolumes4 = daqDataVolumeRepository.findAllByTaskCodeAndSpiderCodeOrderByCountedAtAsc(taskCode, "weibo_repost");
-                dataVolumesMap.put(spiderCode, dataVolumes4);
-            }
         });
         return dataVolumesMap;
     }

@@ -2,6 +2,7 @@ package org.metasphere.adminservice.service.daq;
 
 import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
+import org.metasphere.adminservice.model.pojo.daq.DaqTaskServer;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
 
 import java.util.List;
@@ -16,10 +17,11 @@ public interface DaqTaskSpiderService {
     /**
      * 添加数据采集任务爬虫
      *
-     * @param daqTask      数据采集任务
-     * @param daqSpiderIds 爬虫ID
+     * @param daqTask        数据采集任务
+     * @param daqTaskServers 数据采集服务器
+     * @param daqSpiderIds   爬虫ID
      */
-    void saveDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds);
+    void saveDaqTaskSpiders(DaqTask daqTask, List<DaqTaskServer> daqTaskServers, List<Long> daqSpiderIds);
 
     /**
      * 更新数据采集任务爬虫
@@ -35,6 +37,14 @@ public interface DaqTaskSpiderService {
      * @return 数据采集任务爬虫
      */
     List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId);
+
+    /**
+     * 根据数据采集任务获取数据采集任务爬虫的编码
+     *
+     * @param daqTaskId 数据采集任务ID
+     * @return 数据采集任务爬虫的编码
+     */
+    List<Long> findDaqSpiderIdsByTaskId(Long daqTaskId);
 
     /**
      * 分页获取数据采集任务下的爬虫

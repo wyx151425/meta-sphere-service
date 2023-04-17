@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.service.daq;
 
 import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
@@ -84,6 +85,14 @@ public interface DaqTaskService {
     void addDaqTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds);
 
     /**
+     * 根据数据采集任务获取数据采集任务爬虫的编码
+     *
+     * @param daqTaskId 数据采集任务ID
+     * @return 数据采集任务爬虫的编码
+     */
+    List<DaqSpider> findDaqSpiders(Long daqTaskId);
+
+    /**
      * 根据数据采集任务获取数据采集任务爬虫
      *
      * @param daqTaskId 数据采集任务ID
@@ -115,7 +124,7 @@ public interface DaqTaskService {
      * 绑定数据采集任务服务器
      *
      * @param daqTaskId 数据采集任务ID
-     * @param serverIds  服务器ID
+     * @param serverIds 服务器ID
      */
     void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds);
 

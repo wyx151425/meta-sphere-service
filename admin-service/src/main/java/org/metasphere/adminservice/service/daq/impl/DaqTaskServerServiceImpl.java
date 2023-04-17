@@ -68,6 +68,6 @@ public class DaqTaskServerServiceImpl implements DaqTaskServerService {
     @Transactional(rollbackFor = Exception.class)
     public void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds) {
         deleteDaqTaskServersByTaskId(daqTaskId);
-        serverIds.forEach(serverId -> bindDaqTaskServer(daqTaskId, serverId));
+        serverIds.forEach(serverId -> saveDaqTaskServer(daqTaskId, serverId));
     }
 }

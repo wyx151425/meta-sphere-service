@@ -1,6 +1,5 @@
 package org.metasphere.adminservice.model.pojo.daq;
 
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.metasphere.adminservice.model.pojo.MetaSphereEntity;
 
@@ -14,9 +13,9 @@ import javax.persistence.Table;
  * @Modified By:
  */
 @Entity
-@Table(name = "ms_weibo_account_item")
+@Table(name = "ms_weibo_user_item")
 @Where(clause = "status = 1")
-public class WeiboAccountItem extends MetaSphereEntity {
+public class WeiboUserItem extends MetaSphereEntity {
     /**
      * 源平台中的ID
      */
@@ -54,7 +53,7 @@ public class WeiboAccountItem extends MetaSphereEntity {
      */
     private String profileUrl;
 
-    public WeiboAccountItem() {
+    public WeiboUserItem() {
     }
 
     public String getSourceId() {

@@ -4,6 +4,7 @@ import org.metasphere.adminservice.constant.MsConst;
 import org.metasphere.adminservice.model.dto.MsPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
+import org.metasphere.adminservice.model.pojo.daq.DaqTaskServer;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
 import org.metasphere.adminservice.repository.daq.DaqTaskSpiderRepository;
 import org.metasphere.adminservice.service.daq.DaqSpiderService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,35 +39,44 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveDaqTaskSpiders(DaqTask daqTask, List<Long> daqSpiderIds) {
+    public void saveDaqTaskSpiders(DaqTask daqTask, List<DaqTaskServer> daqTaskServers, List<Long> daqSpiderIds) {
         daqTaskSpiderRepository.deleteAllByTaskId(daqTask.getId());
 
         List<DaqSpider> daqSpiders = daqSpiderService.findDaqSpidersByIds(daqSpiderIds);
 
         List<DaqTaskSpider> taskSpiders = new ArrayList<>();
-        for (DaqSpider daqSpider : daqSpiders) {
-            DaqTaskSpider taskSpider = new DaqTaskSpider();
-            taskSpider.setTaskId(daqTask.getId());
-            taskSpider.setTaskName(daqTask.getName());
-            taskSpider.setTaskCode(daqTask.getCode());
-            taskSpider.setSpiderId(daqSpider.getId());
-            taskSpider.setSpiderName(daqSpider.getName());
-            taskSpider.setSpiderCode(daqSpider.getCode());
-            taskSpider.setSpiderStatus(MsConst.DaqTaskSpider.SpiderStatus.NEW);
-            taskSpiders.add(taskSpider);
-        }
+        daqTaskServers.forEach(daqTaskServer ->
+                daqSpiders.forEach(daqSpider -> {
+                    DaqTaskSpider taskSpider = new DaqTaskSpider();
+                    taskSpider.setTaskId(daqTask.getId());
+                    taskSpider.setTaskName(daqTask.getName());
+                    taskSpider.setTaskCode(daqTask.getCode());
+                    taskSpider.setSpiderId(daqSpider.getId());
+                    taskSpider.setSpiderName(daqSpider.getName());
+                    taskSpider.setSpiderCode(daqSpider.getCode());
+                    taskSpider.setSpiderStatus(MsConst.DaqTaskSpider.SpiderStatus.NEW);
+                    taskSpider.setServerIpAddress(daqTaskServer.getServerIpAddress());
+                    taskSpider.setServerPort(daqTaskServer.getServerPort());
+                    taskSpiders.add(taskSpider);
+                }));
         daqTaskSpiderRepository.saveAll(taskSpiders);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateDaqTaskSpider(DaqTaskSpider taskSpider) {
+        taskSpider.setUpdateAt(LocalDateTime.now());
         daqTaskSpiderRepository.save(taskSpider);
     }
 
     @Override
     public List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId) {
         return daqTaskSpiderRepository.findAllByTaskId(daqTaskId);
+    }
+
+    @Override
+    public List<Long> findDaqSpiderIdsByTaskId(Long daqTaskId) {
+        return daqTaskSpiderRepository.findDaqSpiderIdsByTaskId(daqTaskId);
     }
 
     @Override

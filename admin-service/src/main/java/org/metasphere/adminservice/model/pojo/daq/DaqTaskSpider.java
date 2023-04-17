@@ -43,7 +43,7 @@ public class DaqTaskSpider extends MetaSphereEntity {
      */
     private String spiderCode;
     /**
-     * 爬虫的状态（2-调度/1-启用/0-禁用）
+     * 爬虫的状态（4-Finished/3-Running/2-Pending/1-New/0-Disabled）
      */
     private Integer spiderStatus;
     /**

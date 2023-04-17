@@ -53,6 +53,9 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private DaqTaskKeywordService daqTaskKeywordService;
 
     @Autowired
+    private DaqSpiderService daqSpiderService;
+
+    @Autowired
     private DaqTaskSpiderService daqTaskSpiderService;
 
     @Autowired
@@ -126,15 +129,23 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         redisTemplate.opsForList().rightPushAll(keywordsCacheKey, keywords);
 
         // 启动数据采集爬虫
-        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
-        taskServers.forEach(taskServer -> taskSpiders.forEach(taskSpider ->
-                scrapydService.scheduleScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskSpider.getTaskCode(), taskSpider.getSpiderCode())));
+        taskSpiders.forEach(taskSpider -> {
+            String jobId = scrapydService.scheduleScrapySpider(taskSpider.getServerIpAddress(), taskSpider.getServerPort(), taskSpider.getTaskCode(), taskSpider.getSpiderCode());
+            taskSpider.setJobId(jobId);
+            daqTaskSpiderService.updateDaqTaskSpider(taskSpider);
+        });
 
         // 将数据采集任务及启用的爬虫计入缓存，用于数据量统计
         redisTemplate.opsForList().rightPushAll(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
 
-        List<String> spiderCodes = taskSpiders.stream().map(DaqTaskSpider::getSpiderCode).collect(Collectors.toList());
+        List<String> spiderCodes = taskSpiders.stream().map(DaqTaskSpider::getSpiderCode).distinct().collect(Collectors.toList());
+        if (spiderCodes.contains(MsConst.DaqSpider.Codes.WEIBO)) {
+            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_USER);
+            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_LIKE);
+            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_COMMENT);
+            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_REPOST);
+        }
         String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
 
@@ -154,24 +165,24 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
         // 删除缓存中该数据采集任务所有的爬虫
         String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
-        List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
         redisTemplate.delete(spidersCacheKey);
+
+        List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
+        taskSpiders.forEach(taskSpider -> {
+            scrapydService.cancelScrapySpider(taskSpider.getServerIpAddress(), taskSpider.getServerPort(), daqTask.getCode(), taskSpider.getJobId());
+            // TODO: 将数据库中的DaqTaskSpider状态设置为已停止
+        });
+
+        // 停止所有Scrapyd服务器中该数据采集任务
+        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
+        taskServers.forEach(taskServer -> {
+            // 从Scrapyd中删除该数据采集任务
+            scrapydService.deleteScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode());
+        });
 
         // 删除缓存中该数据采集任务所有的关键词
         String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.delete(keywordsCacheKey);
-
-        // 停止Scrapyd中该数据采集任务所有的爬虫
-        List<DaqTaskServer> taskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
-        taskServers.forEach(taskServer -> {
-
-            spiderCodes.forEach(spiderCode -> {
-                scrapydService.cancelScrapySpider(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode(), spiderCode);
-                // TODO: 将数据库中的DaqTaskSpider状态设置为已停止
-            });
-            // 从Scrapyd中删除该数据采集任务
-            scrapydService.deleteScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), daqTask.getCode());
-        });
 
         // 修改数据采集任务运行阶段为已执行
         daqTask.setStage(MsConst.DaqTask.Stage.TASK_PERFORMED);
@@ -219,9 +230,17 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addDaqTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
-        daqTaskSpiderService.saveDaqTaskSpiders(daqTask, daqSpiderIds);
+        List<DaqTaskServer> daqTaskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
+        daqTaskSpiderService.saveDaqTaskSpiders(daqTask, daqTaskServers, daqSpiderIds);
+    }
+
+    @Override
+    public List<DaqSpider> findDaqSpiders(Long daqTaskId) {
+        List<Long> daqSpiderIds = daqTaskSpiderService.findDaqSpiderIdsByTaskId(daqTaskId);
+        return daqSpiderService.findDaqSpidersByIds(daqSpiderIds);
     }
 
     @Override

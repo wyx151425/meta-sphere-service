@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.controller.daq;
 
 import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
@@ -85,9 +86,9 @@ public class DaqTaskController {
     }
 
     @GetMapping(value = "{daqTaskId}/spiders/queryAll")
-    MsResponse<List<DaqTaskSpider>> actionQueryDaqTaskSpiders(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        List<DaqTaskSpider> daqTaskSpiders = daqTaskService.findDaqTaskSpiders(daqTaskId);
-        return MsResponse.success(daqTaskSpiders);
+    MsResponse<List<DaqSpider>> actionQueryDaqTaskSpiders(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        List<DaqSpider> daqSpiders = daqTaskService.findDaqSpiders(daqTaskId);
+        return MsResponse.success(daqSpiders);
     }
 
     @GetMapping(value = "{daqTaskId}/spiders/queryByPagination")
