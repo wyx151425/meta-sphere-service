@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskServer;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
@@ -54,5 +54,5 @@ public interface DaqTaskSpiderService {
      * @param pageSize  单页数据量
      * @return 数据采集任务爬虫
      */
-    MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.exception;
 
 import lombok.Getter;
-import org.metasphere.adminservice.constant.MsStatusCode;
+import org.metasphere.adminservice.constant.MSStatusCode;
 
 /**
  * @Author: WangZhenqi
@@ -10,20 +10,20 @@ import org.metasphere.adminservice.constant.MsStatusCode;
  * @Modified By:
  */
 @Getter
-public class MsException extends RuntimeException {
+public class MSException extends RuntimeException {
 
     private final Integer statusCode;
 
-    public MsException(Integer statusCode) {
+    public MSException(Integer statusCode) {
         this.statusCode = statusCode;
     }
 
-    public MsException(Integer statusCode, Throwable cause) {
+    public MSException(Integer statusCode, Throwable cause) {
         super(cause);
         this.statusCode = statusCode;
     }
 
-    public static MsException getDataNotFoundException() {
-        return new MsException(MsStatusCode.DATA_NOT_FOUND);
+    public static MSException getDataNotFoundException() {
+        return new MSException(MSStatusCode.DATA_NOT_FOUND);
     }
 }

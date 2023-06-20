@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.service;
+package org.metasphere.adminservice.service.daq;
 
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydStatus;
 import org.metasphere.adminservice.model.pojo.daq.DaqJobs;

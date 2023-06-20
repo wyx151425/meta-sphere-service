@@ -4,7 +4,7 @@ import org.metasphere.adminservice.model.pojo.daq.DaqTaskServer;
 import org.metasphere.adminservice.model.pojo.Server;
 import org.metasphere.adminservice.repository.daq.DaqTaskServerRepository;
 import org.metasphere.adminservice.service.daq.DaqTaskServerService;
-import org.metasphere.adminservice.service.ServerService;
+import org.metasphere.adminservice.service.core.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

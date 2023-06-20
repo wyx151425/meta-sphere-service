@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public interface DaqSpiderService {
      * @param pageSize 单页数据量
      * @return 爬虫数据
      */
-    MsPage<DaqSpider> findDaqSpidersByPagination(Integer pageNum, Integer pageSize);
+    MSPage<DaqSpider> findDaqSpidersByPagination(Integer pageNum, Integer pageSize);
 
     /**
      * 根据ID获取所有的爬虫

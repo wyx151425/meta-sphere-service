@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.controller;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.Server;
-import org.metasphere.adminservice.model.vo.resp.MsResponse;
-import org.metasphere.adminservice.service.ServerService;
+import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.service.core.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,27 +21,27 @@ public class ServerController {
     private ServerService serverService;
 
     @PostMapping(value = "")
-    public MsResponse<Server> actionSaveServer(@RequestBody Server server) {
+    public MSResponse<Server> actionSaveServer(@RequestBody Server server) {
         serverService.saveServer(server);
-        return MsResponse.success();
+        return MSResponse.success();
     }
 
     @GetMapping(value = "queryByTypeAndPagination")
-    public MsResponse<MsPage<Server>> actionQueryServersByTypeAndPagination(
+    public MSResponse<MSPage<Server>> actionQueryServersByTypeAndPagination(
             @RequestParam(value = "type") Integer type,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MsPage<Server> page = serverService.findServersByTypeAndPagination(type, pageNum, pageSize);
-        return MsResponse.success(page);
+        MSPage<Server> page = serverService.findServersByTypeAndPagination(type, pageNum, pageSize);
+        return MSResponse.success(page);
     }
 
     @GetMapping(value = "queryByPagination")
-    public MsResponse<MsPage<Server>> actionQueryServersByPagination(
+    public MSResponse<MSPage<Server>> actionQueryServersByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MsPage<Server> page = serverService.findServersByPagination(pageNum, pageSize);
-        return MsResponse.success(page);
+        MSPage<Server> page = serverService.findServersByPagination(pageNum, pageSize);
+        return MSResponse.success(page);
     }
 }

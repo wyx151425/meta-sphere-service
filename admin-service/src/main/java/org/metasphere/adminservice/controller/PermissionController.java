@@ -1,9 +1,9 @@
 package org.metasphere.adminservice.controller;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.auth.Permission;
-import org.metasphere.adminservice.model.vo.resp.MsResponse;
-import org.metasphere.adminservice.service.PermissionService;
+import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.service.auth.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,35 +23,35 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @PostMapping(value = "")
-    public MsResponse actionSavePermission(@RequestBody Permission permission) {
+    public MSResponse actionSavePermission(@RequestBody Permission permission) {
         permissionService.savePermission(permission);
-        return MsResponse.success();
+        return MSResponse.success();
     }
 
     @DeleteMapping(value = "{id}")
-    public MsResponse actionDeletePermission(@PathVariable(value = "id") Long id) {
+    public MSResponse actionDeletePermission(@PathVariable(value = "id") Long id) {
         permissionService.deletePermission(id);
-        return MsResponse.success();
+        return MSResponse.success();
     }
 
     @DeleteMapping(value = "{ids}")
-    public MsResponse actionDeletePermissions(@PathVariable(value = "ids") List<Long> ids) {
+    public MSResponse actionDeletePermissions(@PathVariable(value = "ids") List<Long> ids) {
         permissionService.deletePermissions(ids);
-        return MsResponse.success();
+        return MSResponse.success();
     }
 
     @PutMapping(value = "name")
-    public MsResponse actionUpdatePermissionName(@RequestBody Permission permission) {
+    public MSResponse actionUpdatePermissionName(@RequestBody Permission permission) {
         permissionService.updatePermissionName(permission);
-        return MsResponse.success();
+        return MSResponse.success();
     }
 
     @GetMapping(value = "queryByPagination")
-    public MsResponse actionQueryPermissionsByPagination(
+    public MSResponse actionQueryPermissionsByPagination(
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        MsPage<Permission> page = permissionService.findPermissionsByPagination(pageNum, pageSize);
-        return MsResponse.success(page);
+        MSPage<Permission> page = permissionService.findPermissionsByPagination(pageNum, pageSize);
+        return MSResponse.success(page);
     }
 }

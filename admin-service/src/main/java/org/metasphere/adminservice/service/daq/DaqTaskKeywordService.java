@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 
@@ -51,5 +51,5 @@ public interface DaqTaskKeywordService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 }

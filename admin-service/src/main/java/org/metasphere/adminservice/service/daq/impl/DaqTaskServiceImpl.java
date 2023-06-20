@@ -1,18 +1,18 @@
 package org.metasphere.adminservice.service.daq.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.constant.MsStatusCode;
-import org.metasphere.adminservice.exception.MsException;
+import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.constant.MSStatusCode;
+import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
 import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.*;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 import org.metasphere.adminservice.model.vo.DataVolume;
 import org.metasphere.adminservice.model.vo.TimingDataVolumes;
 import org.metasphere.adminservice.repository.daq.DaqTaskRepository;
-import org.metasphere.adminservice.service.ScrapydService;
+import org.metasphere.adminservice.service.daq.ScrapydService;
 import org.metasphere.adminservice.service.daq.*;
 import org.metasphere.adminservice.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createDaqTask(DaqTask daqTask) {
-        daqTask.setStage(MsConst.DaqTask.Stage.NEW);
+        daqTask.setStage(MSConst.DaqTask.Stage.NEW);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -87,11 +87,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTask(Long daqTaskId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
-        if (MsConst.DaqTask.Stage.NEW != daqTask.getStage()) {
-            throw new MsException(MsStatusCode.DAQ_TASK_STAGE_ERROR);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
+        if (MSConst.DaqTask.Stage.NEW != daqTask.getStage()) {
+            throw new MSException(MSStatusCode.DAQ_TASK_STAGE_ERROR);
         }
-        daqTask.setStatus(MsConst.MetaSphereEntity.Status.DISABLED);
+        daqTask.setStatus(MSConst.MetaSphereEntity.Status.DISABLED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -102,9 +102,9 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         String taskCode = UUIDUtils.getDaqTaskCode();
 
         // 创建任务编号，更新任务运行阶段
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
         daqTask.setCode(taskCode);
-        daqTask.setStage(MsConst.DaqTask.Stage.TASK_CONFIGURING);
+        daqTask.setStage(MSConst.DaqTask.Stage.TASK_CONFIGURING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
@@ -120,12 +120,12 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void performDaqTask(Long daqTaskId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
 
         // 将该项目的关键词放入缓存
         List<DaqTaskKeyword> taskKeywords = daqTaskKeywordService.findDaqTaskKeywords(daqTaskId);
         List<String> keywords = taskKeywords.stream().map(DaqTaskKeyword::getKeyword).collect(Collectors.toList());
-        String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
+        String keywordsCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(keywordsCacheKey, keywords);
 
         // 启动数据采集爬虫
@@ -137,20 +137,20 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         });
 
         // 将数据采集任务及启用的爬虫计入缓存，用于数据量统计
-        redisTemplate.opsForList().rightPushAll(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
+        redisTemplate.opsForList().rightPushAll(MSConst.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
 
         List<String> spiderCodes = taskSpiders.stream().map(DaqTaskSpider::getSpiderCode).distinct().collect(Collectors.toList());
-        if (spiderCodes.contains(MsConst.DaqSpider.Codes.WEIBO)) {
-            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_USER);
-            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_LIKE);
-            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_COMMENT);
-            spiderCodes.add(MsConst.DaqSpider.Codes.WEIBO_REPOST);
+        if (spiderCodes.contains(MSConst.DaqSpider.Codes.WEIBO)) {
+            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_USER);
+            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_LIKE);
+            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_COMMENT);
+            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_REPOST);
         }
-        String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
+        String spidersCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
 
         // 修改数据采集任务运行阶段为执行中
-        daqTask.setStage(MsConst.DaqTask.Stage.TASK_RUNNING);
+        daqTask.setStage(MSConst.DaqTask.Stage.TASK_RUNNING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -158,13 +158,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void stopDaqTaskPerforming(Long daqTaskId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
 
         // 从运行数据采集任务编码缓存中删除该编码
-        redisTemplate.opsForList().remove(MsConst.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, daqTask.getCode());
+        redisTemplate.opsForList().remove(MSConst.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, daqTask.getCode());
 
         // 删除缓存中该数据采集任务所有的爬虫
-        String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
+        String spidersCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.delete(spidersCacheKey);
 
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
@@ -181,11 +181,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         });
 
         // 删除缓存中该数据采集任务所有的关键词
-        String keywordsCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
+        String keywordsCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.delete(keywordsCacheKey);
 
         // 修改数据采集任务运行阶段为已执行
-        daqTask.setStage(MsConst.DaqTask.Stage.TASK_PERFORMED);
+        daqTask.setStage(MSConst.DaqTask.Stage.TASK_PERFORMED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -193,7 +193,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void enterDaqTaskAcquiredData(Long daqTaskId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
 
         int pageNum = 0;
         int pageSize = 10;
@@ -207,13 +207,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         }
 
         // 修改数据采集任务运行阶段为数据已录入
-        daqTask.setStage(MsConst.DaqTask.Stage.DATA_ENTERED);
+        daqTask.setStage(MSConst.DaqTask.Stage.DATA_ENTERED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
 
     @Override
-    public MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
+    public MSPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         Page<DaqTask> page;
@@ -226,13 +226,13 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         } else {
             page = daqTaskRepository.findAll(pageable);
         }
-        return MsPage.newInstance(page);
+        return MSPage.newInstance(page);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addDaqTaskSpiders(Long daqTaskId, List<Long> daqSpiderIds) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
         List<DaqTaskServer> daqTaskServers = daqTaskServerService.findDaqTaskServers(daqTaskId);
         daqTaskSpiderService.saveDaqTaskSpiders(daqTask, daqTaskServers, daqSpiderIds);
     }
@@ -249,19 +249,19 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     }
 
     @Override
-    public MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MSPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         return daqTaskSpiderService.findDaqTaskSpidersByPagination(daqTaskId, pageNum, pageSize);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addDaqTaskKeywords(Long daqTaskId, List<String> keywords) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
         daqTaskKeywordService.saveDaqTaskKeywords(daqTask, keywords);
     }
 
     @Override
-    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MSPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         return daqTaskKeywordService.findDaqTaskKeywordsByPagination(daqTaskId, pageNum, pageSize);
     }
 
@@ -273,7 +273,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Override
     public DaqTaskTimingDataVolumes findDaqTaskTimingDataVolumes(Long daqTaskId) {
-        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MsException::getDataNotFoundException);
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
 
         Map<String, List<DaqTaskDataVolume>> dataVolumesMap = daqTaskDataVolumeService.findSpiderCode2DaqDataVolumesMap(daqTask.getCode());
         List<TimingDataVolumes> tdvs = dataVolumesMap.keySet()
@@ -289,7 +289,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
                             }).collect(Collectors.toList());
 
                     TimingDataVolumes tdv = new TimingDataVolumes();
-                    tdv.setSpiderName(MsConst.DaqSpider.CODE2NAME.get(spiderCode));
+                    tdv.setSpiderName(MSConst.DaqSpider.CODE2NAME.get(spiderCode));
                     tdv.setSpiderCode(spiderCode);
                     tdv.setDataVolumes(dvs);
 

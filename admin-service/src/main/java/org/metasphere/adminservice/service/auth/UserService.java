@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.service;
+package org.metasphere.adminservice.service.auth;
 
 import org.metasphere.adminservice.model.pojo.auth.User;
 

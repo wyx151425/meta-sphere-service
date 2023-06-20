@@ -2,8 +2,8 @@ package org.metasphere.adminservice.controller;
 
 import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.model.vo.req.UserLoginVO;
-import org.metasphere.adminservice.model.vo.resp.MsResponse;
-import org.metasphere.adminservice.service.UserService;
+import org.metasphere.adminservice.model.vo.resp.MSResponse;
+import org.metasphere.adminservice.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +21,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "login")
-    public MsResponse actionUserLogin(@RequestBody UserLoginVO userLoginVO) {
+    public MSResponse actionUserLogin(@RequestBody UserLoginVO userLoginVO) {
         User targetUser = userService.login(userLoginVO.getEmail(), userLoginVO.getPassword());
-        return MsResponse.success(targetUser);
+        return MSResponse.success(targetUser);
     }
 
     @GetMapping(value = "query")
-    public MsResponse actionUserQuery() {
-        return MsResponse.success();
+    public MSResponse actionUserQuery() {
+        return MSResponse.success();
     }
 }

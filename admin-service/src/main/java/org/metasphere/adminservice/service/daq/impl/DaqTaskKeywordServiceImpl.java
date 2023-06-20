@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.service.daq.impl;
 
-import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.exception.MsException;
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.exception.MSException;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
 import org.metasphere.adminservice.repository.daq.DaqTaskKeywordRepository;
@@ -54,8 +54,8 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTaskKeyword(Long id) {
-        DaqTaskKeyword daqTaskKeyword = daqTaskKeywordRepository.findById(id).orElseThrow(MsException::getDataNotFoundException);
-        daqTaskKeyword.setStatus(MsConst.MetaSphereEntity.Status.DISABLED);
+        DaqTaskKeyword daqTaskKeyword = daqTaskKeywordRepository.findById(id).orElseThrow(MSException::getDataNotFoundException);
+        daqTaskKeyword.setStatus(MSConst.MetaSphereEntity.Status.DISABLED);
         daqTaskKeyword.setUpdateAt(LocalDateTime.now());
         daqTaskKeywordRepository.save(daqTaskKeyword);
     }
@@ -72,12 +72,12 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
     }
 
     @Override
-    public MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MSPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskKeyword> page = daqTaskKeywordRepository.findAll((Specification<DaqTaskKeyword>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);
-        return MsPage.newInstance(page);
+        return MSPage.newInstance(page);
     }
 }

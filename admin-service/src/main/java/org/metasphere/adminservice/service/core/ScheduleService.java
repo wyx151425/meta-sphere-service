@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.service;
+package org.metasphere.adminservice.service.core;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;

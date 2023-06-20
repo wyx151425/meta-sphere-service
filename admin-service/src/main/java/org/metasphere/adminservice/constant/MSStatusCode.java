@@ -6,7 +6,7 @@ package org.metasphere.adminservice.constant;
  * @Date: Created in 2022-11-10 20:44
  * @Modified By:
  */
-public class MsStatusCode {
+public class MSStatusCode {
 
     public static final int SUCCESS = 10000;
     public static final int SERVER_UNREACHABLE = 11000;

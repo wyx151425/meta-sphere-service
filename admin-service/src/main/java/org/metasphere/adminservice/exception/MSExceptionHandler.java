@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.metasphere.adminservice.model.vo.resp.MsResponse;
+import org.metasphere.adminservice.model.vo.resp.MSResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,34 +15,34 @@ import java.nio.file.AccessDeniedException;
  */
 @Slf4j
 @RestControllerAdvice
-public class MsExceptionHandler {
+public class MSExceptionHandler {
 
-    @ExceptionHandler(value = MsException.class)
-    public MsResponse handleMsException(MsException e) {
-        return MsResponse.error();
+    @ExceptionHandler(value = MSException.class)
+    public MSResponse handleMsException(MSException e) {
+        return MSResponse.error();
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
-    public MsResponse handleAccessDeniedException(AccessDeniedException e) {
+    public MSResponse handleAccessDeniedException(AccessDeniedException e) {
         log.error(e.getMessage(), e);
-        return MsResponse.accessDenied();
+        return MSResponse.accessDenied();
     }
 
     @ExceptionHandler(value = UserNotFoundException.class)
-    public MsResponse handleUserNotFoundException(UserNotFoundException e) {
+    public MSResponse handleUserNotFoundException(UserNotFoundException e) {
         log.error("UserNotFoundException", e);
-        return MsResponse.accessDenied();
+        return MSResponse.accessDenied();
     }
 
     @ExceptionHandler(value = AccountDisabledException.class)
-    public MsResponse handleAccountDisabledException(AccountDisabledException e) {
+    public MSResponse handleAccountDisabledException(AccountDisabledException e) {
         log.error("AccountDisabledException", e);
-        return MsResponse.accessDenied();
+        return MSResponse.accessDenied();
     }
 
     @ExceptionHandler(value = Exception.class)
-    public MsResponse handleException(Exception e) {
+    public MSResponse handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return MsResponse.systemError();
+        return MSResponse.systemError();
     }
 }

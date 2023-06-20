@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq.impl;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.repository.daq.DaqSpiderRepository;
 import org.metasphere.adminservice.service.daq.DaqSpiderService;
@@ -42,10 +42,10 @@ public class DaqSpiderServiceImpl implements DaqSpiderService {
     }
 
     @Override
-    public MsPage<DaqSpider> findDaqSpidersByPagination(Integer pageNum, Integer pageSize) {
+    public MSPage<DaqSpider> findDaqSpidersByPagination(Integer pageNum, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqSpider> page = daqSpiderRepository.findAll(pageRequest);
-        return MsPage.newInstance(page);
+        return MSPage.newInstance(page);
     }
 
     @Override

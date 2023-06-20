@@ -1,10 +1,10 @@
-package org.metasphere.adminservice.service.impl;
+package org.metasphere.adminservice.service.auth.impl;
 
-import org.metasphere.adminservice.constant.MsStatusCode;
-import org.metasphere.adminservice.exception.MsException;
+import org.metasphere.adminservice.constant.MSStatusCode;
+import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.repository.UserRepository;
-import org.metasphere.adminservice.service.UserService;
+import org.metasphere.adminservice.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +27,10 @@ public class UserServiceImpl implements UserService {
             if (targetUser.getPassword().equals(password)) {
                 return targetUser;
             } else {
-                throw new MsException(MsStatusCode.ACCOUNT_AUTHENTICATION_FAILED);
+                throw new MSException(MSStatusCode.ACCOUNT_AUTHENTICATION_FAILED);
             }
         } else {
-            throw new MsException(MsStatusCode.USER_NOT_FOUND);
+            throw new MSException(MSStatusCode.USER_NOT_FOUND);
         }
     }
 

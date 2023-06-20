@@ -1,11 +1,12 @@
 package org.metasphere.adminservice.service;
 
 import org.junit.jupiter.api.Test;
-import org.metasphere.adminservice.constant.MsConst;
+import org.metasphere.adminservice.constant.MSConst;
 import org.metasphere.adminservice.exception.ScrapydReqException;
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydResp;
 import org.metasphere.adminservice.model.dto.scrapyd.ScrapydStatus;
 import org.metasphere.adminservice.model.pojo.daq.DaqJobs;
+import org.metasphere.adminservice.service.daq.ScrapydService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -99,19 +100,19 @@ public class ScrapydServiceTests {
 
     @Test
     void testAddProject() {
-        String url = String.format(MsConst.Scrapyd.URLTemplate.ADD_DAQ_PROJECT, "127.0.0.1", 6800);
+        String url = String.format(MSConst.Scrapyd.URLTemplate.ADD_DAQ_PROJECT, "127.0.0.1", 6800);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-        formData.add(MsConst.Scrapyd.ReqParam.PROJECT, "151425");
+        formData.add(MSConst.Scrapyd.ReqParam.PROJECT, "151425");
 
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(formData, headers);
 
         ScrapydResp resp = restTemplate.postForObject(url, httpEntity, ScrapydResp.class);
 
-        if (MsConst.Scrapyd.RespStatus.OK.equals(resp.getStatus())) {
+        if (MSConst.Scrapyd.RespStatus.OK.equals(resp.getStatus())) {
             System.out.println(resp.getSpiders());
         } else {
             throw new ScrapydReqException(resp.getMessage());

@@ -1,8 +1,9 @@
 package org.metasphere.adminservice.service;
 
 import org.junit.jupiter.api.Test;
-import org.metasphere.adminservice.constant.MsConst;
+import org.metasphere.adminservice.constant.MSConst;
 import org.metasphere.adminservice.model.pojo.auth.Permission;
+import org.metasphere.adminservice.service.auth.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,7 +27,7 @@ public class PermissionServiceTests {
     void testSavePermission() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
         Permission permission = new Permission();
-        permission.setStatus(MsConst.MetaSphereEntity.Status.ENABLED);
+        permission.setStatus(MSConst.MetaSphereEntity.Status.ENABLED);
         permission.setObjectId(UUID.randomUUID().toString().replace("-", "").toUpperCase());
         permission.setCreateAt(dateTime);
         permission.setUpdateAt(dateTime);

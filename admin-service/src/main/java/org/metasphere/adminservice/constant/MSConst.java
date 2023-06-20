@@ -11,7 +11,7 @@ import java.util.Map;
  * @Date: Created in 2022-11-10 20:26
  * @Modified By:
  */
-public class MsConst {
+public class MSConst {
 
     public static class MetaSphereEntity {
 
@@ -85,7 +85,7 @@ public class MsConst {
 
     public static class Scrapyd {
         public static final String PROJECT_VERSION = "v1";
-        public static final String EGG_FILE_PATH = "eggs/1681702037.egg";
+        public static final String EGG_FILE_PATH = "eggs/1682478033.egg";
 
         public static class RespStatus {
             public static final String OK = "ok";

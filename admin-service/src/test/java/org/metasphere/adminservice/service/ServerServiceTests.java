@@ -2,6 +2,7 @@ package org.metasphere.adminservice.service;
 
 import org.junit.jupiter.api.Test;
 import org.metasphere.adminservice.model.pojo.Server;
+import org.metasphere.adminservice.service.core.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

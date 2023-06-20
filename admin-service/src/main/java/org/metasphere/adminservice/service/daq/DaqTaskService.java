@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq;
 
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
@@ -66,7 +66,7 @@ public interface DaqTaskService {
      * @param stage    任务运行阶段
      * @return 查询到的数据采集任务信息
      */
-    MsPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage);
+    MSPage<DaqTask> findDaqTasksByParams(Integer pageNum, Integer pageSize, Integer stage);
 
     /**
      * 添加数据采集任务关键词
@@ -108,7 +108,7 @@ public interface DaqTaskService {
      * @param pageSize  单页数据量
      * @return 数据采集任务爬虫
      */
-    MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 
     /**
      * 分页获取数据采集任务下的关键词
@@ -118,7 +118,7 @@ public interface DaqTaskService {
      * @param pageSize  单页数据量
      * @return 数据采集任务关键词
      */
-    MsPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+    MSPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
 
     /**
      * 绑定数据采集任务服务器

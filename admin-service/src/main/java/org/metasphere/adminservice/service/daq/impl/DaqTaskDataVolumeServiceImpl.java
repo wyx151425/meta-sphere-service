@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq.impl;
 
-import org.metasphere.adminservice.constant.MsConst;
+import org.metasphere.adminservice.constant.MSConst;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskDataVolume;
 import org.metasphere.adminservice.repository.daq.DaqDataVolumeRepository;
 import org.metasphere.adminservice.service.daq.DaqTaskDataVolumeService;
@@ -42,7 +42,7 @@ public class DaqTaskDataVolumeServiceImpl implements DaqTaskDataVolumeService {
 
     @Override
     public Map<String, List<DaqTaskDataVolume>> findSpiderCode2DaqDataVolumesMap(String taskCode) {
-        String spidersCacheKey = String.format(MsConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, taskCode);
+        String spidersCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, taskCode);
         List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
 
         Map<String, List<DaqTaskDataVolume>> dataVolumesMap = new HashMap<>();

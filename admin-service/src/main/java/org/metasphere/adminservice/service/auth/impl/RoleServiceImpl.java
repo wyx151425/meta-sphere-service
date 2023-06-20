@@ -1,10 +1,10 @@
-package org.metasphere.adminservice.service.impl;
+package org.metasphere.adminservice.service.auth.impl;
 
 import org.metasphere.adminservice.exception.PermissionExistException;
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.auth.Role;
 import org.metasphere.adminservice.repository.RoleRepository;
-import org.metasphere.adminservice.service.RoleService;
+import org.metasphere.adminservice.service.auth.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,8 +56,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public MsPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize) {
+    public MSPage<Role> findRolesByPagination(Integer pageNum, Integer pageSize) {
         Page<Role> pageContext = roleRepository.findAll(PageRequest.of(pageNum - 1, pageSize));
-        return new MsPage<>(pageContext);
+        return new MSPage<>(pageContext);
     }
 }

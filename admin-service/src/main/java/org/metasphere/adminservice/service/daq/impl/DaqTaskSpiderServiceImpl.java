@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service.daq.impl;
 
-import org.metasphere.adminservice.constant.MsConst;
-import org.metasphere.adminservice.model.dto.MsPage;
+import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskServer;
@@ -54,7 +54,7 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
                     taskSpider.setSpiderId(daqSpider.getId());
                     taskSpider.setSpiderName(daqSpider.getName());
                     taskSpider.setSpiderCode(daqSpider.getCode());
-                    taskSpider.setSpiderStatus(MsConst.DaqTaskSpider.SpiderStatus.NEW);
+                    taskSpider.setSpiderStatus(MSConst.DaqTaskSpider.SpiderStatus.NEW);
                     taskSpider.setServerIpAddress(daqTaskServer.getServerIpAddress());
                     taskSpider.setServerPort(daqTaskServer.getServerPort());
                     taskSpiders.add(taskSpider);
@@ -80,12 +80,12 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
     }
 
     @Override
-    public MsPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
+    public MSPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskSpider> page = daqTaskSpiderRepository.findAll((Specification<DaqTaskSpider>) (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.equal(root.get("taskId"), daqTaskId);
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);
-        return MsPage.newInstance(page);
+        return MSPage.newInstance(page);
     }
 }
