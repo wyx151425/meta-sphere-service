@@ -1,8 +1,8 @@
 package org.metasphere.adminservice.service.daq.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.metasphere.adminservice.constant.MSConst;
-import org.metasphere.adminservice.constant.MSStatusCode;
+import org.metasphere.adminservice.context.constant.MSConstant;
+import org.metasphere.adminservice.context.constant.MSStatusCode;
 import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
 import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
@@ -79,7 +79,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createDaqTask(DaqTask daqTask) {
-        daqTask.setStage(MSConst.DaqTask.Stage.NEW);
+        daqTask.setStage(MSConstant.DaqTask.Stage.NEW);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -88,10 +88,10 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTask(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
-        if (MSConst.DaqTask.Stage.NEW != daqTask.getStage()) {
+        if (MSConstant.DaqTask.Stage.NEW != daqTask.getStage()) {
             throw new MSException(MSStatusCode.DAQ_TASK_STAGE_ERROR);
         }
-        daqTask.setStatus(MSConst.MetaSphereEntity.Status.DISABLED);
+        daqTask.setStatus(MSConstant.MetaSphereEntity.Status.DISABLED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -104,7 +104,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         // 创建任务编号，更新任务运行阶段
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
         daqTask.setCode(taskCode);
-        daqTask.setStage(MSConst.DaqTask.Stage.TASK_CONFIGURING);
+        daqTask.setStage(MSConstant.DaqTask.Stage.TASK_CONFIGURING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
@@ -125,7 +125,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         // 将该项目的关键词放入缓存
         List<DaqTaskKeyword> taskKeywords = daqTaskKeywordService.findDaqTaskKeywords(daqTaskId);
         List<String> keywords = taskKeywords.stream().map(DaqTaskKeyword::getKeyword).collect(Collectors.toList());
-        String keywordsCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
+        String keywordsCacheKey = String.format(MSConstant.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(keywordsCacheKey, keywords);
 
         // 启动数据采集爬虫
@@ -137,20 +137,20 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         });
 
         // 将数据采集任务及启用的爬虫计入缓存，用于数据量统计
-        redisTemplate.opsForList().rightPushAll(MSConst.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
+        redisTemplate.opsForList().rightPushAll(MSConstant.CacheKey.RUNNING_DAQ_TASKS_CODE, daqTask.getCode());
 
         List<String> spiderCodes = taskSpiders.stream().map(DaqTaskSpider::getSpiderCode).distinct().collect(Collectors.toList());
-        if (spiderCodes.contains(MSConst.DaqSpider.Codes.WEIBO)) {
-            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_USER);
-            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_LIKE);
-            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_COMMENT);
-            spiderCodes.add(MSConst.DaqSpider.Codes.WEIBO_REPOST);
+        if (spiderCodes.contains(MSConstant.DaqSpider.Codes.WEIBO)) {
+            spiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_USER);
+            spiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_LIKE);
+            spiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_COMMENT);
+            spiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_REPOST);
         }
-        String spidersCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
+        String spidersCacheKey = String.format(MSConstant.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
 
         // 修改数据采集任务运行阶段为执行中
-        daqTask.setStage(MSConst.DaqTask.Stage.TASK_RUNNING);
+        daqTask.setStage(MSConstant.DaqTask.Stage.TASK_RUNNING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -161,10 +161,10 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
 
         // 从运行数据采集任务编码缓存中删除该编码
-        redisTemplate.opsForList().remove(MSConst.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, daqTask.getCode());
+        redisTemplate.opsForList().remove(MSConstant.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, daqTask.getCode());
 
         // 删除缓存中该数据采集任务所有的爬虫
-        String spidersCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
+        String spidersCacheKey = String.format(MSConstant.CacheKeyTemplate.DAQ_TASK_SPIDERS, daqTask.getCode());
         redisTemplate.delete(spidersCacheKey);
 
         List<DaqTaskSpider> taskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
@@ -181,11 +181,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         });
 
         // 删除缓存中该数据采集任务所有的关键词
-        String keywordsCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
+        String keywordsCacheKey = String.format(MSConstant.CacheKeyTemplate.DAQ_TASK_KEYWORDS, daqTask.getCode());
         redisTemplate.delete(keywordsCacheKey);
 
         // 修改数据采集任务运行阶段为已执行
-        daqTask.setStage(MSConst.DaqTask.Stage.TASK_PERFORMED);
+        daqTask.setStage(MSConstant.DaqTask.Stage.TASK_PERFORMED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -207,7 +207,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         }
 
         // 修改数据采集任务运行阶段为数据已录入
-        daqTask.setStage(MSConst.DaqTask.Stage.DATA_ENTERED);
+        daqTask.setStage(MSConstant.DaqTask.Stage.DATA_ENTERED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -289,7 +289,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
                             }).collect(Collectors.toList());
 
                     TimingDataVolumes tdv = new TimingDataVolumes();
-                    tdv.setSpiderName(MSConst.DaqSpider.CODE2NAME.get(spiderCode));
+                    tdv.setSpiderName(MSConstant.DaqSpider.CODE2NAME.get(spiderCode));
                     tdv.setSpiderCode(spiderCode);
                     tdv.setDataVolumes(dvs);
 

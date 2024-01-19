@@ -11,7 +11,7 @@ import java.util.Date;
  * @Date: Created in 2022-11-13 10:42
  * @Modified By:
  */
-public class JwtUtils {
+public class JWTUtils {
 
     private static final Long TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000L;
     private static final String TOKEN_SIGN_KEY = "wyx151425";

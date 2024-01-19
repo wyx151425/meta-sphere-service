@@ -1,4 +1,4 @@
-package org.metasphere.portalservice.context;
+package org.metasphere.portalservice.context.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq.impl;
 
-import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.context.constant.MSConstant;
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
@@ -54,7 +54,7 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
                     taskSpider.setSpiderId(daqSpider.getId());
                     taskSpider.setSpiderName(daqSpider.getName());
                     taskSpider.setSpiderCode(daqSpider.getCode());
-                    taskSpider.setSpiderStatus(MSConst.DaqTaskSpider.SpiderStatus.NEW);
+                    taskSpider.setSpiderStatus(MSConstant.DaqTaskSpider.SpiderStatus.NEW);
                     taskSpider.setServerIpAddress(daqTaskServer.getServerIpAddress());
                     taskSpider.setServerPort(daqTaskServer.getServerPort());
                     taskSpiders.add(taskSpider);

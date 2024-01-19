@@ -1,6 +1,6 @@
-package org.metasphere.portalservice.model;
+package org.metasphere.portalservice.model.pojo;
 
-import org.metasphere.portalservice.constant.MSConstant;
+import org.metasphere.portalservice.context.constant.MSConstant;
 import org.metasphere.portalservice.util.UUIDUtils;
 
 import javax.persistence.GeneratedValue;

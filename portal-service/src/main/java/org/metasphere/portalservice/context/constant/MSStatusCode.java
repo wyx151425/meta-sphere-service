@@ -1,4 +1,4 @@
-package org.metasphere.portalservice.constant;
+package org.metasphere.portalservice.context.constant;
 
 /**
  * @Author: WangZhenqi

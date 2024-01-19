@@ -1,4 +1,4 @@
-package org.metasphere.portalservice.model;
+package org.metasphere.portalservice.model.pojo.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

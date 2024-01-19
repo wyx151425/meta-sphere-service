@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.config;
+package org.metasphere.adminservice.context.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

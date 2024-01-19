@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.constant;
+package org.metasphere.adminservice.context.constant;
 
 import org.metasphere.adminservice.model.bo.daq.*;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  * @Date: Created in 2022-11-10 20:26
  * @Modified By:
  */
-public class MSConst {
+public class MSConstant {
 
     public static class MetaSphereEntity {
 

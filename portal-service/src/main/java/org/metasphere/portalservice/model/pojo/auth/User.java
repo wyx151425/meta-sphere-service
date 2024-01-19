@@ -2,7 +2,7 @@ package org.metasphere.portalservice.model.pojo.auth;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.metasphere.portalservice.model.MetaSphereEntity;
+import org.metasphere.portalservice.model.pojo.MetaSphereEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

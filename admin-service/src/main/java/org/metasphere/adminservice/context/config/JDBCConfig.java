@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.config;
+package org.metasphere.adminservice.context.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @Modified By:
  */
 @Configuration
-public class JdbcConfig {
+public class JDBCConfig {
     @Autowired
     private Environment environment;
 

@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.daq.impl;
 
-import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.context.constant.MSConstant;
 import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.DaqTask;
@@ -55,7 +55,7 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTaskKeyword(Long id) {
         DaqTaskKeyword daqTaskKeyword = daqTaskKeywordRepository.findById(id).orElseThrow(MSException::getDataNotFoundException);
-        daqTaskKeyword.setStatus(MSConst.MetaSphereEntity.Status.DISABLED);
+        daqTaskKeyword.setStatus(MSConstant.MetaSphereEntity.Status.DISABLED);
         daqTaskKeyword.setUpdateAt(LocalDateTime.now());
         daqTaskKeywordRepository.save(daqTaskKeyword);
     }

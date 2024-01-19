@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.model.pojo;
 
-import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.context.constant.MSConstant;
 import org.metasphere.adminservice.util.UUIDUtils;
 
 import javax.persistence.GeneratedValue;
@@ -48,7 +48,7 @@ public class MetaSphereEntity implements Serializable {
     public MetaSphereEntity() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
         this.objectId = UUIDUtils.getMSObjectId();
-        this.status = MSConst.MetaSphereEntity.Status.ENABLED;
+        this.status = MSConstant.MetaSphereEntity.Status.ENABLED;
         this.createAt = dateTime;
         this.updateAt = dateTime;
     }

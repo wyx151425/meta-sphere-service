@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
 import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.repository.UserRepository;
-import org.metasphere.adminservice.util.Md5Utils;
+import org.metasphere.adminservice.util.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -35,7 +35,7 @@ public class UserServiceTests {
         User user = new User();
         user.setEmail("wyx151425@163.com");
         user.setName("王振琦");
-        user.setPassword(Md5Utils.encrypt("151425"));
+        user.setPassword(MD5Utils.encrypt("151425"));
         userRepository.save(user);
     }
 

@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.config;
+package org.metasphere.adminservice.context.config;
 
 import org.hibernate.annotations.Where;
 import org.springframework.core.annotation.AliasFor;

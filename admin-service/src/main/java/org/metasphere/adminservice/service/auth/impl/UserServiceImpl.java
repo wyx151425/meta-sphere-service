@@ -1,6 +1,6 @@
 package org.metasphere.adminservice.service.auth.impl;
 
-import org.metasphere.adminservice.constant.MSStatusCode;
+import org.metasphere.adminservice.context.constant.MSStatusCode;
 import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.pojo.auth.User;
 import org.metasphere.adminservice.repository.UserRepository;

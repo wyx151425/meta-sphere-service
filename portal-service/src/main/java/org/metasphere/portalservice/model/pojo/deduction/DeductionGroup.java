@@ -1,17 +1,19 @@
-package org.metasphere.portalservice.model;
+package org.metasphere.portalservice.model.pojo.deduction;
+
+import org.metasphere.portalservice.model.pojo.MetaSphereEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
  * @Author: WangZhenqi
- * @Description: 推演室
+ * @Description: 推演群组类
  * @Date: Created in 2024-01-19 10:43
  * @Modified By:
  */
 @Entity
-@Table(name = "deductionRoom")
-public class DeductionRoom extends MetaSphereEntity {
+@Table(name = "ms_deduction_group")
+public class DeductionGroup extends MetaSphereEntity {
     /**
      * 推演室编号
      */
@@ -29,7 +31,7 @@ public class DeductionRoom extends MetaSphereEntity {
      */
     private Integer intervenedLevel;
 
-    public DeductionRoom() {
+    public DeductionGroup() {
     }
 
     public String getCode() {

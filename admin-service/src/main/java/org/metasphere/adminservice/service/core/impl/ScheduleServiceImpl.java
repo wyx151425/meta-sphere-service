@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service.core.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.metasphere.adminservice.constant.MSConst;
+import org.metasphere.adminservice.context.constant.MSConstant;
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskDataVolume;
 import org.metasphere.adminservice.service.core.ScheduleService;
 import org.metasphere.adminservice.service.daq.DaqTaskDataVolumeService;
@@ -44,18 +44,18 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<DaqTaskDataVolume> dataVolumes = new ArrayList<>();
         LocalDateTime countedAt = LocalDateTime.now();
 
-        List<String> taskCodes = redisTemplate.opsForList().range(MSConst.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, -1);
+        List<String> taskCodes = redisTemplate.opsForList().range(MSConstant.CacheKey.RUNNING_DAQ_TASKS_CODE, 0, -1);
         try {
             taskCodes.forEach(taskCode -> {
-                String spidersCacheKey = String.format(MSConst.CacheKeyTemplate.DAQ_TASK_SPIDERS, taskCode);
+                String spidersCacheKey = String.format(MSConstant.CacheKeyTemplate.DAQ_TASK_SPIDERS, taskCode);
                 List<String> spiderCodes = redisTemplate.opsForList().range(spidersCacheKey, 0, -1);
                 spiderCodes.forEach(spiderCode -> {
                     Query query = Query.query(Criteria.where("task_code").is(taskCode));
-                    long dataVolume = mongoTemplate.count(query, MSConst.DaqSpider.CODE2CLASS.get(spiderCode), spiderCode);
+                    long dataVolume = mongoTemplate.count(query, MSConstant.DaqSpider.CODE2CLASS.get(spiderCode), spiderCode);
 
                     DaqTaskDataVolume daqTaskDataVolume = new DaqTaskDataVolume();
                     daqTaskDataVolume.setTaskCode(taskCode);
-                    daqTaskDataVolume.setSpiderName(MSConst.DaqSpider.CODE2NAME.get(spiderCode));
+                    daqTaskDataVolume.setSpiderName(MSConstant.DaqSpider.CODE2NAME.get(spiderCode));
                     daqTaskDataVolume.setSpiderCode(spiderCode);
                     daqTaskDataVolume.setCountedAt(countedAt);
                     daqTaskDataVolume.setDataVolume(dataVolume);

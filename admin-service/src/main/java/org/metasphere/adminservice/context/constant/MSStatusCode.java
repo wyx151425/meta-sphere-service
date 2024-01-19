@@ -1,4 +1,4 @@
-package org.metasphere.adminservice.constant;
+package org.metasphere.adminservice.context.constant;
 
 /**
  * @Author: WangZhenqi

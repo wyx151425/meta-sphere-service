@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.service.core.impl;
 
-import org.metasphere.adminservice.constant.MSConst;
-import org.metasphere.adminservice.constant.MSStatusCode;
+import org.metasphere.adminservice.context.constant.MSConstant;
+import org.metasphere.adminservice.context.constant.MSStatusCode;
 import org.metasphere.adminservice.exception.MSException;
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.Server;
@@ -41,9 +41,9 @@ public class ServerServiceImpl implements ServerService {
         if (!checkServerStatus(server.getIpAddress())) {
             throw new MSException(MSStatusCode.SERVER_UNREACHABLE);
         }
-        if (MSConst.Server.Type.DAQ == server.getType() && !scrapydService.checkScrapydStatus(server.getIpAddress(), server.getPort())) {
+        if (MSConstant.Server.Type.DAQ == server.getType() && !scrapydService.checkScrapydStatus(server.getIpAddress(), server.getPort())) {
             throw new MSException(MSStatusCode.PORT_UNREACHABLE);
-        } else if (MSConst.Server.Type.NLP == server.getType()) {
+        } else if (MSConstant.Server.Type.NLP == server.getType()) {
             // TODO: 添加NLP服务器端口校验
         }
 

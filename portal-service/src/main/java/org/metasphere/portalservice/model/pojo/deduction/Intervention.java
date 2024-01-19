@@ -1,4 +1,6 @@
-package org.metasphere.portalservice.model;
+package org.metasphere.portalservice.model.pojo.deduction;
+
+import org.metasphere.portalservice.model.pojo.MetaSphereEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

@@ -1,7 +1,7 @@
 package org.metasphere.adminservice.exception;
 
 import lombok.Getter;
-import org.metasphere.adminservice.constant.MSStatusCode;
+import org.metasphere.adminservice.context.constant.MSStatusCode;
 
 /**
  * @Author: WangZhenqi

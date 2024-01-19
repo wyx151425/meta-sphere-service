@@ -1,4 +1,4 @@
-package org.metasphere.portalservice.constant;
+package org.metasphere.portalservice.context.constant;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -160,9 +160,9 @@ public class MSConstant {
         }
     }
 
-    public static class DeductionRoom {
+    public static class DeductionGroup {
         public static class Type {
-            public static final int ORDINARY = 100;
+            public static final int COMMON = 100;
             public static final int INTERVENED = 200;
             public static final int INTERACTIVE = 300;
         }
