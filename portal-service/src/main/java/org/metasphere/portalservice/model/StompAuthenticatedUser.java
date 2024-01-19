@@ -3,6 +3,7 @@ package org.metasphere.portalservice.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.metasphere.portalservice.model.pojo.auth.User;
 
 import java.security.Principal;
 

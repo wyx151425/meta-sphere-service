@@ -1,7 +1,7 @@
 package org.metasphere.portalservice.model;
 
-import org.metasphere.adminservice.constant.MSConst;
-import org.metasphere.adminservice.util.UUIDUtils;
+import org.metasphere.portalservice.constant.MSConstant;
+import org.metasphere.portalservice.util.UUIDUtils;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -48,7 +48,7 @@ public class MetaSphereEntity implements Serializable {
     public MetaSphereEntity() {
         LocalDateTime dateTime = LocalDateTime.now().withNano(0);
         this.objectId = UUIDUtils.getMSObjectId();
-        this.status = MSConst.MetaSphereEntity.Status.ENABLED;
+        this.status = MSConstant.MetaSphereEntity.Status.ENABLED;
         this.createAt = dateTime;
         this.updateAt = dateTime;
     }
