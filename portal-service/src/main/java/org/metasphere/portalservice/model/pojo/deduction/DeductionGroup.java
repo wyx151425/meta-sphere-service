@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "ms_deduction_group")
 public class DeductionGroup extends MetaSphereEntity {
     /**
-     * 推演室编号
+     * 推演群组编号
      */
     private String code;
     /**
@@ -23,7 +23,7 @@ public class DeductionGroup extends MetaSphereEntity {
      */
     private String theme;
     /**
-     * 推演室类型
+     * 推演群组类型
      */
     private Integer type;
     /**

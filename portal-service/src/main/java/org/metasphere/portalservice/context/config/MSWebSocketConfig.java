@@ -18,13 +18,13 @@ public class MSWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/deduction");
+        registry.enableSimpleBroker("/commonDeduction", "/intervenedDeduction", "/interactiveDeduction");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ordinaryDeductionServer").setAllowedOrigins("*").withSockJS();
-        registry.addEndpoint("/intervenedDeductionServer").setAllowedOrigins("*").withSockJS();
-        registry.addEndpoint("/interactiveDeductionServer").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/commonDeductionServer").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/intervenedDeductionServer").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/interactiveDeductionServer").setAllowedOriginPatterns("*").withSockJS();
     }
 }

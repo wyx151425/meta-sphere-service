@@ -214,6 +214,6 @@ CREATE TABLE IF NOT EXISTS `ms_deduction_group`
     `code`       VARCHAR(32) COMMENT '推演室的编号',
     `theme`     VARCHAR(64) COMMENT '推演主体',
     `type`          TINYINT COMMENT '推演类型',
-    `intervenedLevel`        VARCHAR(64) COMMENT '干预等级'
+    `intervened_level`        VARCHAR(64) COMMENT '干预等级'
 );
 

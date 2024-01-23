@@ -14,7 +14,7 @@ public interface DeductionService {
      *
      * @param deductionGroup 推演群组数据对象
      */
-    void createDeductionGroup(DeductionGroup deductionGroup);
+    DeductionGroup createDeductionGroup(DeductionGroup deductionGroup);
 
     /**
      * 加入推演群组

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * @Author: WangZhenqi
  * @Description: 推演业务逻辑
@@ -21,13 +24,19 @@ public class DeductionServiceImpl implements DeductionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createDeductionGroup(DeductionGroup deductionGroup) {
+    public DeductionGroup createDeductionGroup(DeductionGroup deductionGroup) {
         DeductionGroup target = new DeductionGroup();
-        target.setCode(deductionGroup.getCode());
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String code = "MSPODG" + now.format(dtf);
+        target.setCode(code);
+
         target.setTheme(deductionGroup.getTheme());
         target.setType(deductionGroup.getType());
         target.setIntervenedLevel(deductionGroup.getIntervenedLevel());
         deductionGroupRepository.save(target);
+        return target;
     }
 
     @Override
