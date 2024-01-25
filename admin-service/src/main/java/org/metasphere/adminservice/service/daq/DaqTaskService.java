@@ -135,4 +135,11 @@ public interface DaqTaskService {
      * @return 时序数据量
      */
     DaqTaskTimingDataVolumes findDaqTaskTimingDataVolumes(Long daqTaskId);
+
+    /**
+     * 导入舆情数据采集任务已采集到的数据
+     *
+     * @param daqTaskId 数据采集任务ID
+     */
+    void importDaqTaskAcquiredData(Long daqTaskId);
 }

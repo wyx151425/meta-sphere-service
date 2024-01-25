@@ -73,12 +73,12 @@ public class DaqEngineDbServiceImpl implements DaqEngineDbService {
         LocalDateTime createAt = LocalDateTime.now();
         String sql = "INSERT INTO `" + tableName + "`(create_at, task_name, task_code, task_keyword, " +
                 "source_id, source_blog_id, source_origin_id, source_create_at, " +
-                "text, likes_count, comments_count, reposts_count, " +
+                "text, reads_count, likes_count, comments_count, reposts_count, " +
                 "account_id, account_name, region_name, platform_name, platform_code) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         daqEngineWeiboItems.forEach(weiboItem -> jdbcTemplate.update(sql, createAt, weiboItem.getTaskName(), weiboItem.getTaskCode(), weiboItem.getTaskKeyword(),
                 weiboItem.getSourceId(), weiboItem.getSourceBlogId(), weiboItem.getSourceOriginId(), weiboItem.getSourceCreateAt(),
-                weiboItem.getText(), weiboItem.getLikesCount(), weiboItem.getCommentsCount(), weiboItem.getRepostsCount(),
+                weiboItem.getText(), weiboItem.getReadsCount(), weiboItem.getLikesCount(), weiboItem.getCommentsCount(), weiboItem.getRepostsCount(),
                 weiboItem.getAccountId(), weiboItem.getAccountName(), weiboItem.getRegionName(), weiboItem.getPlatformName(), weiboItem.getPlatformCode()));
     }
 

@@ -224,4 +224,27 @@ public class WeiboItem extends MetaSphereEntity {
     public void setPlatformCode(String platformCode) {
         this.platformCode = platformCode;
     }
+
+    @Override
+    public String toString() {
+        return "WeiboItem{" +
+                "taskName='" + taskName + '\'' +
+                ", taskCode='" + taskCode + '\'' +
+                ", taskKeyword='" + taskKeyword + '\'' +
+                ", sourceId='" + sourceId + '\'' +
+                ", sourceBlogId='" + sourceBlogId + '\'' +
+                ", sourceOriginId='" + sourceOriginId + '\'' +
+                ", sourceCreateAt=" + sourceCreateAt +
+                ", text='" + text + '\'' +
+                ", readsCount=" + readsCount +
+                ", likesCount=" + likesCount +
+                ", commentsCount=" + commentsCount +
+                ", repostsCount=" + repostsCount +
+                ", accountId='" + accountId + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", regionName='" + regionName + '\'' +
+                ", platformName='" + platformName + '\'' +
+                ", platformCode='" + platformCode + '\'' +
+                '}';
+    }
 }

@@ -205,15 +205,30 @@ CREATE TABLE IF NOT EXISTS `ms_weibo_user_item`
 
 CREATE TABLE IF NOT EXISTS `ms_deduction_group`
 (
-    `id`              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
-    `object_id`       CHAR(32) COMMENT '分布式ID',
-    `status`          TINYINT COMMENT '数据状态',
-    `create_at`       DATETIME COMMENT '数据入库时间',
-    `update_at`       DATETIME COMMENT '数据最后一次更新时间',
+    `id`               BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    `object_id`        CHAR(32) COMMENT '分布式ID',
+    `status`           TINYINT COMMENT '数据状态',
+    `create_at`        DATETIME COMMENT '数据入库时间',
+    `update_at`        DATETIME COMMENT '数据最后一次更新时间',
 
-    `code`       VARCHAR(32) COMMENT '推演室的编号',
-    `theme`     VARCHAR(64) COMMENT '推演主体',
-    `type`          TINYINT COMMENT '推演类型',
-    `intervened_level`        VARCHAR(64) COMMENT '干预等级'
+    `code`             VARCHAR(32) COMMENT '推演室的编号',
+    `theme`            VARCHAR(64) COMMENT '推演主体',
+    `type`             TINYINT COMMENT '推演类型',
+    `intervened_level` VARCHAR(64) COMMENT '干预等级'
 );
 
+CREATE TABLE IF NOT EXISTS `ms_daq_task_execution_stage`
+(
+    `id`           BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    `object_id`    CHAR(32) COMMENT '分布式ID',
+    `status`       TINYINT COMMENT '数据状态',
+    `create_at`    DATETIME COMMENT '数据入库时间',
+    `update_at`    DATETIME COMMENT '数据最后一次更新时间',
+
+    `name`         VARCHAR(32) COMMENT '阶段名称',
+    `code`         INT COMMENT '阶段编号',
+    `data_volume`  INT COMMENT '数据量',
+    `started_at`   DATETIME COMMENT '阶段开始时间',
+    `completed_at` DATETIME COMMENT '阶段完成时间',
+    `remark`       VARCHAR(255) COMMENT '备注'
+);

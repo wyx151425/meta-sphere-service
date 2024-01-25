@@ -136,17 +136,50 @@ public class MSConstant {
     }
 
     public static class DaqTask {
-        public static class Stage {
+        public static class ExecutionStage {
+            /**
+             * 任务新建阶段
+             */
             public static final int NEW = 10;
+            /**
+             * 任务配置阶段
+             */
             public static final int TASK_CONFIGURING = 20;
+            /**
+             * 任务执行阶段
+             */
             public static final int TASK_RUNNING = 31;
+            /**
+             * 任务暂停阶段
+             */
             public static final int TASK_SUSPENDED = 32;
+            /**
+             * 数据采集完成阶段
+             */
             public static final int TASK_PERFORMED = 33;
+            /**
+             * 数据录入阶段
+             */
             public static final int DATA_ENTERING = 41;
+            /**
+             * 数据录入完成
+             */
             public static final int DATA_ENTERED = 42;
+            /**
+             * 正在进行数据分析
+             */
             public static final int DATA_ANALYZING = 51;
+            /**
+             * 数据分析完毕
+             */
             public static final int DATA_ANALYZED = 52;
+            /**
+             * 数据统计
+             */
             public static final int DATA_COUNTING = 61;
+            /**
+             * 数据统计阶段
+             */
             public static final int DATA_COUNTED = 62;
             public static final int FINISHED = 0;
         }

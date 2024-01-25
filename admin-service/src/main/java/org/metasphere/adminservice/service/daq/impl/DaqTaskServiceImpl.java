@@ -15,6 +15,7 @@ import org.metasphere.adminservice.repository.daq.DaqTaskRepository;
 import org.metasphere.adminservice.service.daq.ScrapydService;
 import org.metasphere.adminservice.service.daq.*;
 import org.metasphere.adminservice.util.UUIDUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,9 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -79,7 +83,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createDaqTask(DaqTask daqTask) {
-        daqTask.setStage(MSConstant.DaqTask.Stage.NEW);
+        daqTask.setStage(MSConstant.DaqTask.ExecutionStage.NEW);
         daqTask.setCreatedAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -88,7 +92,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTask(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
-        if (MSConstant.DaqTask.Stage.NEW != daqTask.getStage()) {
+        if (MSConstant.DaqTask.ExecutionStage.NEW != daqTask.getStage()) {
             throw new MSException(MSStatusCode.DAQ_TASK_STAGE_ERROR);
         }
         daqTask.setStatus(MSConstant.MetaSphereEntity.Status.DISABLED);
@@ -104,7 +108,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         // 创建任务编号，更新任务运行阶段
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
         daqTask.setCode(taskCode);
-        daqTask.setStage(MSConstant.DaqTask.Stage.TASK_CONFIGURING);
+        daqTask.setStage(MSConstant.DaqTask.ExecutionStage.TASK_CONFIGURING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
@@ -150,7 +154,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         redisTemplate.opsForList().rightPushAll(spidersCacheKey, spiderCodes);
 
         // 修改数据采集任务运行阶段为执行中
-        daqTask.setStage(MSConstant.DaqTask.Stage.TASK_RUNNING);
+        daqTask.setStage(MSConstant.DaqTask.ExecutionStage.TASK_RUNNING);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -185,7 +189,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         redisTemplate.delete(keywordsCacheKey);
 
         // 修改数据采集任务运行阶段为已执行
-        daqTask.setStage(MSConstant.DaqTask.Stage.TASK_PERFORMED);
+        daqTask.setStage(MSConstant.DaqTask.ExecutionStage.TASK_PERFORMED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -207,7 +211,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         }
 
         // 修改数据采集任务运行阶段为数据已录入
-        daqTask.setStage(MSConstant.DaqTask.Stage.DATA_ENTERED);
+        daqTask.setStage(MSConstant.DaqTask.ExecutionStage.DATA_ENTERED);
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
     }
@@ -302,5 +306,48 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         dttdvs.setTimingDataVolumes(tdvs);
 
         return dttdvs;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void importDaqTaskAcquiredData(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).get();
+        String dataTableCode = daqTask.getCode();
+
+        Query queryCount = Query.query(Criteria.where("task_code").is(dataTableCode));
+        long dataCount = mongoTemplate.count(queryCount, DaqWeibo.class, "weibo");
+
+        int pageNum = 0;
+        int pageSize = 100;
+        while ((long) pageNum * pageSize < dataCount) {
+            Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.asc("created_at")));
+            Query query = Query.query(Criteria.where("task_code").is(dataTableCode)).with(pageable);
+            List<DaqWeibo> weibos = mongoTemplate.find(query, DaqWeibo.class, "weibo");
+            log.info("weibos count: " + weibos.size());
+            log.info("daq weibo: " + weibos.get(0));
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            List<DaqEngineWeiboItem> weiboItems = weibos.stream().map(weibo -> {
+                DaqEngineWeiboItem weiboItem = new DaqEngineWeiboItem();
+                BeanUtils.copyProperties(weibo, weiboItem);
+                weiboItem.setTaskName(daqTask.getName());
+                weiboItem.setSourceId(weibo.getMid());
+                weiboItem.setSourceBlogId(weibo.getHashMid());
+                weiboItem.setSourceCreateAt(LocalDateTime.parse(weibo.getCreatedAt(), dtf));
+                weiboItem.setText(weibo.getTextRaw());
+                weiboItem.setReadsCount(0);
+                weiboItem.setAccountId(weibo.getUid());
+                weiboItem.setAccountName(weibo.getUserScreenName());
+                weiboItem.setPlatformName("微博");
+                weiboItem.setPlatformCode("weibo");
+                return weiboItem;
+            }).collect(Collectors.toList());
+
+            daqEngineDbService.saveDaqEngineWeiboItems(daqTask.getCode(), weiboItems);
+
+            log.info("weibo item: " + weiboItems.get(0));
+            pageNum++;
+        }
     }
 }

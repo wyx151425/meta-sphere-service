@@ -1,0 +1,129 @@
+以下命令在Ubuntu测试通过
+docker run -d -p 41001:3306 --name ms-mysql-001 \
+-v /home/users/wyx151425/Data/ms-mysql-001/log:/var/log/mysql \
+-v /home/users/wyx151425/Data/ms-mysql-001/data:/var/lib/mysql \
+-v /home/users/wyx151425/Data/ms-mysql-001/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=151425 \
+--restart=always \
+mysql:8.0.31
+
+docker run -d -p 41002:3306 --name ms-mysql-002 \
+-v /home/users/wyx151425/Data/ms-mysql-002/log:/var/log/mysql \
+-v /home/users/wyx151425/Data/ms-mysql-002/data:/var/lib/mysql \
+-v /home/users/wyx151425/Data/ms-mysql-002/conf:/etc/mysql/conf.d \
+-e MYSQL_ROOT_PASSWORD=151425 \
+--restart=always \
+mysql:8.0.31
+
+create database meta_sphere_dev;
+CREATE USER wyx151425 IDENTIFIED BY 'MmMysql001@dmin';
+GRANT ALL PRIVILEGES ON *.* TO wyx151425@'%';
+
+docker run -d -p 42001:6379 --name ms-redis-001 \
+-v /home/users/wyx151425/Data/ms-redis-001/data:/data \
+-v /home/users/wyx151425/Data/ms-redis-001/conf/redis.conf:/etc/redis/redis.conf \
+--restart=always \
+redis:6.2.11 redis-server /etc/redis/redis.conf --requirepass 151425
+
+docker run -d -p 43001:27017 --name ms-mongo-001 \
+-v /home/users/wyx151425/Data/ms-mongo-001/data:/data/db \
+-v /home/users/wyx151425/Data/ms-mongo-001/conf:/data/conf \
+-v /home/users/wyx151425/Data/ms-mongo-001/log:/data/log \
+--restart=always \
+mongo:4.4.18 --auth
+
+# mongod.conf
+# 配置与存储有关的信息
+storage:
+  dbPath: /data/db
+journal:
+  enabled: true
+# 指定与日志有关的信息
+systemLog: 
+  destination: file
+  quiet: true
+  logAppend: false
+  path: data/log/mongod.log
+# 配置与网络有关的信息
+net:
+  port: 27017
+  bindIp: 0.0.0.0
+
+db.createUser({ user: "admin", pwd: "151425", roles: [
+    { role: "readWriteAnyDatabase", db: "admin" },
+    { role: "userAdminAnyDatabase", db: "admin" },
+    { role: "dbAdminAnyDatabase", db: "admin" }]
+});
+db.createUser({ user: "root", pwd: "151425", roles: [{ role: "root", db: "admin" }]});
+
+use ms-daq-engine
+db.createUser({ user: "wyx151425", pwd: "MsMongo001@dmin", roles: [
+    { role: "readWrite", db: "ms_daq_engine" },
+    { role: "dbAdmin", db: "ms_daq_engine" }]
+});
+db.grantRolesToUser("wyx151425", [
+    { role: "readWrite", db: "ms_daq_engine" },
+    { role: "dbAdmin", db: "ms_daq_engine" }]);
+
+
+docker run -d -p 51001:6800 --name ms-scrapyd-001 \
+-v /home/users/wyx151425/Data/ms-scrapyd-001/data/dbs:/app/dbs \
+-v /home/users/wyx151425/Data/ms-scrapyd-001/data/eggs:/app/eggs \
+--restart=always \
+germey/scrapyd:latest
+
+docker run -d -p 51002:6800 --name ms-scrapyd-002 \
+-v /home/users/wyx151425/Data/ms-scrapyd-002/data/dbs:/app/dbs \
+-v /home/users/wyx151425/Data/ms-scrapyd-002/data/eggs:/app/eggs \
+--restart=always \
+germey/scrapyd:latest
+
+docker run -d -p 51003:6800 --name ms-scrapyd-003 \
+-v /home/users/wyx151425/Data/ms-scrapyd-003/data/dbs:/app/dbs \
+-v /home/users/wyx151425/Data/ms-scrapyd-003/data/eggs:/app/eggs \
+--restart=always \
+germey/scrapyd:latest
+
+docker exec -it ms-scrapyd-001 /bin/bash
+docker exec -it ms-scrapyd-002 /bin/bash
+docker exec -it ms-scrapyd-003 /bin/bash
+pip install python-dateutil
+pip install itemadapter
+pip install pymongo
+pip install --upgrade scrapy
+pip install --upgrade scrapyd
+
+
+修改系统时间
+tzselect
+
+docker run -d -p 51001:6800 --name ms-scrapyd-001 \
+-v /home/users/wyx151425/Data/ms-scrapyd-001/data/dbs:/scrapyd/dbs \
+-v /home/users/wyx151425/Data/ms-scrapyd-001/data/eggs:/scrapyd/eggs \
+--restart=always \
+spearadun/scrapyd:latest
+
+docker run -d -p 51002:6800 --name ms-scrapyd-002 \
+-v /home/users/wyx151425/Data/ms-scrapyd-002/data/dbs:/scrapyd/dbs \
+-v /home/users/wyx151425/Data/ms-scrapyd-002/data/eggs:/scrapyd/eggs \
+--restart=always \
+spearadun/scrapyd:latest
+
+docker run -d -p 51003:6800 --name ms-scrapyd-003 \
+-v /home/users/wyx151425/Data/ms-scrapyd-003/data/dbs:/scrapyd/dbs \
+-v /home/users/wyx151425/Data/ms-scrapyd-003/data/eggs:/scrapyd/eggs \
+--restart=always \
+spearadun/scrapyd:latest
+
+docker cp default_scrapyd.conf ms-scrapyd-001:/tmp
+
+RABBITMQ相关
+docker run -d --name ms-rabbitmq-001 -p 5671:5671 -p 5672:5672 -p 4369:4369 -p 25672:25672 -p 15671:15671 -p 15672:15672 -p 61613:61613 rabbitmq:management
+
+docker exec -it ms-rabbitmq-001 /bin/bash
+
+rabbitmq-plugins enable rabbitmq_stomp
+
+
+
+
