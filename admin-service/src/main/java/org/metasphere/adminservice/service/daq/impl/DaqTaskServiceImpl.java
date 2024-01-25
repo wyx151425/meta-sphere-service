@@ -36,8 +36,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -118,7 +116,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
                 scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode));
 
         // 创建数据存储表
-        daqEngineDbService.createDaqTaskDataTable(taskCode);
+        daqEngineDbService.createDaqTaskWeiboDataTable(taskCode);
     }
 
     @Override

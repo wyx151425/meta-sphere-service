@@ -4,13 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.metasphere.adminservice.service.daq.DaqEngineDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.UUID;
 
 /**
@@ -31,7 +26,7 @@ public class DaqEngineDbServiceTests {
     @Test
     void testCreateDaqDataTable() {
         String code = UUID.randomUUID().toString();
-        daqEngineDbService.createDaqTaskDataTable(code);
+        daqEngineDbService.createDaqTaskWeiboDataTable(code);
     }
 
     @Test

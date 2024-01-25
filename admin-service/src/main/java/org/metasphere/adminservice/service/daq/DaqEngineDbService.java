@@ -1,7 +1,6 @@
 package org.metasphere.adminservice.service.daq;
 
 import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,11 +12,39 @@ import java.util.List;
  */
 public interface DaqEngineDbService {
     /**
-     * 创建数据采集任务的数据表
+     * 创建数据采集任务的微博数据表
      *
      * @param tableName 表名
      */
-    void createDaqTaskDataTable(String tableName);
+    void createDaqTaskWeiboDataTable(String tableName);
+
+    /**
+     * 创建数据采集任务的微博用户数据表
+     *
+     * @param tableName 表名
+     */
+    void createDaqTaskWeiboUserDataTable(String tableName);
+
+    /**
+     * 创建数据采集任务的微博点赞数据表
+     *
+     * @param tableName 表名
+     */
+    void createDaqTaskWeiboLikeDataTable(String tableName);
+
+    /**
+     * 创建数据采集任务的微博评论数据表
+     *
+     * @param tableName 表名
+     */
+    void createDaqTaskWeiboCommentDataTable(String tableName);
+
+    /**
+     * 创建数据采集任务的微博转发数据表
+     *
+     * @param tableName 表名
+     */
+    void createDaqTaskWeiboRepostDataTable(String tableName);
 
     /**
      * 保存微博数据

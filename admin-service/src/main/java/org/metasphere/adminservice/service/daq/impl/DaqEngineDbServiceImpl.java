@@ -25,7 +25,123 @@ public class DaqEngineDbServiceImpl implements DaqEngineDbService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createDaqTaskDataTable(String tableName) {
+    public void createDaqTaskWeiboDataTable(String tableName) {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
+                "`create_at` DATETIME COMMENT '数据入库时间'," +
+                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
+                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+
+                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
+                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
+                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
+                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
+                "`text` TEXT COMMENT '文本内容'," +
+                "`reads_count` INT COMMENT '阅读数'," +
+                "`likes_count` INT COMMENT '点赞数'," +
+                "`comments_count` INT COMMENT '评论数'," +
+                "`reposts_count` INT COMMENT '转发数'," +
+
+                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
+                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
+                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
+
+                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
+                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                ");");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createDaqTaskWeiboUserDataTable(String tableName) {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
+                "`create_at` DATETIME COMMENT '数据入库时间'," +
+                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
+                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+
+                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
+                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
+                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
+                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
+                "`text` TEXT COMMENT '文本内容'," +
+                "`reads_count` INT COMMENT '阅读数'," +
+                "`likes_count` INT COMMENT '点赞数'," +
+                "`comments_count` INT COMMENT '评论数'," +
+                "`reposts_count` INT COMMENT '转发数'," +
+
+                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
+                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
+                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
+
+                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
+                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                ");");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createDaqTaskWeiboLikeDataTable(String tableName) {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
+                "`create_at` DATETIME COMMENT '数据入库时间'," +
+                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
+                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+
+                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
+                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
+                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
+                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
+                "`text` TEXT COMMENT '文本内容'," +
+                "`reads_count` INT COMMENT '阅读数'," +
+                "`likes_count` INT COMMENT '点赞数'," +
+                "`comments_count` INT COMMENT '评论数'," +
+                "`reposts_count` INT COMMENT '转发数'," +
+
+                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
+                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
+                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
+
+                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
+                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                ");");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createDaqTaskWeiboCommentDataTable(String tableName) {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
+                "`create_at` DATETIME COMMENT '数据入库时间'," +
+                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
+                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+
+                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
+                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
+                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
+                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
+                "`text` TEXT COMMENT '文本内容'," +
+                "`reads_count` INT COMMENT '阅读数'," +
+                "`likes_count` INT COMMENT '点赞数'," +
+                "`comments_count` INT COMMENT '评论数'," +
+                "`reposts_count` INT COMMENT '转发数'," +
+
+                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
+                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
+                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
+
+                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
+                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                ");");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createDaqTaskWeiboRepostDataTable(String tableName) {
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
                 "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
                 "`create_at` DATETIME COMMENT '数据入库时间'," +
@@ -58,12 +174,12 @@ public class DaqEngineDbServiceImpl implements DaqEngineDbService {
         LocalDateTime createAt = LocalDateTime.now();
         String sql = "INSERT INTO `" + tableName + "`(create_at, task_name, task_code, task_keyword, " +
                 "source_id, source_blog_id, source_origin_id, source_create_at, " +
-                "text, likes_count, comments_count, reposts_count, " +
+                "text, reads_count, likes_count, comments_count, reposts_count, " +
                 "account_id, account_name, region_name, platform_name, platform_code) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, createAt, daqEngineWeiboItem.getTaskName(), daqEngineWeiboItem.getTaskCode(), daqEngineWeiboItem.getTaskKeyword(),
                 daqEngineWeiboItem.getSourceId(), daqEngineWeiboItem.getSourceBlogId(), daqEngineWeiboItem.getSourceOriginId(), daqEngineWeiboItem.getSourceCreateAt(),
-                daqEngineWeiboItem.getText(), daqEngineWeiboItem.getLikesCount(), daqEngineWeiboItem.getCommentsCount(), daqEngineWeiboItem.getRepostsCount(),
+                daqEngineWeiboItem.getText(), daqEngineWeiboItem.getReadsCount(), daqEngineWeiboItem.getLikesCount(), daqEngineWeiboItem.getCommentsCount(), daqEngineWeiboItem.getRepostsCount(),
                 daqEngineWeiboItem.getAccountId(), daqEngineWeiboItem.getAccountName(), daqEngineWeiboItem.getRegionName(), daqEngineWeiboItem.getPlatformName(), daqEngineWeiboItem.getPlatformCode());
     }
 

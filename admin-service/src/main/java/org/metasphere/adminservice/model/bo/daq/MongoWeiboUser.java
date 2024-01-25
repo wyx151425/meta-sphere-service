@@ -23,6 +23,9 @@ public class MongoWeiboUser {
     private String screenName;
     private String gender;
     private String birthday;
+    /**
+     * 星座
+     */
     private String constellation;
     private String province;
     private String city;
