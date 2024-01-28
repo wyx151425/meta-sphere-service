@@ -4,38 +4,39 @@ import lombok.extern.slf4j.Slf4j;
 import org.metasphere.adminservice.context.constant.MSConstant;
 import org.metasphere.adminservice.context.constant.MSStatusCode;
 import org.metasphere.adminservice.exception.MSException;
-import org.metasphere.adminservice.model.bo.daq.DaqEngineWeiboItem;
-import org.metasphere.adminservice.model.bo.daq.MongoWeibo;
+import org.metasphere.adminservice.model.bo.daq.*;
 import org.metasphere.adminservice.model.dto.MSPage;
 import org.metasphere.adminservice.model.pojo.daq.*;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 import org.metasphere.adminservice.model.vo.DataVolume;
 import org.metasphere.adminservice.model.vo.TimingDataVolumes;
-import org.metasphere.adminservice.repository.daq.DaqTaskRepository;
+import org.metasphere.adminservice.repository.daq.*;
 import org.metasphere.adminservice.service.daq.ScrapydService;
 import org.metasphere.adminservice.service.daq.*;
 import org.metasphere.adminservice.util.UUIDUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +79,25 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private MongoWeiboRepository mongoWeiboRepository;
+
+    @Autowired
+    private MongoWeiboLikeRepository mongoWeiboLikeRepository;
+
+    @Autowired
+    private MongoWeiboCommentRepository mongoWeiboCommentRepository;
+
+    @Autowired
+    private MongoWeiboRepostRepository mongoWeiboRepostRepository;
+
+    @Autowired
+    private MongoWeiboUserRepository mongoWeiboUserRepository;
+
+    private static final ExecutorService executorService =
+            new ThreadPoolExecutor(20, 120, 60L, TimeUnit.SECONDS,
+                    new SynchronousQueue<>());
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createDaqTask(DaqTask daqTask) {
@@ -116,7 +136,7 @@ public class DaqTaskServiceImpl implements DaqTaskService {
                 scrapydService.addScrapyProject(taskServer.getServerIpAddress(), taskServer.getServerPort(), taskCode));
 
         // 创建数据存储表
-        daqEngineDbService.createDaqTaskWeiboDataTable(taskCode);
+        daqEngineDbService.createDaqTaskStorageSpace(taskCode);
     }
 
     @Override
@@ -310,41 +330,133 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     @Transactional(rollbackFor = Exception.class)
     public void importDaqTaskAcquiredData(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).get();
-        String dataTableCode = daqTask.getCode();
+        String taskCode = daqTask.getCode();
 
-        Query queryCount = Query.query(Criteria.where("task_code").is(dataTableCode));
-        long dataCount = mongoTemplate.count(queryCount, DaqWeibo.class, "weibo");
+        int tableCount = 5;  // 此处应该由计算爬虫得到
+        CountDownLatch countDownLatch = new CountDownLatch(tableCount);
 
+        executorService.execute(() -> {
+            handleAcquiredWeiboData(taskCode);
+            countDownLatch.countDown();
+        });
+        executorService.execute(() -> {
+            handleAcquiredWeiboLikeData(taskCode);
+            countDownLatch.countDown();
+        });
+        executorService.execute(() -> {
+            handleAcquiredWeiboCommentData(taskCode);
+            countDownLatch.countDown();
+        });
+        executorService.execute(() -> {
+            handleAcquiredWeiboRepostData(taskCode);
+            countDownLatch.countDown();
+        });
+        executorService.execute(() -> {
+            handleAcquiredWeiboUserData(taskCode);
+            countDownLatch.countDown();
+        });
+
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        log.info("handled acquired data!");
+
+//        Query queryCount = Query.query(Criteria.where("task_code").is(taskCode));
+//        long dataCount = mongoTemplate.count(queryCount, DaqWeibo.class, "weibo");
+//
+//        int pageNum = 0;
+//        int pageSize = 100;
+//        while ((long) pageNum * pageSize < dataCount) {
+//            Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.asc("created_at")));
+//            Query query = Query.query(Criteria.where("task_code").is(taskCode)).with(pageable);
+//            List<DaqWeibo> weibos = mongoTemplate.find(query, DaqWeibo.class, "weibo");
+//            log.info("weibos count: " + weibos.size());
+//            log.info("daq weibo: " + weibos.get(0));
+//
+//            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//
+//            List<DaqEngineWeiboItem> weiboItems = weibos.stream().map(weibo -> {
+//                DaqEngineWeiboItem weiboItem = new DaqEngineWeiboItem();
+//                BeanUtils.copyProperties(weibo, weiboItem);
+//                weiboItem.setTaskName(daqTask.getName());
+//                weiboItem.setSourceId(weibo.getMid());
+//                weiboItem.setSourceBlogId(weibo.getHashMid());
+//                weiboItem.setSourceCreateAt(LocalDateTime.parse(weibo.getCreatedAt(), dtf));
+//                weiboItem.setText(weibo.getTextRaw());
+//                weiboItem.setReadsCount(0);
+//                weiboItem.setAccountId(weibo.getUid());
+//                weiboItem.setAccountName(weibo.getUserScreenName());
+//                weiboItem.setPlatformName("微博");
+//                weiboItem.setPlatformCode("weibo");
+//                return weiboItem;
+//            }).collect(Collectors.toList());
+//
+//            daqEngineDbService.saveDaqEngineWeiboItems(daqTask.getCode(), weiboItems);
+//
+//            log.info("weibo item: " + weiboItems.get(0));
+//            pageNum++;
+//        }
+    }
+
+    public void handleAcquiredWeiboData(String daqTaskCode) {
         int pageNum = 0;
         int pageSize = 100;
-        while ((long) pageNum * pageSize < dataCount) {
-            Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Order.asc("created_at")));
-            Query query = Query.query(Criteria.where("task_code").is(dataTableCode)).with(pageable);
-            List<DaqWeibo> weibos = mongoTemplate.find(query, DaqWeibo.class, "weibo");
-            log.info("weibos count: " + weibos.size());
-            log.info("daq weibo: " + weibos.get(0));
+        long dataCount = mongoWeiboRepository.countAllByTaskCode(daqTaskCode);
+        while ((long) pageNum * pageSize <= dataCount) {
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+            Page<MongoWeibo> page = mongoWeiboRepository.findAllByTaskCode(daqTaskCode, pageable);
+            log.info("handleAcquiredWeiboData: " + pageNum * pageSize + " ----> ");
+            pageNum++;
+        }
+    }
 
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public void handleAcquiredWeiboLikeData(String daqTaskCode) {
+        int pageNum = 0;
+        int pageSize = 100;
+        long dataCount = mongoWeiboLikeRepository.countAllByTaskCode(daqTaskCode);
+        while ((long) pageNum * pageSize <= dataCount) {
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+            Page<MongoWeiboLike> page = mongoWeiboLikeRepository.findAllByTaskCode(daqTaskCode, pageable);
+            log.info("handleAcquiredWeiboLikeData: " + pageNum * pageSize + " ----> ");
+            pageNum++;
+        }
+    }
 
-            List<DaqEngineWeiboItem> weiboItems = weibos.stream().map(weibo -> {
-                DaqEngineWeiboItem weiboItem = new DaqEngineWeiboItem();
-                BeanUtils.copyProperties(weibo, weiboItem);
-                weiboItem.setTaskName(daqTask.getName());
-                weiboItem.setSourceId(weibo.getMid());
-                weiboItem.setSourceBlogId(weibo.getHashMid());
-                weiboItem.setSourceCreateAt(LocalDateTime.parse(weibo.getCreatedAt(), dtf));
-                weiboItem.setText(weibo.getTextRaw());
-                weiboItem.setReadsCount(0);
-                weiboItem.setAccountId(weibo.getUid());
-                weiboItem.setAccountName(weibo.getUserScreenName());
-                weiboItem.setPlatformName("微博");
-                weiboItem.setPlatformCode("weibo");
-                return weiboItem;
-            }).collect(Collectors.toList());
+    public void handleAcquiredWeiboCommentData(String daqTaskCode) {
+        int pageNum = 0;
+        int pageSize = 100;
+        long dataCount = mongoWeiboCommentRepository.countAllByTaskCode(daqTaskCode);
+        while ((long) pageNum * pageSize <= dataCount) {
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+            Page<MongoWeiboComment> page = mongoWeiboCommentRepository.findAllByTaskCode(daqTaskCode, pageable);
+            log.info("handleAcquiredWeiboCommentData: " + pageNum * pageSize + " ----> ");
+            pageNum++;
+        }
+    }
 
-            daqEngineDbService.saveDaqEngineWeiboItems(daqTask.getCode(), weiboItems);
+    public void handleAcquiredWeiboRepostData(String daqTaskCode) {
+        int pageNum = 0;
+        int pageSize = 100;
+        long dataCount = mongoWeiboRepostRepository.countAllByTaskCode(daqTaskCode);
+        while ((long) pageNum * pageSize <= dataCount) {
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+            Page<MongoWeiboRepost> page = mongoWeiboRepostRepository.findAllByTaskCode(daqTaskCode, pageable);
+            log.info("handleAcquiredWeiboRepostData: " + pageNum * pageSize + " ----> ");
+            pageNum++;
+        }
+    }
 
-            log.info("weibo item: " + weiboItems.get(0));
+    public void handleAcquiredWeiboUserData(String daqTaskCode) {
+        int pageNum = 0;
+        int pageSize = 100;
+        long dataCount = mongoWeiboUserRepository.countAllByTaskCode(daqTaskCode);
+        while ((long) pageNum * pageSize <= dataCount) {
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+            Page<MongoWeiboUser> page = mongoWeiboUserRepository.findAllByTaskCode(daqTaskCode, pageable);
+            log.info("handleAcquiredWeiboUserData: " + pageNum * pageSize + " ----> ");
             pageNum++;
         }
     }

@@ -5,9 +5,9 @@ import org.metasphere.adminservice.service.daq.DaqEngineDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,148 +23,124 @@ public class DaqEngineDbServiceImpl implements DaqEngineDbService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createDaqTaskWeiboDataTable(String tableName) {
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
-                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
-                "`create_at` DATETIME COMMENT '数据入库时间'," +
-                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
-                "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
-                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+    public void createDaqTaskStorageSpace(String daqTaskCode) {
+        createMongoWeiboDataTable(daqTaskCode);
+        createMongoWeiboLikeDataTable(daqTaskCode);
+        createMongoWeiboCommentDataTable(daqTaskCode);
+        createMongoWeiboRepostDataTable(daqTaskCode);
+        createMongoWeiboUserDataTable(daqTaskCode);
+    }
 
-                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
-                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
-                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
-                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
-                "`text` TEXT COMMENT '文本内容'," +
-                "`reads_count` INT COMMENT '阅读数'," +
+    private void createMongoWeiboDataTable(String daqTaskCode) {
+        String tableName = "weibo_" + daqTaskCode;
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '入库主键'," +
+                "`mid` VARCHAR(32) COMMENT '源微博的ID'," +
+                "`hash_mid` VARCHAR(32) COMMENT '源微博的哈希ID'," +
+                "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
+                "`task_keyword` VARCHAR(128) COMMENT '所属关键词'," +
+                "`created_at` DATETIME COMMENT '源微博的创建时间'," +
+
+                "`text` TEXT COMMENT '已格式化的文本内容'," +
+                "`text_raw` TEXT COMMENT '未格式化的文本内容'," +
+                "`text_length` INT COMMENT '文本长度'," +
                 "`likes_count` INT COMMENT '点赞数'," +
                 "`comments_count` INT COMMENT '评论数'," +
                 "`reposts_count` INT COMMENT '转发数'," +
+                "`weibo_url` TEXT COMMENT '源微博的URL'," +
 
-                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
-                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
-                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
-
-                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
-                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                "`uid` VARCHAR(32) COMMENT '微博所属用户的ID'," +
+                "`user_screen_name` VARCHAR(64) COMMENT '微博所属用户的昵称'," +
+                "`region_name` VARCHAR(64) COMMENT '微博所属用户的所在地区'," +
+                "`source` TEXT COMMENT '源微博的发布设备'" +
                 ");");
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void createDaqTaskWeiboUserDataTable(String tableName) {
+    private void createMongoWeiboLikeDataTable(String daqTaskCode) {
+        String tableName = "weibo_like_" + daqTaskCode;
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
-                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
-                "`create_at` DATETIME COMMENT '数据入库时间'," +
-                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '入库主键'," +
+                "`mid` VARCHAR(32) COMMENT '源微博的ID'," +
                 "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
-                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
-
-                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
-                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
-                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
-                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
-                "`text` TEXT COMMENT '文本内容'," +
-                "`reads_count` INT COMMENT '阅读数'," +
-                "`likes_count` INT COMMENT '点赞数'," +
-                "`comments_count` INT COMMENT '评论数'," +
-                "`reposts_count` INT COMMENT '转发数'," +
-
-                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
-                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
-                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
-
-                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
-                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                "`task_keyword` VARCHAR(128) COMMENT '所属关键词'," +
+                "`like` INT COMMENT '点赞标识'," +
+                "`uid` VARCHAR(32) COMMENT '微博所属用户的ID'" +
                 ");");
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void createDaqTaskWeiboLikeDataTable(String tableName) {
+    private void createMongoWeiboCommentDataTable(String daqTaskCode) {
+        String tableName = "weibo_comment_" + daqTaskCode;
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
-                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
-                "`create_at` DATETIME COMMENT '数据入库时间'," +
-                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '入库主键'," +
+                "`mid` VARCHAR(32) COMMENT '源微博的ID'," +
+                "`cid` VARCHAR(32) COMMENT '源评论的ID'," +
                 "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
-                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+                "`task_keyword` VARCHAR(128) COMMENT '所属关键词'," +
+                "`created_at` DATETIME COMMENT '源评论的创建时间'," +
 
-                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
-                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
-                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
-                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
-                "`text` TEXT COMMENT '文本内容'," +
-                "`reads_count` INT COMMENT '阅读数'," +
-                "`likes_count` INT COMMENT '点赞数'," +
-                "`comments_count` INT COMMENT '评论数'," +
-                "`reposts_count` INT COMMENT '转发数'," +
+                "`text` TEXT COMMENT '已格式化的文本内容'," +
+                "`text_raw` TEXT COMMENT '未格式化的文本内容'," +
+                "`likes_count` INT COMMENT '评论点赞数'," +
 
-                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
-                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
-                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
-
-                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
-                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                "`uid` VARCHAR(32) COMMENT '微博所属用户的ID'," +
+                "`source` TEXT COMMENT '评论的发布设备'" +
                 ");");
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void createDaqTaskWeiboCommentDataTable(String tableName) {
+    private void createMongoWeiboRepostDataTable(String daqTaskCode) {
+        String tableName = "weibo_repost_" + daqTaskCode;
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
-                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
-                "`create_at` DATETIME COMMENT '数据入库时间'," +
-                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '入库主键'," +
+                "`oid` VARCHAR(32) COMMENT '源微博的ID'," +
+                "`mid` VARCHAR(32) COMMENT '转发微博的ID'," +
+                "`hash_mid` VARCHAR(32) COMMENT '转发微博的哈希ID'," +
                 "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
-                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+                "`task_keyword` VARCHAR(128) COMMENT '所属关键词'," +
+                "`created_at` DATETIME COMMENT '转发微博的创建时间'," +
 
-                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
-                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
-                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
-                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
-                "`text` TEXT COMMENT '文本内容'," +
-                "`reads_count` INT COMMENT '阅读数'," +
+                "`text` TEXT COMMENT '已格式化的文本内容'," +
+                "`text_raw` TEXT COMMENT '未格式化的文本内容'," +
                 "`likes_count` INT COMMENT '点赞数'," +
                 "`comments_count` INT COMMENT '评论数'," +
                 "`reposts_count` INT COMMENT '转发数'," +
+                "`weibo_url` TEXT COMMENT '转发微博的URL'," +
 
-                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
-                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
-                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
-
-                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
-                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                "`uid` VARCHAR(32) COMMENT '转发所属用户的ID'," +
+                "`user_screen_name` VARCHAR(64) COMMENT '转发所属用户的昵称'," +
+                "`region_name` VARCHAR(64) COMMENT '转发所属用户的所在地区'," +
+                "`source` TEXT COMMENT '转发微博的发布设备'" +
                 ");");
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void createDaqTaskWeiboRepostDataTable(String tableName) {
+    private void createMongoWeiboUserDataTable(String daqTaskCode) {
+        String tableName = "weibo_user_" + daqTaskCode;
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName + "`(" +
-                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键'," +
-                "`create_at` DATETIME COMMENT '数据入库时间'," +
-                "`task_name` VARCHAR(64) COMMENT '所属数据采集任务的名称'," +
+                "`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '入库主键'," +
                 "`task_code` CHAR(32) COMMENT '所属数据采集任务的编码'," +
-                "`task_keyword` VARCHAR(128) COMMENT '任务关键词'," +
+                "`task_keyword` VARCHAR(128) COMMENT '所属关键词'," +
 
-                "`source_id` VARCHAR(32) COMMENT '源平台中的ID'," +
-                "`source_blog_id` VARCHAR(32) COMMENT '源平台中的哈希ID'," +
-                "`source_origin_id` VARCHAR(32) COMMENT '转发文本在源平台中源文本的ID'," +
-                "`source_create_at` DATETIME COMMENT '源平台中的入库时间'," +
-                "`text` TEXT COMMENT '文本内容'," +
-                "`reads_count` INT COMMENT '阅读数'," +
-                "`likes_count` INT COMMENT '点赞数'," +
-                "`comments_count` INT COMMENT '评论数'," +
-                "`reposts_count` INT COMMENT '转发数'," +
+                "`uid` VARCHAR(32) COMMENT '用户ID'," +
+                "`created_at` DATETIME COMMENT '账户创建时间'," +
+                "`screen_name` VARCHAR(64) COMMENT '昵称'," +
+                "`gender` CHAR(4) COMMENT '性别'," +
+                "`birthday` VARCHAR(32) COMMENT '生日'," +
+                "`constellation` VARCHAR(32) COMMENT '星座'," +
+                "`province` VARCHAR(32) COMMENT '所在省'," +
+                "`city` VARCHAR(32) COMMENT '所在城市'," +
+                "`description` VARCHAR(255) COMMENT '简介'," +
+                "`profile_url` TEXT COMMENT '个人主页URL'," +
+                "`verified` INT COMMENT '认证标识'," +
+                "`credit_level` VARCHAR(32) COMMENT '信用等级'," +
 
-                "`account_id` VARCHAR(32) COMMENT '发布账号的ID'," +
-                "`account_name` VARCHAR(64) COMMENT '发布账号的名称'," +
-                "`region_name` VARCHAR(64) COMMENT '发布账号所在地区'," +
-
-                "`platform_name` VARCHAR(32) COMMENT '源平台的名称'," +
-                "`platform_code` VARCHAR(32) COMMENT '源平台的编码'" +
+                "`followers_count` INT COMMENT '粉丝的数量'," +
+                "`followers_count_str` VARCHAR(32) COMMENT '粉丝数量字符串'," +
+                "`follows_count` INT COMMENT '关注用户的数量'," +
+                "`follows_count_str` VARCHAR(32) COMMENT '关注用户数量字符串'," +
+                "`weibos_count` INT COMMENT '微博的数量'," +
+                "`weibos_count_str` VARCHAR(32) COMMENT '微博数量字符串'" +
                 ");");
     }
 

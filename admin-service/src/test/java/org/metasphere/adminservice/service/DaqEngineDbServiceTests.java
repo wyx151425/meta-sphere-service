@@ -25,8 +25,8 @@ public class DaqEngineDbServiceTests {
 
     @Test
     void testCreateDaqDataTable() {
-        String code = UUID.randomUUID().toString();
-        daqEngineDbService.createDaqTaskWeiboDataTable(code);
+        String code = UUID.randomUUID().toString().replace("-", "");
+        daqEngineDbService.createDaqTaskStorageSpace(code);
     }
 
     @Test

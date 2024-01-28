@@ -3,6 +3,7 @@ package org.metasphere.adminservice.service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.metasphere.adminservice.service.daq.DaqTaskService;
+import org.metasphere.adminservice.service.daq.impl.DaqTaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,7 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public class DaqTaskServiceTests {
 
     @Autowired
-    private DaqTaskService daqTaskService;
+    private DaqTaskServiceImpl daqTaskService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -26,5 +27,14 @@ public class DaqTaskServiceTests {
     @Test
     void testImportDaqTaskAcquiredData() {
         daqTaskService.importDaqTaskAcquiredData(4L);
+    }
+
+    @Test
+    void testHandleAcquiredWeiboData() {
+        daqTaskService.handleAcquiredWeiboData("ad492f6d140e45ce881e7c023802a2bc");
+        daqTaskService.handleAcquiredWeiboLikeData("ad492f6d140e45ce881e7c023802a2bc");
+        daqTaskService.handleAcquiredWeiboCommentData("ad492f6d140e45ce881e7c023802a2bc");
+        daqTaskService.handleAcquiredWeiboRepostData("ad492f6d140e45ce881e7c023802a2bc");
+        daqTaskService.handleAcquiredWeiboUserData("ad492f6d140e45ce881e7c023802a2bc");
     }
 }

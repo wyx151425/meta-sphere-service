@@ -12,39 +12,11 @@ import java.util.List;
  */
 public interface DaqEngineDbService {
     /**
-     * 创建数据采集任务的微博数据表
+     * 创建数据采集任务的存储空间
      *
-     * @param tableName 表名
+     * @param daqTaskCode 数据采集任务编码
      */
-    void createDaqTaskWeiboDataTable(String tableName);
-
-    /**
-     * 创建数据采集任务的微博用户数据表
-     *
-     * @param tableName 表名
-     */
-    void createDaqTaskWeiboUserDataTable(String tableName);
-
-    /**
-     * 创建数据采集任务的微博点赞数据表
-     *
-     * @param tableName 表名
-     */
-    void createDaqTaskWeiboLikeDataTable(String tableName);
-
-    /**
-     * 创建数据采集任务的微博评论数据表
-     *
-     * @param tableName 表名
-     */
-    void createDaqTaskWeiboCommentDataTable(String tableName);
-
-    /**
-     * 创建数据采集任务的微博转发数据表
-     *
-     * @param tableName 表名
-     */
-    void createDaqTaskWeiboRepostDataTable(String tableName);
+    void createDaqTaskStorageSpace(String daqTaskCode);
 
     /**
      * 保存微博数据
