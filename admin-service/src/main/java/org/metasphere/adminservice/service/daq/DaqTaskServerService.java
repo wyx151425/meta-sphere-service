@@ -57,4 +57,12 @@ public interface DaqTaskServerService {
      * @param serverIds  服务器ID
      */
     void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds);
+
+    /**
+     * 查询数据采集任务已绑定的服务器的数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 已绑定的服务器的数量
+     */
+    long countServerNumberByDaqTask(Long daqTaskId);
 }

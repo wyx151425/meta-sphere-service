@@ -58,6 +58,12 @@ public class MSResponse<T> {
         return msResponse;
     }
 
+    public static <T> MSResponse<T> error(int statusCode) {
+        MSResponse<T> msResponse = new MSResponse<>();
+        msResponse.setStatusCode(statusCode);
+        return msResponse;
+    }
+
     public static <T> MSResponse<T> systemError() {
         MSResponse<T> msResponse = new MSResponse<>();
         msResponse.setStatusCode(MSStatusCode.SYSTEM_ERROR);

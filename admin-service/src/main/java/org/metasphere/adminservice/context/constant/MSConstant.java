@@ -138,49 +138,40 @@ public class MSConstant {
     public static class DaqTask {
         public static class ExecutionStage {
             /**
-             * 任务新建阶段
-             */
-            public static final int NEW = 10;
-            /**
              * 任务配置阶段
              */
-            public static final int TASK_CONFIGURING = 20;
+            public static final int CONFIGURING = 10;
+            /**
+             * 等待执行阶段
+             */
+            public static final int WAITING_FOR_EXECUTION = 20;
             /**
              * 任务执行阶段
              */
-            public static final int TASK_RUNNING = 31;
+            public static final int EXECUTING = 31;
             /**
-             * 任务暂停阶段
+             * 任务执行暂停阶段
              */
-            public static final int TASK_SUSPENDED = 32;
+            public static final int EXECUTING_PAUSE = 32;
             /**
-             * 数据采集完成阶段
+             * 等待导入数据阶段
              */
-            public static final int TASK_PERFORMED = 33;
+            public static final int WAIT_TO_IMPORT_DATA = 33;
             /**
-             * 数据录入阶段
+             * 导入数据阶段
              */
-            public static final int DATA_ENTERING = 41;
+            public static final int IMPORTING_DATA = 41;
             /**
-             * 数据录入完成
+             * 等待分析数据
              */
-            public static final int DATA_ENTERED = 42;
+            public static final int WAITING_FOR_DATA_ANALYSIS = 42;
             /**
-             * 正在进行数据分析
+             * 分析数据阶段
              */
-            public static final int DATA_ANALYZING = 51;
+            public static final int ANALYZING_DATA = 51;
             /**
-             * 数据分析完毕
+             * 任务已完成
              */
-            public static final int DATA_ANALYZED = 52;
-            /**
-             * 数据统计
-             */
-            public static final int DATA_COUNTING = 61;
-            /**
-             * 数据统计阶段
-             */
-            public static final int DATA_COUNTED = 62;
             public static final int FINISHED = 0;
         }
     }

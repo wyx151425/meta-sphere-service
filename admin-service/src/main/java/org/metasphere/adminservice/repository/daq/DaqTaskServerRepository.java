@@ -41,4 +41,12 @@ public interface DaqTaskServerRepository extends JpaRepository<DaqTaskServer, Lo
      * @return 数据采集服务器
      */
     DaqTaskServer findOneByTaskId(Long daqTaskId);
+
+    /**
+     * 根据数据采集任务ID查询已绑定的数据采集服务器的数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 已绑定的数据采集服务器的数量
+     */
+    long countAllByTaskId(Long daqTaskId);
 }

@@ -20,5 +20,11 @@ public class MSStatusCode {
 
     public static final int DATA_NOT_FOUND = 30001;
 
-    public static final int DAQ_TASK_STAGE_ERROR = 41001;
+    public static final int DAQ_TASK_EXECUTION_STAGE_ERROR = 41001;
+
+    public static final int MISSING_DAQ_TASK_SERVER = 41002;
+
+    public static final int MISSING_DAQ_TASK_SPIDER = 41003;
+
+    public static final int MISSING_DAQ_TASK_KEYWORD = 41004;
 }

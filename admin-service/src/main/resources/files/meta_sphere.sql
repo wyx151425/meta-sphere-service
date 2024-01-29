@@ -70,16 +70,17 @@ CREATE TABLE IF NOT EXISTS ms_server
 
 CREATE TABLE IF NOT EXISTS ms_daq_task
 (
-    `id`          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `object_id`   CHAR(32),
-    `status`      TINYINT,
-    `create_at`   DATETIME,
-    `update_at`   DATETIME,
-    `name`        VARCHAR(64),
-    `code`        CHAR(36),
-    `stage`       INT,
-    `created_at`  DATETIME,
-    `finished_at` DATETIME
+    `id`             BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `object_id`      CHAR(32),
+    `status`         TINYINT,
+    `create_at`      DATETIME,
+    `update_at`      DATETIME,
+    `name`           VARCHAR(64),
+    `code`           CHAR(36),
+    `hot_event_id`   BIGINT,
+    `execution_stage` INT,
+    `created_at`     DATETIME,
+    `finished_at`    DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS ms_daq_spider
@@ -231,4 +232,19 @@ CREATE TABLE IF NOT EXISTS `ms_daq_task_execution_stage`
     `started_at`   DATETIME COMMENT '阶段开始时间',
     `completed_at` DATETIME COMMENT '阶段完成时间',
     `remark`       VARCHAR(255) COMMENT '备注'
+);
+
+CREATE TABLE IF NOT EXISTS `ms_hot_event`
+(
+    `id`            BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    `object_id`     CHAR(32) COMMENT '分布式ID',
+    `status`        TINYINT COMMENT '数据状态',
+    `create_at`     DATETIME COMMENT '数据入库时间',
+    `update_at`     DATETIME COMMENT '数据最后一次更新时间',
+
+    `name`          VARCHAR(32) COMMENT '热点事件名称',
+    `introduction`  INT COMMENT '热点事件简介',
+    `start_date`    DATE COMMENT '热点事件开始日期',
+    `end_date`      DATE COMMENT '热点事件结束日期',
+    `daq_task_code` CHAR(36) COMMENT '关联数据采集任务的编号'
 );

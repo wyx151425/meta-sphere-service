@@ -67,11 +67,13 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     public List<DaqTaskKeyword> findDaqTaskKeywords(Long daqTaskId) {
         return daqTaskKeywordRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     public MSPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskKeyword> page = daqTaskKeywordRepository.findAll((Specification<DaqTaskKeyword>) (root, query, criteriaBuilder) -> {
@@ -79,5 +81,11 @@ public class DaqTaskKeywordServiceImpl implements DaqTaskKeywordService {
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);
         return MSPage.newInstance(page);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public long countKeywordNumberByDaqTask(Long daqTaskId) {
+        return daqTaskKeywordRepository.countAllByTaskId(daqTaskId);
     }
 }

@@ -55,4 +55,13 @@ public interface DaqTaskSpiderService {
      * @return 数据采集任务爬虫
      */
     MSPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+
+
+    /**
+     * 查询数据采集任务已配置的爬虫的数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 已配置的爬虫的数量
+     */
+    long countSpiderNumberByDaqTask(Long daqTaskId);
 }

@@ -20,12 +20,12 @@ import java.util.List;
 @Service(value = "daqTaskServerService")
 public class DaqTaskServerServiceImpl implements DaqTaskServerService {
 
-    private final DaqTaskServerRepository taskServerRepository;
+    private final DaqTaskServerRepository daqTaskServerRepository;
     private final ServerService serverService;
 
     @Autowired
-    public DaqTaskServerServiceImpl(DaqTaskServerRepository taskServerRepository, ServerService serverService) {
-        this.taskServerRepository = taskServerRepository;
+    public DaqTaskServerServiceImpl(DaqTaskServerRepository daqTaskServerRepository, ServerService serverService) {
+        this.daqTaskServerRepository = daqTaskServerRepository;
         this.serverService = serverService;
     }
 
@@ -38,23 +38,23 @@ public class DaqTaskServerServiceImpl implements DaqTaskServerService {
         taskServer.setServerId(serverId);
         taskServer.setServerIpAddress(server.getIpAddress());
         taskServer.setServerPort(server.getPort());
-        taskServerRepository.save(taskServer);
+        daqTaskServerRepository.save(taskServer);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDaqTaskServersByTaskId(Long daqTaskId) {
-        taskServerRepository.deleteAllByTaskId(daqTaskId);
+        daqTaskServerRepository.deleteAllByTaskId(daqTaskId);
     }
 
     @Override
     public DaqTaskServer findDaqTaskServer(Long daqTaskId) {
-        return taskServerRepository.findOneByTaskId(daqTaskId);
+        return daqTaskServerRepository.findOneByTaskId(daqTaskId);
     }
 
     @Override
     public List<DaqTaskServer> findDaqTaskServers(Long daqTaskId) {
-        return taskServerRepository.findAllByTaskId(daqTaskId);
+        return daqTaskServerRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
@@ -67,7 +67,15 @@ public class DaqTaskServerServiceImpl implements DaqTaskServerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindDaqTaskServers(Long daqTaskId, List<Long> serverIds) {
+        // 删除已绑定的服务器
         deleteDaqTaskServersByTaskId(daqTaskId);
+        // 绑定新的服务器
         serverIds.forEach(serverId -> saveDaqTaskServer(daqTaskId, serverId));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public long countServerNumberByDaqTask(Long daqTaskId) {
+        return daqTaskServerRepository.countAllByTaskId(daqTaskId);
     }
 }

@@ -42,27 +42,27 @@ public class DaqTaskController {
         return MSResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/init")
+    @PutMapping(value = "{daqTaskId}/submit")
     MSResponse<DaqTask> actionInitDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.initDaqTask(daqTaskId);
+        daqTaskService.submitDaqTask(daqTaskId);
         return MSResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/perform")
+    @PutMapping(value = "{daqTaskId}/execute")
     MSResponse<DaqTask> actionPerformDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.performDaqTask(daqTaskId);
+        daqTaskService.executeDaqTask(daqTaskId);
         return MSResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/stopPerforming")
+    @PutMapping(value = "{daqTaskId}/stopExecuting")
     MSResponse<DaqTask> actionStopPerformingDaqTask(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.stopDaqTaskPerforming(daqTaskId);
+        daqTaskService.stopDaqTask(daqTaskId);
         return MSResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/enterAcquiredData")
+    @PutMapping(value = "{daqTaskId}/importAcquiredData")
     MSResponse<DaqTask> actionEnterDaqTaskAcquiredData(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.enterDaqTaskAcquiredData(daqTaskId);
+        daqTaskService.importDaqTaskAcquiredData(daqTaskId);
         return MSResponse.success();
     }
 

@@ -18,8 +18,8 @@ import java.nio.file.AccessDeniedException;
 public class MSExceptionHandler {
 
     @ExceptionHandler(value = MSException.class)
-    public MSResponse handleMsException(MSException e) {
-        return MSResponse.error();
+    public MSResponse handleMSException(MSException e) {
+        return MSResponse.error(e.getStatusCode());
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)

@@ -52,4 +52,12 @@ public interface DaqTaskKeywordService {
      * @return 数据采集任务关键词
      */
     MSPage<DaqTaskKeyword> findDaqTaskKeywordsByPagination(Long daqTaskId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 查询数据采集任务已设置的关键词的数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 已设置的关键词的数量
+     */
+    long countKeywordNumberByDaqTask(Long daqTaskId);
 }

@@ -22,4 +22,12 @@ public interface DaqTaskKeywordRepository extends JpaRepository<DaqTaskKeyword, 
      * @return 数据采集关键词
      */
     List<DaqTaskKeyword> findAllByTaskId(Long taskId);
+
+    /**
+     * 根据数据采集任务ID查询已设置的关键词的数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 已设置的关键词的数量
+     */
+    long countAllByTaskId(Long daqTaskId);
 }

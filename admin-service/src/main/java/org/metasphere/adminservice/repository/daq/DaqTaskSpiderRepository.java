@@ -39,4 +39,12 @@ public interface DaqTaskSpiderRepository extends JpaRepository<DaqTaskSpider, Lo
      */
     @Query(value = "select distinct spiderId from DaqTaskSpider where taskId = :daqTaskId")
     List<Long> findDaqSpiderIdsByTaskId(Long daqTaskId);
+
+    /**
+     * 根据数据采集任务ID查询已配置的爬虫的数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 已配置的爬虫的数量
+     */
+    long countAllByTaskId(Long daqTaskId);
 }

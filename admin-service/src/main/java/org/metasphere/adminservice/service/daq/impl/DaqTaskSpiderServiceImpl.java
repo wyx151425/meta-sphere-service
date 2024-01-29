@@ -70,16 +70,19 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     public List<DaqTaskSpider> findDaqTaskSpiders(Long daqTaskId) {
         return daqTaskSpiderRepository.findAllByTaskId(daqTaskId);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     public List<Long> findDaqSpiderIdsByTaskId(Long daqTaskId) {
         return daqTaskSpiderRepository.findDaqSpiderIdsByTaskId(daqTaskId);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
     public MSPage<DaqTaskSpider> findDaqTaskSpidersByPagination(Long daqTaskId, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<DaqTaskSpider> page = daqTaskSpiderRepository.findAll((Specification<DaqTaskSpider>) (root, query, criteriaBuilder) -> {
@@ -87,5 +90,11 @@ public class DaqTaskSpiderServiceImpl implements DaqTaskSpiderService {
             return query.where(new Predicate[]{predicate}).getRestriction();
         }, pageable);
         return MSPage.newInstance(page);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public long countSpiderNumberByDaqTask(Long daqTaskId) {
+        return daqTaskSpiderRepository.countAllByTaskId(daqTaskId);
     }
 }

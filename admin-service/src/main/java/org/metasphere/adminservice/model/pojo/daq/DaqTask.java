@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * @Author: WangZhenqi
- * @Description: 数据采集项目类
+ * @Description: 数据采集任务类
  * @Date: Created in 2023-02-22 21:36
  * @Modified By:
  */
@@ -20,17 +20,21 @@ import java.time.LocalDateTime;
 @SQLDelete(sql = "UPDATE ms_daq_task SET status = 0 WHERE id = ?")
 public class DaqTask extends MetaSphereEntity {
     /**
-     * 项目名称
+     * 任务名称
      */
     private String name;
     /**
-     * 唯一识别码
+     * 任务编码
      */
     private String code;
     /**
-     * 项目执行阶段（11-新建/21-数据采集阶段/22-数据待入库阶段/31-数据分析阶段/32-数据统计阶段/41-执行完毕）
+     * 所属舆情热点事件的ID
      */
-    private Integer stage;
+    private Long hotEventId;
+    /**
+     * 任务执行阶段
+     */
+    private Integer executionStage;
     /**
      * 创建时间
      */
@@ -59,12 +63,20 @@ public class DaqTask extends MetaSphereEntity {
         this.code = code;
     }
 
-    public Integer getStage() {
-        return stage;
+    public Long getHotEventId() {
+        return hotEventId;
     }
 
-    public void setStage(Integer stage) {
-        this.stage = stage;
+    public void setHotEventId(Long hotEventId) {
+        this.hotEventId = hotEventId;
+    }
+
+    public Integer getExecutionStage() {
+        return executionStage;
+    }
+
+    public void setExecutionStage(Integer stage) {
+        this.executionStage = stage;
     }
 
     public LocalDateTime getCreatedAt() {

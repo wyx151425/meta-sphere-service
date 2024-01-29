@@ -31,32 +31,32 @@ public interface DaqTaskService {
     void deleteDaqTask(Long daqTaskId);
 
     /**
-     * 启动数据采集任务（启动后将创建数据存储空间，并允许配置爬虫和关键词）
+     * 提交数据采集任务（启动后将创建数据存储空间，并允许配置爬虫和关键词）
      *
      * @param daqTaskId 数据采集任务的ID
      */
-    void initDaqTask(Long daqTaskId);
+    void submitDaqTask(Long daqTaskId);
 
     /**
      * 开始数据采集任务
      *
      * @param daqTaskId 数据采集任务的ID
      */
-    void performDaqTask(Long daqTaskId);
+    void executeDaqTask(Long daqTaskId);
 
     /**
      * 停止执行数据采集任务
      *
      * @param daqTaskId 数据采集任务ID
      */
-    void stopDaqTaskPerforming(Long daqTaskId);
+    void stopDaqTask(Long daqTaskId);
 
     /**
      * 录入数据采集任务采集到的数据
      *
      * @param daqTaskId 数据采集任务的ID
      */
-    void enterDaqTaskAcquiredData(Long daqTaskId);
+    void importDaqTaskAcquiredData(Long daqTaskId);
 
     /**
      * 根据查询参数分页查询数据采集任务信息
@@ -135,11 +135,4 @@ public interface DaqTaskService {
      * @return 时序数据量
      */
     DaqTaskTimingDataVolumes findDaqTaskTimingDataVolumes(Long daqTaskId);
-
-    /**
-     * 导入舆情数据采集任务已采集到的数据
-     *
-     * @param daqTaskId 数据采集任务ID
-     */
-    void importDaqTaskAcquiredData(Long daqTaskId);
 }
