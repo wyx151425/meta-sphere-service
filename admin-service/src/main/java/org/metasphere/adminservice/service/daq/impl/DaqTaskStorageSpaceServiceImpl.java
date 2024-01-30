@@ -3,9 +3,9 @@ package org.metasphere.adminservice.service.daq.impl;
 import org.metasphere.adminservice.model.bo.daq.*;
 import org.metasphere.adminservice.service.daq.DaqTaskStorageSpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,8 +22,11 @@ public class DaqTaskStorageSpaceServiceImpl implements DaqTaskStorageSpaceServic
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
+    @Transactional(rollbackFor = Exception.class)
     public void createDaqTaskStorageSpace(String daqTaskCode) {
         createMongoWeiboDataTable(daqTaskCode);
         createMongoWeiboLikeDataTable(daqTaskCode);
@@ -142,101 +145,81 @@ public class DaqTaskStorageSpaceServiceImpl implements DaqTaskStorageSpaceServic
                 ");");
     }
 
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public void saveDaqEngineWeiboItem(String tableName, DaqEngineWeiboItem daqEngineWeiboItem) {
-//        LocalDateTime createAt = LocalDateTime.now();
-//        String sql = "INSERT INTO `" + tableName + "`(create_at, task_name, task_code, task_keyword, " +
-//                "source_id, source_blog_id, source_origin_id, source_create_at, " +
-//                "text, reads_count, likes_count, comments_count, reposts_count, " +
-//                "account_id, account_name, region_name, platform_name, platform_code) " +
-//                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//        jdbcTemplate.update(sql, createAt, daqEngineWeiboItem.getTaskName(), daqEngineWeiboItem.getTaskCode(), daqEngineWeiboItem.getTaskKeyword(),
-//                daqEngineWeiboItem.getSourceId(), daqEngineWeiboItem.getSourceBlogId(), daqEngineWeiboItem.getSourceOriginId(), daqEngineWeiboItem.getSourceCreateAt(),
-//                daqEngineWeiboItem.getText(), daqEngineWeiboItem.getReadsCount(), daqEngineWeiboItem.getLikesCount(), daqEngineWeiboItem.getCommentsCount(), daqEngineWeiboItem.getRepostsCount(),
-//                daqEngineWeiboItem.getAccountId(), daqEngineWeiboItem.getAccountName(), daqEngineWeiboItem.getRegionName(), daqEngineWeiboItem.getPlatformName(), daqEngineWeiboItem.getPlatformCode());
-//    }
-//
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public void saveDaqEngineWeiboItems(String tableName, List<DaqEngineWeiboItem> daqEngineWeiboItems) {
-//        LocalDateTime createAt = LocalDateTime.now();
-//        String sql = "INSERT INTO `" + tableName + "`(create_at, task_name, task_code, task_keyword, " +
-//                "source_id, source_blog_id, source_origin_id, source_create_at, " +
-//                "text, reads_count, likes_count, comments_count, reposts_count, " +
-//                "account_id, account_name, region_name, platform_name, platform_code) " +
-//                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//        daqEngineWeiboItems.forEach(weiboItem -> jdbcTemplate.update(sql, createAt, weiboItem.getTaskName(), weiboItem.getTaskCode(), weiboItem.getTaskKeyword(),
-//                weiboItem.getSourceId(), weiboItem.getSourceBlogId(), weiboItem.getSourceOriginId(), weiboItem.getSourceCreateAt(),
-//                weiboItem.getText(), weiboItem.getReadsCount(), weiboItem.getLikesCount(), weiboItem.getCommentsCount(), weiboItem.getRepostsCount(),
-//                weiboItem.getAccountId(), weiboItem.getAccountName(), weiboItem.getRegionName(), weiboItem.getPlatformName(), weiboItem.getPlatformCode()));
-//    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void findDaqTaskDataByPagination(String tableName, Integer pageNum, Integer pageSize) {
-
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
     public void saveMongoWeibos(String daqTaskCode, List<MongoWeibo> mongoWeibos) {
         String tableName = "weibo_" + daqTaskCode;
         String sql = "INSERT INTO `" + tableName + "`(mid, hash_mid, task_code, task_keyword, created_at, " +
                 "text, text_raw, text_length, likes_count, comments_count, reposts_count, weibo_url, " +
                 "uid, user_screen_name, region_name, `source`) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        mongoWeibos.forEach(weibo -> jdbcTemplate.update(sql,
-                weibo.getMid(), weibo.getHashMid(), weibo.getTaskCode(), weibo.getTaskKeyword(), weibo.getCreatedAt(),
-                weibo.getText(), weibo.getTextRaw(), weibo.getTextLength(), weibo.getLikesCount(), weibo.getCommentsCount(), weibo.getRepostsCount(), weibo.getWeiboUrl(),
-                weibo.getUid(), weibo.getUserScreenName(), weibo.getRegionName(), weibo.getSource()));
+        mongoWeibos.forEach(weibo -> {
+            jdbcTemplate.update(sql,
+                    weibo.getMid(), weibo.getHashMid(), weibo.getTaskCode(), weibo.getTaskKeyword(), weibo.getCreatedAt(),
+                    weibo.getText(), weibo.getTextRaw(), weibo.getTextLength(), weibo.getLikesCount(), weibo.getCommentsCount(), weibo.getRepostsCount(), weibo.getWeiboUrl(),
+                    weibo.getUid(), weibo.getUserScreenName(), weibo.getRegionName(), weibo.getSource());
+            redisTemplate.opsForValue().increment("IMPORTED_DATA_COUNT:WEIBO:" + daqTaskCode);
+        });
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
+    @Transactional(rollbackFor = Exception.class)
     public void saveMongoWeiboLikes(String daqTaskCode, List<MongoWeiboLike> mongoWeiboLikes) {
         String tableName = "weibo_like_" + daqTaskCode;
         String sql = "INSERT INTO `" + tableName + "`(mid, task_code, task_keyword, `like`, uid) VALUES(?, ?, ?, ?, ?)";
-        mongoWeiboLikes.forEach(weiboLike -> jdbcTemplate.update(sql,
-                weiboLike.getMid(), weiboLike.getTaskCode(), weiboLike.getTaskKeyword(), weiboLike.getLike(), weiboLike.getUid()));
+        mongoWeiboLikes.forEach(weiboLike -> {
+            jdbcTemplate.update(sql, weiboLike.getMid(), weiboLike.getTaskCode(), weiboLike.getTaskKeyword(), weiboLike.getLike(), weiboLike.getUid());
+            redisTemplate.opsForValue().increment("IMPORTED_DATA_COUNT:WEIBO_LIKE:" + daqTaskCode);
+        });
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
+    @Transactional(rollbackFor = Exception.class)
     public void saveMongoWeiboComments(String daqTaskCode, List<MongoWeiboComment> mongoWeiboComments) {
         String tableName = "weibo_comment_" + daqTaskCode;
         String sql = "INSERT INTO `" + tableName + "`(mid, cid, task_code, task_keyword, created_at, text, text_raw, likes_count, uid, `source`) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        mongoWeiboComments.forEach(weiboComment -> jdbcTemplate.update(sql,
-                weiboComment.getMid(), weiboComment.getCid(), weiboComment.getTaskCode(), weiboComment.getTaskKeyword(), weiboComment.getCreatedAt(),
-                weiboComment.getText(), weiboComment.getTextRaw(), weiboComment.getLikesCount(), weiboComment.getUid(), weiboComment.getSource()));
+        mongoWeiboComments.forEach(weiboComment -> {
+            jdbcTemplate.update(sql, weiboComment.getMid(), weiboComment.getCid(), weiboComment.getTaskCode(), weiboComment.getTaskKeyword(), weiboComment.getCreatedAt(),
+                    weiboComment.getText(), weiboComment.getTextRaw(), weiboComment.getLikesCount(), weiboComment.getUid(), weiboComment.getSource());
+            redisTemplate.opsForValue().increment("IMPORTED_DATA_COUNT:WEIBO_COMMENT:" + daqTaskCode);
+        });
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
+    @Transactional(rollbackFor = Exception.class)
     public void saveMongoWeiboReposts(String daqTaskCode, List<MongoWeiboRepost> mongoWeiboReposts) {
         String tableName = "weibo_repost_" + daqTaskCode;
         String sql = "INSERT INTO `" + tableName + "`(oid, mid, hash_mid, task_code, task_keyword, created_at, " +
                 "text, text_raw, likes_count, comments_count, reposts_count, weibo_url, uid, user_screen_name, region_name, `source`) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        mongoWeiboReposts.forEach(weiboRepost -> jdbcTemplate.update(sql,
-                weiboRepost.getOid(), weiboRepost.getMid(), weiboRepost.getHashMid(), weiboRepost.getTaskCode(), weiboRepost.getTaskKeyword(), weiboRepost.getCreatedAt(),
-                weiboRepost.getText(), weiboRepost.getTextRaw(), weiboRepost.getLikesCount(), weiboRepost.getCommentsCount(), weiboRepost.getRepostsCount(), weiboRepost.getWeiboUrl(),
-                weiboRepost.getUid(), weiboRepost.getUserScreenName(), weiboRepost.getRegionName(), weiboRepost.getSource()
-        ));
+        mongoWeiboReposts.forEach(weiboRepost -> {
+            jdbcTemplate.update(sql, weiboRepost.getOid(), weiboRepost.getMid(), weiboRepost.getHashMid(), weiboRepost.getTaskCode(), weiboRepost.getTaskKeyword(), weiboRepost.getCreatedAt(),
+                    weiboRepost.getText(), weiboRepost.getTextRaw(), weiboRepost.getLikesCount(), weiboRepost.getCommentsCount(), weiboRepost.getRepostsCount(), weiboRepost.getWeiboUrl(),
+                    weiboRepost.getUid(), weiboRepost.getUserScreenName(), weiboRepost.getRegionName(), weiboRepost.getSource());
+            redisTemplate.opsForValue().increment("IMPORTED_DATA_COUNT:WEIBO_REPOST:" + daqTaskCode);
+        });
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
+    @Transactional(rollbackFor = Exception.class)
     public void saveMongoWeiboUsers(String daqTaskCode, List<MongoWeiboUser> mongoWeiboUsers) {
         String tableName = "weibo_user_" + daqTaskCode;
         String sql = "INSERT INTO `" + tableName + "`(task_code, task_keyword, uid, created_at, screen_name, gender, " +
                 "birthday, constellation, province, city, description, profile_url, verified, credit_level, " +
                 "followers_count, followers_count_str, follows_count, follows_count_str, weibos_count, weibos_count_str) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        mongoWeiboUsers.forEach(weiboUser -> jdbcTemplate.update(sql,
-                weiboUser.getTaskCode(), weiboUser.getTaskKeyword(), weiboUser.getUid(), weiboUser.getCreatedAt(), weiboUser.getScreenName(), weiboUser.getGender(),
-                weiboUser.getBirthday(), weiboUser.getConstellation(), weiboUser.getProvince(), weiboUser.getCity(), weiboUser.getDescription(), weiboUser.getProfileUrl(), weiboUser.getVerified(), weiboUser.getCreditLevel(),
-                weiboUser.getFollowersCount(), weiboUser.getFollowersCountStr(), weiboUser.getFollowsCount(), weiboUser.getFollowsCountStr(), weiboUser.getWeibosCount(), weiboUser.getWeibosCountStr()));
+        mongoWeiboUsers.forEach(weiboUser -> {
+            jdbcTemplate.update(sql, weiboUser.getTaskCode(), weiboUser.getTaskKeyword(), weiboUser.getUid(), weiboUser.getCreatedAt(), weiboUser.getScreenName(), weiboUser.getGender(),
+                    weiboUser.getBirthday(), weiboUser.getConstellation(), weiboUser.getProvince(), weiboUser.getCity(), weiboUser.getDescription(), weiboUser.getProfileUrl(), weiboUser.getVerified(), weiboUser.getCreditLevel(),
+                    weiboUser.getFollowersCount(), weiboUser.getFollowersCountStr(), weiboUser.getFollowsCount(), weiboUser.getFollowsCountStr(), weiboUser.getWeibosCount(), weiboUser.getWeibosCountStr());
+            redisTemplate.opsForValue().increment("IMPORTED_DATA_COUNT:WEIBO_USER:" + daqTaskCode);
+        });
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void findDaqTaskDataByPagination(String tableName, Integer pageNum, Integer pageSize) {
+
     }
 }

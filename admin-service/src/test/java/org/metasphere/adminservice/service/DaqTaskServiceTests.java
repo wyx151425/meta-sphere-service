@@ -2,7 +2,6 @@ package org.metasphere.adminservice.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.metasphere.adminservice.service.daq.DaqTaskService;
 import org.metasphere.adminservice.service.daq.impl.DaqTaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +25,7 @@ public class DaqTaskServiceTests {
 
     @Test
     void testImportDaqTaskAcquiredData() {
-        daqTaskService.importDaqTaskAcquiredData(4L);
+        daqTaskService.startImportDaqTaskAcquiredData(4L);
     }
 
     @Test

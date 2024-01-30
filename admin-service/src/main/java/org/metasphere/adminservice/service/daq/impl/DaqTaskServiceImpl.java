@@ -16,6 +16,7 @@ import org.metasphere.adminservice.service.daq.HotEventService;
 import org.metasphere.adminservice.service.daq.ScrapydService;
 import org.metasphere.adminservice.service.daq.*;
 import org.metasphere.adminservice.util.UUIDUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -75,6 +76,9 @@ public class DaqTaskServiceImpl implements DaqTaskService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private MongoWeiboRepository mongoWeiboRepository;
@@ -238,11 +242,10 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void importDaqTaskAcquiredData(Long daqTaskId) {
+    public void startImportDaqTaskAcquiredData(Long daqTaskId) {
         DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
 
-        // 创建数据存储表
+        // 创建数据存储表，此处不需要事务，因为事务无法控制DDL语句
         daqTaskStorageSpaceService.createDaqTaskStorageSpace(daqTask.getCode());
 
         // 修改任务状态为数据导入中
@@ -250,31 +253,48 @@ public class DaqTaskServiceImpl implements DaqTaskService {
         daqTask.setUpdateAt(LocalDateTime.now());
         daqTaskRepository.save(daqTask);
 
-        String taskCode = daqTask.getCode();
+        String daqTaskCode = daqTask.getCode();
 
-        int tableCount = 5;  // 此处应该由计算爬虫数量得到
-        CountDownLatch countDownLatch = new CountDownLatch(tableCount);
+        // 将导入数据的消息发布到RabbitMQ，异步导入数据
+        rabbitTemplate.convertAndSend("directExchange", "directRoutingKey", daqTaskCode);
+    }
 
-        executorService.execute(() -> {
-            handleAcquiredWeiboData(taskCode);
-            countDownLatch.countDown();
-        });
-        executorService.execute(() -> {
-            handleAcquiredWeiboLikeData(taskCode);
-            countDownLatch.countDown();
-        });
-        executorService.execute(() -> {
-            handleAcquiredWeiboCommentData(taskCode);
-            countDownLatch.countDown();
-        });
-        executorService.execute(() -> {
-            handleAcquiredWeiboRepostData(taskCode);
-            countDownLatch.countDown();
-        });
-        executorService.execute(() -> {
-            handleAcquiredWeiboUserData(taskCode);
-            countDownLatch.countDown();
-        });
+    @Override
+    public void executeImportDaqTaskAcquiredData(String daqTaskCode) {
+        // 根据数据采集任务配置的爬虫计算需要导入的数据表的数量
+        DaqTask daqTask = daqTaskRepository.findOneByCode(daqTaskCode);
+
+        List<DaqTaskSpider> daqTaskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTask.getId());
+        List<String> spiderCodes = daqTaskSpiders.stream().map(DaqTaskSpider::getSpiderCode).distinct().collect(Collectors.toList());
+        int spiderCount = spiderCodes.size();
+        if (spiderCodes.contains(MSConstant.DaqSpider.Codes.WEIBO)) {
+            spiderCount += 4;
+        }
+        CountDownLatch countDownLatch = new CountDownLatch(spiderCount);
+
+        // 根据数据采集任务配置的爬虫开始导入数据
+        if (spiderCodes.contains(MSConstant.DaqSpider.Codes.WEIBO)) {
+            executorService.execute(() -> {
+                handleAcquiredWeiboData(daqTaskCode);
+                countDownLatch.countDown();
+            });
+            executorService.execute(() -> {
+                handleAcquiredWeiboLikeData(daqTaskCode);
+                countDownLatch.countDown();
+            });
+            executorService.execute(() -> {
+                handleAcquiredWeiboCommentData(daqTaskCode);
+                countDownLatch.countDown();
+            });
+            executorService.execute(() -> {
+                handleAcquiredWeiboRepostData(daqTaskCode);
+                countDownLatch.countDown();
+            });
+            executorService.execute(() -> {
+                handleAcquiredWeiboUserData(daqTaskCode);
+                countDownLatch.countDown();
+            });
+        }
 
         try {
             countDownLatch.await();
@@ -293,7 +313,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private void handleAcquiredWeiboData(String daqTaskCode) {
         int pageNum = 0;
         int pageSize = 100;
+
         long dataCount = mongoWeiboRepository.countAllByTaskCode(daqTaskCode);
+        redisTemplate.opsForValue().set("ACQUIRED_DATA_COUNT:WEIBO:" + daqTaskCode, String.valueOf(dataCount));
+        redisTemplate.opsForValue().set("IMPORTED_DATA_COUNT:WEIBO:" + daqTaskCode, "0");
+
         while ((long) pageNum * pageSize <= dataCount) {
             Pageable pageable = PageRequest.of(pageNum, pageSize);
             Page<MongoWeibo> page = mongoWeiboRepository.findAllByTaskCode(daqTaskCode, pageable);
@@ -306,7 +330,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private void handleAcquiredWeiboLikeData(String daqTaskCode) {
         int pageNum = 0;
         int pageSize = 100;
+
         long dataCount = mongoWeiboLikeRepository.countAllByTaskCode(daqTaskCode);
+        redisTemplate.opsForValue().set("ACQUIRED_DATA_COUNT:WEIBO_LIKE:" + daqTaskCode, String.valueOf(dataCount));
+        redisTemplate.opsForValue().set("IMPORTED_DATA_COUNT:WEIBO_LIKE:" + daqTaskCode, "0");
+
         while ((long) pageNum * pageSize <= dataCount) {
             Pageable pageable = PageRequest.of(pageNum, pageSize);
             Page<MongoWeiboLike> page = mongoWeiboLikeRepository.findAllByTaskCode(daqTaskCode, pageable);
@@ -319,7 +347,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private void handleAcquiredWeiboCommentData(String daqTaskCode) {
         int pageNum = 0;
         int pageSize = 100;
+
         long dataCount = mongoWeiboCommentRepository.countAllByTaskCode(daqTaskCode);
+        redisTemplate.opsForValue().set("ACQUIRED_DATA_COUNT:WEIBO_COMMENT:" + daqTaskCode, String.valueOf(dataCount));
+        redisTemplate.opsForValue().set("IMPORTED_DATA_COUNT:WEIBO_COMMENT:" + daqTaskCode, "0");
+
         while ((long) pageNum * pageSize <= dataCount) {
             Pageable pageable = PageRequest.of(pageNum, pageSize);
             Page<MongoWeiboComment> page = mongoWeiboCommentRepository.findAllByTaskCode(daqTaskCode, pageable);
@@ -332,7 +364,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private void handleAcquiredWeiboRepostData(String daqTaskCode) {
         int pageNum = 0;
         int pageSize = 100;
+
         long dataCount = mongoWeiboRepostRepository.countAllByTaskCode(daqTaskCode);
+        redisTemplate.opsForValue().set("ACQUIRED_DATA_COUNT:WEIBO_REPOST:" + daqTaskCode, String.valueOf(dataCount));
+        redisTemplate.opsForValue().set("IMPORTED_DATA_COUNT:WEIBO_REPOST:" + daqTaskCode, "0");
+
         while ((long) pageNum * pageSize <= dataCount) {
             Pageable pageable = PageRequest.of(pageNum, pageSize);
             Page<MongoWeiboRepost> page = mongoWeiboRepostRepository.findAllByTaskCode(daqTaskCode, pageable);
@@ -345,7 +381,11 @@ public class DaqTaskServiceImpl implements DaqTaskService {
     private void handleAcquiredWeiboUserData(String daqTaskCode) {
         int pageNum = 0;
         int pageSize = 100;
+
         long dataCount = mongoWeiboUserRepository.countAllByTaskCode(daqTaskCode);
+        redisTemplate.opsForValue().set("ACQUIRED_DATA_COUNT:WEIBO_USER:" + daqTaskCode, String.valueOf(dataCount));
+        redisTemplate.opsForValue().set("IMPORTED_DATA_COUNT:WEIBO_USER:" + daqTaskCode, "0");
+
         while ((long) pageNum * pageSize <= dataCount) {
             Pageable pageable = PageRequest.of(pageNum, pageSize);
             Page<MongoWeiboUser> page = mongoWeiboUserRepository.findAllByTaskCode(daqTaskCode, pageable);
@@ -353,6 +393,20 @@ public class DaqTaskServiceImpl implements DaqTaskService {
             log.info("handleAcquiredWeiboUserData: " + pageNum * pageSize + " ---->");
             pageNum++;
         }
+    }
+
+    @Override
+    public List<ImportedDataCount> getImportedDataCounts(Long daqTaskId) {
+        DaqTask daqTask = daqTaskRepository.findById(daqTaskId).orElseThrow(MSException::getDataNotFoundException);
+        List<DaqTaskSpider> daqTaskSpiders = daqTaskSpiderService.findDaqTaskSpiders(daqTaskId);
+        List<String> daqTaskSpiderCodes = daqTaskSpiders.stream().map(DaqTaskSpider::getSpiderCode).distinct().collect(Collectors.toList());
+        if (daqTaskSpiderCodes.contains(MSConstant.DaqSpider.Codes.WEIBO)) {
+            daqTaskSpiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_USER);
+            daqTaskSpiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_LIKE);
+            daqTaskSpiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_COMMENT);
+            daqTaskSpiderCodes.add(MSConstant.DaqSpider.Codes.WEIBO_REPOST);
+        }
+        return daqTaskDataVolumeService.getImportedDataCounts(daqTask.getCode(), daqTaskSpiderCodes);
     }
 
     @Override

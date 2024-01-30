@@ -1,6 +1,7 @@
 package org.metasphere.adminservice.service.daq;
 
 import org.metasphere.adminservice.model.pojo.daq.DaqTaskDataVolume;
+import org.metasphere.adminservice.model.pojo.daq.ImportedDataCount;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public interface DaqTaskDataVolumeService {
      *
      * @param dataVolumes 数据量
      */
-    void saveDaqDataVolumes(List<DaqTaskDataVolume> dataVolumes);
+    void saveAcquiredDaqDataVolumes(List<DaqTaskDataVolume> dataVolumes);
 
     /**
      * 根据数据采集任务编码获取爬虫编码与时序数据量的映射
@@ -34,4 +35,13 @@ public interface DaqTaskDataVolumeService {
      * @return 爬虫编码与时序数据量的映射
      */
     Map<String, List<DaqTaskDataVolume>> findSpiderCode2DaqDataVolumesMap(String taskCode);
+
+    /**
+     * 根据数据采集任务编号获取已导入的数据总数量
+     *
+     * @param daqTaskCode        数据采集任务编号
+     * @param daqTaskSpiderCodes 数据采集任务爬虫的编号
+     * @return 数据量统计数组
+     */
+    List<ImportedDataCount> getImportedDataCounts(String daqTaskCode, List<String> daqTaskSpiderCodes);
 }

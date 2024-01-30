@@ -68,6 +68,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             log.error(e.getMessage());
         }
 
-        daqTaskDataVolumeService.saveDaqDataVolumes(dataVolumes);
+        daqTaskDataVolumeService.saveAcquiredDaqDataVolumes(dataVolumes);
     }
 }

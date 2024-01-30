@@ -39,3 +39,21 @@ spring:
       password: 'MsMongo001@dmin'
       authentication-database: ms_daq_engine
       field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+  rabbitmq:
+    host: 180.201.163.246
+    port: 5672
+    username: wyx151425
+    password: MsRabbit001@dmin
+    virtual-host: /daq_task
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 1
+        max-concurrency: 1
+        retry:
+          enabled: true
+logging:
+  level:
+    org.hibernate.engine.transaction.internal.TransactionImpl: DEBUG
+    org.springframework.jdbc.core: DEBUG

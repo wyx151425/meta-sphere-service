@@ -13,5 +13,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "daqTaskRepository")
 public interface DaqTaskRepository extends JpaRepository<DaqTask, Long>, JpaSpecificationExecutor<DaqTask> {
-
+    /**
+     * 根据编码获得数据采集任务
+     *
+     * @param code 数据采集任务的编码
+     * @return 数据采集任务
+     */
+    DaqTask findOneByCode(String code);
 }

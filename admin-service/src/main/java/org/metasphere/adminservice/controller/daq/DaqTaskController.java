@@ -1,10 +1,7 @@
 package org.metasphere.adminservice.controller.daq;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
-import org.metasphere.adminservice.model.pojo.daq.DaqTask;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
+import org.metasphere.adminservice.model.pojo.daq.*;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 import org.metasphere.adminservice.model.vo.resp.MSResponse;
 import org.metasphere.adminservice.service.daq.DaqTaskService;
@@ -60,10 +57,16 @@ public class DaqTaskController {
         return MSResponse.success();
     }
 
-    @PutMapping(value = "{daqTaskId}/importAcquiredData")
-    MSResponse<DaqTask> actionEnterDaqTaskAcquiredData(@PathVariable(value = "daqTaskId") Long daqTaskId) {
-        daqTaskService.importDaqTaskAcquiredData(daqTaskId);
+    @PutMapping(value = "{daqTaskId}/startImportAcquiredData")
+    MSResponse<DaqTask> actionStartImportDaqTaskAcquiredData(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        daqTaskService.startImportDaqTaskAcquiredData(daqTaskId);
         return MSResponse.success();
+    }
+
+    @GetMapping(value = "{daqTaskId}/importedDataCounts")
+    MSResponse<List<ImportedDataCount>> actionQueryDaqTaskImportedDataCounts(@PathVariable(value = "daqTaskId") Long daqTaskId) {
+        List<ImportedDataCount> importedDataCounts = daqTaskService.getImportedDataCounts(daqTaskId);
+        return MSResponse.success(importedDataCounts);
     }
 
     @GetMapping(value = "queryByParams")

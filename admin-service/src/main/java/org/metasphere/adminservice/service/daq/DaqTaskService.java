@@ -1,10 +1,7 @@
 package org.metasphere.adminservice.service.daq;
 
 import org.metasphere.adminservice.model.dto.MSPage;
-import org.metasphere.adminservice.model.pojo.daq.DaqSpider;
-import org.metasphere.adminservice.model.pojo.daq.DaqTask;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskKeyword;
-import org.metasphere.adminservice.model.pojo.daq.DaqTaskSpider;
+import org.metasphere.adminservice.model.pojo.daq.*;
 import org.metasphere.adminservice.model.vo.DaqTaskTimingDataVolumes;
 
 import java.util.List;
@@ -52,11 +49,26 @@ public interface DaqTaskService {
     void stopDaqTask(Long daqTaskId);
 
     /**
-     * 录入数据采集任务采集到的数据
+     * 启动录入数据采集任务采集到的数据
      *
      * @param daqTaskId 数据采集任务的ID
      */
-    void importDaqTaskAcquiredData(Long daqTaskId);
+    void startImportDaqTaskAcquiredData(Long daqTaskId);
+
+    /**
+     * 执行录入数据采集任务采集到的数据
+     *
+     * @param daqTaskCode 数据采集任务的编码
+     */
+    void executeImportDaqTaskAcquiredData(String daqTaskCode);
+
+    /**
+     * 获取数据采集任务已导入的数据总数量
+     *
+     * @param daqTaskId 数据采集任务的ID
+     * @return 数据量统计数组
+     */
+    List<ImportedDataCount> getImportedDataCounts(Long daqTaskId);
 
     /**
      * 根据查询参数分页查询数据采集任务信息
